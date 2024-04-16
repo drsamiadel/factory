@@ -5,8 +5,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from "next/link"
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
@@ -18,19 +16,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation"
-
-function Copyright(props: any) {
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {"Copyright "}&copy; {' '}
-            <Link color="inherit" href="/">
-                Factory
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
 
 export default function SignInSide() {
     const [error, setError] = React.useState<string | null>(null);
@@ -75,6 +60,19 @@ export default function SignInSide() {
             setError(error.message);
         }
     };
+
+    function Copyright(props: any) {
+        return (
+            <Typography variant="body2" color="text.secondary" align="center" {...props}>
+                {"Copyright "}&copy; {' '}
+                <Link color="inherit" href="/">
+                    Factory
+                </Link>{' '}
+                {new Date().getFullYear()}
+                {'.'}
+            </Typography>
+        );
+    }
 
     return (
         <Grid container component="main" sx={{ height: '100vh' }}>

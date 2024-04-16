@@ -20,19 +20,6 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation"
 import { REGISTER } from '../../../../actions/user';
 
-function Copyright(props: any) {
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {"Copyright "}&copy; {' '}
-            <Link color="inherit" href="/">
-                Factory
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
-
 export default function SignInSide() {
     const [error, setError] = React.useState<string | null>(null);
     const [loading, setLoading] = React.useState<boolean>(false);
@@ -72,6 +59,19 @@ export default function SignInSide() {
             setError(error.message);
         }
     };
+
+    function Copyright(props: any) {
+        return (
+            <Typography variant="body2" color="text.secondary" align="center" {...props}>
+                {"Copyright "}&copy; {' '}
+                <Link color="inherit" href="/">
+                    Factory
+                </Link>{' '}
+                {new Date().getFullYear()}
+                {'.'}
+            </Typography>
+        );
+    }
 
     return (
         <Grid container component="main" sx={{ height: '100vh' }}>
