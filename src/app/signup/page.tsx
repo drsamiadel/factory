@@ -17,8 +17,8 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation"
-import { REGISTER } from '../../../../actions/user';
+import { useRouter } from "next/navigation";
+import { REGISTER } from "@/../actions/user"
 
 export default function SignInSide() {
     const [error, setError] = React.useState<string | null>(null);
@@ -48,7 +48,7 @@ export default function SignInSide() {
         try {
             setError(null);
             setLoading(true);
-            await REGISTER(values).then(async (data) => {
+            await REGISTER(values).then(async (data: any) => {
                 await signIn("Credentials", {
                     email: data.email,
                     password: data.password,
