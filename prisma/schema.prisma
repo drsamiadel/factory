@@ -52,8 +52,9 @@ model User {
   delegates     Delegate[]
   inputs        Input[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Material  Material[]
 
   @@map("users")
 }
@@ -69,7 +70,7 @@ model VerificationToken {
 }
 
 model Supplier {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
   companyName String?
   managerName String?
   vatNumber   String?
@@ -80,19 +81,20 @@ model Supplier {
   email       String?
   address     String?
   location    String?
-  dealingType String @default("cash")
+  dealingType String  @default("cash")
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @db.ObjectId
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Material  Material[]
 
   @@map("suppliers")
 }
 
 model Customer {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
   companyName String?
   managerName String?
   vatNumber   String?
@@ -103,7 +105,7 @@ model Customer {
   email       String?
   address     String?
   location    String?
-  dealingType String @default("cash")
+  dealingType String  @default("cash")
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @db.ObjectId
@@ -115,7 +117,7 @@ model Customer {
 }
 
 model Delegate {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
   name        String?
   type        String?
   phone1      String?
@@ -123,7 +125,7 @@ model Delegate {
   email       String?
   address     String?
   location    String?
-  dealingType String @default("cash")
+  dealingType String  @default("cash")
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @db.ObjectId
@@ -135,14 +137,14 @@ model Delegate {
 }
 
 model Input {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  name        String?
-  code        String? @unique
-  images      Image[]
-  structure   Json
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  name      String?
+  code      String? @unique
+  images    Image[]
+  structure Json
 
-  user        User     @relation(fields: [userId], references: [id])
-  userId      String   @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @db.ObjectId
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -151,14 +153,38 @@ model Input {
 }
 
 model Image {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  url         String?
+  id  String  @id @default(auto()) @map("_id") @db.ObjectId
+  url String?
 
-  input       Input    @relation(fields: [inputId], references: [id], onDelete: Cascade)
-  inputId     String   @db.ObjectId
+  input   Input  @relation(fields: [inputId], references: [id], onDelete: Cascade)
+  inputId String @db.ObjectId
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("images")
+}
+
+model Material {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  category        String?
+  name            String?
+  type            String?
+  thickness       Int?
+  size            String?
+  unit            String?
+  piecesInPackage Int?
+  packagePrice    Float?
+  unitPrice       Float?
+  description     String?
+  supplier        Supplier @relation(fields: [supplierId], references: [id])
+  supplierId      String   @db.ObjectId
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("materials")
 }
