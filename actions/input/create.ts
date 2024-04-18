@@ -3,7 +3,7 @@
 import { Input } from "@prisma/client";
 import * as z from "zod";
 import { prisma } from "@/lib/db/prisma";
-import { getUserSession } from "../../src/hooks/get-user.session";
+import { getUserSession } from "../../src/hooks/get-user-session";
 
 const CREATE = async (
     input: Partial<Input>

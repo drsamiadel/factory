@@ -1,41 +1,21 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import ListItemText from '@mui/material/ListItemText';
-import ListItem from '@mui/material/ListItem';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 import TextField from '@mui/material/TextField';
 import { useTheme } from '@mui/material/styles';
 import FormControl from '@mui/material/FormControl';
-
-
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
-
 import Grid from '@mui/material/Grid';
-
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-import Image from 'next/image';
-
 import { set } from 'lodash';
-
 import { v4 as uuidv4 } from 'uuid';
-import convertTextToEquation from '@/lib/convert-text-to-equation';
-
-const steps = ['Input Details', 'Input Strucure', 'Preview'];
-
-
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
         children: React.ReactElement;
@@ -76,14 +56,6 @@ export default function Form({
         }
     }, [initialValues]);
 
-    const handleNext = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    };
-
-    const handleBack = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    };
-
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
         const inputCopy = { ...input };
@@ -103,8 +75,6 @@ export default function Form({
             location: "",
             dealingType: "",
         });
-
-        setActiveStep(0);
     };
 
     const handleClose = () => {
@@ -117,136 +87,136 @@ export default function Form({
             open={open}
             onClose={handleClose}
             TransitionComponent={Transition}
+            aria-labelledby="scroll-dialog-title"
+            aria-describedby="scroll-dialog-description"
+            scroll="body"
+            fullWidth
+            maxWidth="xs"
         >
-            <AppBar sx={{ position: 'relative' }}>
-                <Toolbar>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        onClick={handleClose}
-                        aria-label="close"
-                    >
-                        <CloseIcon />
-                    </IconButton>
-                    <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                        {initialValues ? `Update: ${initialValues.name}` : "Add Delegate"}
-                    </Typography>
-                    <Button autoFocus color="inherit" onClick={() => {
-                        onSubmit(input);
-                        handleClose();
-                    }}>
-                        {initialValues ? "Save" : "Create"}
-                    </Button>
-                </Toolbar>
-            </AppBar>
-            <List>
-                <ListItem>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            {activeStep === 0 && (
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            fullWidth
-                                            label="Name"
-                                            name="name"
-                                            value={input.name}
-                                            onChange={handleChange}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <FormControl fullWidth>
-                                            <InputLabel id="demo-simple-select-label1">Type</InputLabel>
-                                            <Select
-                                                fullWidth
-                                                labelId="demo-simple-select-label1"
-                                                id="demo-simple-select"
-                                                value={input.type}
-                                                label="Type"
-                                                onChange={(event: SelectChangeEvent) => {
-                                                    setInput({
-                                                        ...input,
-                                                        type: event.target.value,
-                                                    });
-                                                }}
-                                            >
-                                                <MenuItem value="company">Company Delegate</MenuItem>
-                                                <MenuItem value="freelancer">Freelancer</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            fullWidth
-                                            label="Phone 1"
-                                            name="phone1"
-                                            value={input.phone1}
-                                            onChange={handleChange}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            fullWidth
-                                            label="Phone 2"
-                                            name="phone2"
-                                            value={input.phone2}
-                                            onChange={handleChange}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            fullWidth
-                                            label="Email"
-                                            name="email"
-                                            value={input.email}
-                                            onChange={handleChange}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            fullWidth
-                                            label="Address"
-                                            name="address"
-                                            value={input.address}
-                                            onChange={handleChange}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            fullWidth
-                                            label="Location"
-                                            name="location"
-                                            value={input.location}
-                                            onChange={handleChange}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <FormControl fullWidth>
-                                            <InputLabel id="demo-simple-select-label">Dealing Type</InputLabel>
-                                            <Select
-                                                fullWidth
-                                                labelId="demo-simple-select-label"
-                                                id="demo-simple-select"
-                                                value={input.dealingType}
-                                                label="Dealing Type"
-                                                onChange={(event: SelectChangeEvent) => {
-                                                    setInput({
-                                                        ...input,
-                                                        dealingType: event.target.value,
-                                                    });
-                                                }}
-                                            >
-                                                <MenuItem value="cash">Cash</MenuItem>
-                                                <MenuItem value="credit">Credit</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                </Grid>
-                            )}
+            <DialogTitle id="scroll-dialog-title">
+                {initialValues ? `Update: ${initialValues.name}` : "Add Delegate"}
+            </DialogTitle>
+            <DialogContent dividers={true}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Name"
+                                    name="name"
+                                    value={input.name}
+                                    onChange={handleChange}
+                                    size='small'
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormControl fullWidth size='small'>
+                                    <InputLabel id="demo-simple-select-label1">Type</InputLabel>
+                                    <Select
+                                        fullWidth
+                                        labelId="demo-simple-select-label1"
+                                        id="demo-simple-select"
+                                        value={input.type}
+                                        label="Type"
+                                        onChange={(event: SelectChangeEvent) => {
+                                            setInput({
+                                                ...input,
+                                                type: event.target.value,
+                                            });
+                                        }}
+                                        size='small'
+                                    >
+                                        <MenuItem value="company">Company Delegate</MenuItem>
+                                        <MenuItem value="freelancer">Freelancer</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Phone 1"
+                                    name="phone1"
+                                    value={input.phone1}
+                                    onChange={handleChange}
+                                    size='small'
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Phone 2"
+                                    name="phone2"
+                                    value={input.phone2}
+                                    size='small'
+                                    onChange={handleChange}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Email"
+                                    name="email"
+                                    value={input.email}
+                                    size='small'
+                                    onChange={handleChange}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Address"
+                                    name="address"
+                                    value={input.address}
+                                    size='small'
+                                    onChange={handleChange}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Location"
+                                    name="location"
+                                    value={input.location}
+                                    size='small'
+                                    onChange={handleChange}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormControl fullWidth size='small'>
+                                    <InputLabel id="demo-simple-select-label">Dealing Type</InputLabel>
+                                    <Select
+                                        fullWidth
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={input.dealingType}
+                                        label="Dealing Type"
+                                        onChange={(event: SelectChangeEvent) => {
+                                            setInput({
+                                                ...input,
+                                                dealingType: event.target.value,
+                                            });
+                                        }}
+                                        size='small'
+                                    >
+                                        <MenuItem value="cash">Cash</MenuItem>
+                                        <MenuItem value="credit">Credit</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
                         </Grid>
                     </Grid>
-                </ListItem>
-            </List>
+                </Grid>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={() => {
+                    onSubmit(input);
+                    handleClose();
+                }} variant="contained" color="primary">
+                    {initialValues ? "Save" : "Create"}
+                </Button>
+            </DialogActions>
         </Dialog>
     );
 }

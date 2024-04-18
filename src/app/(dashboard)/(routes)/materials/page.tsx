@@ -18,29 +18,12 @@ import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import Form from './components/form';
 
 import Button from '@mui/material/Button';
-import Image from 'next/image';
 import { CREATE, DELETE, UPDATE } from '../../../../../actions/material';
 import { Supplier, Material, User } from '@prisma/client';
 import Skeleton from '@mui/material/Skeleton';
 
 import { useDebounce } from "@/lib/use-debounce";
 import DeleteBTN from './components/delete';
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    [`&.${tableCellClasses.head}`]: {
-        backgroundColor: theme.palette.primary.main,
-        color: theme.palette.common.white,
-    },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    '&:nth-of-type(odd)': {
-        backgroundColor: theme.palette.action.hover,
-    },
-    '&:last-child td, &:last-child th': {
-        border: 0,
-    },
-}));
 
 interface MaterialWithUserAndSupplier extends Partial<Material> {
     user: Partial<User>;
@@ -54,6 +37,7 @@ interface HeadCell {
     id: string;
     label: string;
 }
+
 
 const headCells: readonly HeadCell[] = [
     { id: 'name', label: 'Name' },
@@ -70,6 +54,35 @@ const headCells: readonly HeadCell[] = [
     { id: 'actions', label: '' },
 ];
 
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+        backgroundColor: theme.palette.primary.main,
+        color: theme.palette.common.white,
+    },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.action.hover,
+    },
+    '&:last-child td, &:last-child th': {
+        border: 0,
+    },
+    height: 40,
+}));
+
+
+const StyledTableSortLabel = styled(TableSortLabel)(({ theme }) => ({
+    '&.MuiTableSortLabel-root': {
+        color: 'white',
+    },
+    '&.MuiTableSortLabel-active': {
+        color: 'white',
+    },
+    '&.MuiTableSortLabel-icon': {
+        color: 'white',
+    },
+}));
 
 export default function CustomizedTables() {
     const [page, setPage] = React.useState<number>(0);
@@ -195,8 +208,7 @@ export default function CustomizedTables() {
                 justifyContent: 'center',
                 alignItems: 'end',
                 width: '100%',
-                marginTop: 2,
-                gap: 4,
+                gap: 3,
             }}
         >
             <Form onClose={handleClose} open={open} onSubmit={selectedId ? handleUpdate : handleCreate} initialValues={selectedId ? rows.find((row) => row.id === selectedId) : null} />
@@ -208,13 +220,13 @@ export default function CustomizedTables() {
                     justifyContent: 'end',
                     alignItems: 'center',
                     width: '100%',
-                    gap: 2,
+                    gap: 1,
                 }}
             >
-                <TextField placeholder="Search" variant="outlined" fullWidth value={search} onChange={(e) => { handleSearch(e.target.value) }} sx={{
+                <TextField placeholder="Search" variant="outlined" value={search} onChange={(e) => { handleSearch(e.target.value) }} sx={{
                     [`& input`]: {
-                        height: "38px",
-                        padding: "0 10px",
+                        height: "37px",
+                        padding: "0 14px",
                     },
                 }}
                 />
@@ -223,7 +235,7 @@ export default function CustomizedTables() {
                 </Button>
             </Box>
             <TableContainer component={Paper} sx={{ boxShadow: "none" }}>
-                <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                <Table sx={{ minWidth: 700 }} aria-label="customized table" size={'small'}>
                     <TableHead>
                         <TableRow>
                             {headCells.map((headCell) => (
@@ -233,7 +245,7 @@ export default function CustomizedTables() {
                                     sortDirection={orderBy === headCell.id ? order : false}
                                 >
                                     {headCell.id === 'name' || headCell.id === 'code' || headCell.id === 'createdAt' ? (
-                                        <TableSortLabel
+                                        <StyledTableSortLabel
                                             sx={{ "&.MuiTableSortLabel-root": { color: "white" }, "&.MuiTableSortLabel-active": { color: "white" }, "&.MuiTableSortLabel-icon": { color: "white" }, "&.MuiTableSortLabel-iconDirectionDesc": { color: "white" }, "&.MuiTableSortLabel-iconDirectionAsc": { color: "white" } }}
                                             active={orderBy === headCell.id}
                                             direction={orderBy === headCell.id ? order : 'asc'}
@@ -241,7 +253,7 @@ export default function CustomizedTables() {
                                             disabled={loading}
                                         >
                                             {headCell.label}
-                                        </TableSortLabel>
+                                        </StyledTableSortLabel>
                                     ) : (
                                         headCell.label
                                     )}
@@ -253,41 +265,41 @@ export default function CustomizedTables() {
                         {loading ? (
                             <StyledTableRow>
                                 <StyledTableCell>
-                                    <Skeleton variant="text" height={20} />
+                                    <Skeleton variant="text" height={35} />
                                 </StyledTableCell>
                                 <StyledTableCell>
-                                    <Skeleton variant="text" height={20} />
+                                    <Skeleton variant="text" height={35} />
                                 </StyledTableCell>
                                 <StyledTableCell>
-                                    <Skeleton variant="text" height={20} />
+                                    <Skeleton variant="text" height={35} />
                                 </StyledTableCell>
                                 <StyledTableCell>
-                                    <Skeleton variant="text" height={20} />
+                                    <Skeleton variant="text" height={35} />
                                 </StyledTableCell>
                                 <StyledTableCell>
-                                    <Skeleton variant="text" height={20} />
+                                    <Skeleton variant="text" height={35} />
                                 </StyledTableCell>
                                 <StyledTableCell>
-                                    <Skeleton variant="text" height={20} />
+                                    <Skeleton variant="text" height={35} />
                                 </StyledTableCell>
                                 <StyledTableCell>
-                                    <Skeleton variant="text" height={20} />
+                                    <Skeleton variant="text" height={35} />
                                 </StyledTableCell>
                                 <StyledTableCell>
-                                    <Skeleton variant="text" height={20} />
+                                    <Skeleton variant="text" height={35} />
                                 </StyledTableCell>
                                 <StyledTableCell>
-                                    <Skeleton variant="text" height={20} />
+                                    <Skeleton variant="text" height={35} />
                                 </StyledTableCell>
                                 <StyledTableCell>
-                                    <Skeleton variant="text" height={20} />
+                                    <Skeleton variant="text" height={35} />
                                 </StyledTableCell>
                                 <StyledTableCell>
-                                    <Skeleton variant="text" height={20} />
+                                    <Skeleton variant="text" height={35} />
                                 </StyledTableCell>
                                 <StyledTableCell sx={{ display: 'flex', gap: 2, flexDirection: "row", justifyContent: "end", alignItems: "center" }}>
-                                    <Skeleton variant="circular" width={20} height={20} />
-                                    <Skeleton variant="circular" width={20} height={20} />
+                                    <Skeleton variant="circular" width={35} height={35} />
+                                    <Skeleton variant="circular" width={35} height={35} />
                                 </StyledTableCell>
                             </StyledTableRow>
                         ) : (rows.length === 0 ?
@@ -311,15 +323,12 @@ export default function CustomizedTables() {
                                     <StyledTableCell>{row.description}</StyledTableCell>
                                     <StyledTableCell>{row.supplier.companyName} - {row.supplier.managerName}</StyledTableCell>
                                     <StyledTableCell align="right">
-                                        {/* 
-                                    <IconButton aria-label="view" sx={{ color: "info.main" }}>
-                                        <VisibilityRoundedIcon />
-                                    </IconButton>
-                                    */}
-                                        <IconButton aria-label="edit" sx={{ color: "success.main" }} onClick={() => handleEdit(row.id!)}>
-                                            <EditRoundedIcon />
-                                        </IconButton>
-                                        <DeleteBTN onAgree={() => handleDelete(row.id!)} />
+                                        <Box sx={{ display: 'flex', gap: 1, flexDirection: "row", justifyContent: "end", alignItems: "center" }}>
+                                            <IconButton aria-label="edit" sx={{ color: "success.main", p: 0 }} onClick={() => handleEdit(row.id!)}>
+                                                <EditRoundedIcon sx={{ fontSize: 16 }} />
+                                            </IconButton>
+                                            <DeleteBTN onAgree={() => handleDelete(row.id!)} />
+                                        </Box>
                                     </StyledTableCell>
                                 </StyledTableRow>
                             )))

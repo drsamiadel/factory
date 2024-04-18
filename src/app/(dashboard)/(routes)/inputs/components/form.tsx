@@ -4,17 +4,15 @@ import Dialog from '@mui/material/Dialog';
 import ListItemText from '@mui/material/ListItemText';
 import ListItem from '@mui/material/ListItem';
 import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 import TextField from '@mui/material/TextField';
 import { useTheme } from '@mui/material/styles';
-
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
@@ -102,10 +100,6 @@ export default function Form({
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    };
-
-    const handleReset = () => {
-        setActiveStep(0);
     };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -231,38 +225,23 @@ export default function Form({
         return Promise.all(promises);
     }
 
-
     return (
         <Dialog
-            fullScreen
             open={open}
             onClose={handleClose}
             TransitionComponent={Transition}
+            aria-labelledby="scroll-dialog-title"
+            aria-describedby="scroll-dialog-description"
+            scroll="body"
+            fullWidth
+            maxWidth="lg"
         >
-            <AppBar sx={{ position: 'relative' }}>
-                <Toolbar>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        onClick={handleClose}
-                        aria-label="close"
-                    >
-                        <CloseIcon />
-                    </IconButton>
-                    <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                        {initialValues ? `Update: ${initialValues.name}` : "Add Input"}
-                    </Typography>
-                    <Button autoFocus color="inherit" onClick={() => {
-                        onSubmit(input);
-                        handleClose();
-                    }}>
-                        {initialValues ? "Save" : "Create"}
-                    </Button>
-                </Toolbar>
-            </AppBar>
-            <List>
-                <ListItem>
-                    <Box sx={{ width: '100%', marginTop: 2 }}>
+            <DialogTitle id="scroll-dialog-title">
+                {initialValues ? `Update: ${initialValues.name}` : "Add Input"}
+            </DialogTitle>
+            <DialogContent dividers={true}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', gap: 3, width: "100%", [theme.breakpoints.down('sm')]: { flexDirection: "column" } }}>
+                    <Box component="div" sx={{ display: 'flex', justifyContent: 'start', gap: 2, padding: 0, flexDirection: "column", width: "80%", [theme.breakpoints.down('sm')]: { width: "100%" } }}>
                         <Stepper activeStep={activeStep}>
                             {steps.map((label, index) => {
                                 const stepProps: { completed?: boolean } = {};
@@ -276,169 +255,163 @@ export default function Form({
                                 );
                             })}
                         </Stepper>
-                        <Step>
-                            {activeStep === steps.length ? (
-                                <React.Fragment>
-                                    <Typography sx={{ mt: 2, mb: 1 }}>
-                                        All steps completed - you&apos;re finished
-                                    </Typography>
-                                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                                        <Box sx={{ flex: '1 1 auto' }} />
-                                        <Button onClick={handleReset}>Reset</Button>
-                                    </Box>
-                                </React.Fragment>
-                            ) : (
-                                <React.Fragment>
-                                    <Box sx={{ display: "flex", justifyContent: "center", gap: 2, padding: 2 }}>
-                                        {input.images[0].url && (
-                                            <Image src={input.images[0].url} width={200} height={200} alt="Image 1" />
-                                        )}
-                                        {input.images[1].url && (
-                                            <Image src={input.images[1].url} width={200} height={200} alt="Image 2" />
-                                        )}
-                                    </Box>
-
-                                    <List sx={{ paddingY: 4 }}>
-                                        {activeStep === 0 && (
-                                            <ListItem sx={{ display: "flex", alignItems: "start", gap: 2, [theme.breakpoints.down('sm')]: { flexDirection: "column" } }}>
-                                                <TextField id="filled-basic" label="Code" variant="outlined" sx={{ width: "25%", [theme.breakpoints.down('sm')]: { width: "100%" } }} onChange={handleChange} value={input.code} name="code" />
-                                                <TextField id="filled-basic" label="Name" variant="outlined" sx={{ width: "25%", [theme.breakpoints.down('sm')]: { width: "100%" } }} onChange={handleChange} name="name" value={input.name} />
-                                                {/*
-                                                <TextField id="filled-basic" label="Image 1" variant="outlined" sx={{ width: "33%", [theme.breakpoints.down('sm')]: { width: "100%" } }} onChange={handleChange} name="images[0].url" value={input.images[0].url} hidden />
-                                                <TextField id="filled-basic" label="Image 2" variant="outlined" sx={{ width: "33%", [theme.breakpoints.down('sm')]: { width: "100%" } }} onChange={handleChange} name="images[1].url" value={input.images[1].url} hidden />
-                                                */}
-                                                <Box sx={{ display: "flex", flexDirection: "column", gap: 2, width: "25%" }}>
-                                                    <Typography variant="h6">Image 1</Typography>
-                                                    <input type="file" name="images[0].url" onChange={async (e) => {
-                                                        const fileUrl = await convertFilesToBase64(e.target.files as FileList);
-                                                        const inputCopy = { ...input };
-                                                        inputCopy.images[0].url = fileUrl[0] as string;
-                                                        setInput(inputCopy);
-                                                    }} />
-                                                </Box>
-                                                <Box sx={{ display: "flex", flexDirection: "column", gap: 2, width: "25%" }}>
-                                                    <Typography variant="h6">Image 2</Typography>
-                                                    <input type="file" name="images[1].url" onChange={async (e) => {
-                                                        const fileUrl = await convertFilesToBase64(e.target.files as FileList);
-                                                        const inputCopy = { ...input };
-                                                        inputCopy.images[1].url = fileUrl[0] as string;
-                                                        setInput(inputCopy);
-                                                    }
-                                                    } />
-                                                </Box>
-                                            </ListItem>
-                                        )}
-                                        {activeStep === 1 && (
-                                            <ListItem sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 2 }}>
-                                                {input.structure.peices.map((peice, index) => (
-                                                    <Grid container key={peice.id} sx={{ margin: 0, width: "100%", background: theme.palette.action.hover, paddingX: 2, paddingLeft: 0, borderRadius: "10px" }} spacing={2}>
-                                                        <Grid item sx={{ display: "flex", gap: 2, paddingTop: 2 }} xs={12}>
-                                                            <ListItemText primary={peice.name} sx={{ paddingLeft: 2, width: "100%", [`& .MuiListItemText-primary`]: { fontSize: "1.2rem" } }} />
-                                                            <IconButton aria-label="addField" sx={{ color: "info.main" }} onClick={() => handleAddField(index)}>
-                                                                <AddIcon />
-                                                            </IconButton>
-                                                            {input.structure.peices.length > 1 && input.structure.peices.length - 1 === index && (
-                                                                <IconButton aria-label="delete" sx={{ color: "error.main" }} onClick={() => handleDeletePeice(peice.id)}>
+                        <Step sx={{ height: "100%", display: "flex", flexDirection: "column", gap: 2, justifyContent: "space-between" }}>
+                            <React.Fragment>
+                                {activeStep === 0 && (
+                                    <List sx={{ width: "100%", display: "flex", flexDirection: "row", [theme.breakpoints.down('sm')]: { flexDirection: "column" }, flexWrap: "wrap" }}>
+                                        <ListItem sx={{ width: "50%", [theme.breakpoints.down('sm')]: { width: "100%" } }}>
+                                            <TextField id="filled-basic" label="Code" variant="outlined" onChange={handleChange} value={input.code} name="code" fullWidth size='small' />
+                                        </ListItem>
+                                        <ListItem sx={{ width: "50%", [theme.breakpoints.down('sm')]: { width: "100%" } }}>
+                                            <TextField id="filled-basic" label="Name" variant="outlined" onChange={handleChange} name="name" value={input.name} fullWidth size='small' />
+                                        </ListItem>
+                                        <ListItem sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 2, justifyContent: "start", alignItems: "start" }}>
+                                            <Typography>Photos</Typography>
+                                            <input type="file" name="images[0].url" onChange={async (e) => {
+                                                const fileUrl = await convertFilesToBase64(e.target.files as FileList);
+                                                const inputCopy = { ...input };
+                                                inputCopy.images[0].url = fileUrl[0] as string;
+                                                setInput(inputCopy);
+                                            }} />
+                                            <input type="file" name="images[1].url" onChange={async (e) => {
+                                                const fileUrl = await convertFilesToBase64(e.target.files as FileList);
+                                                const inputCopy = { ...input };
+                                                inputCopy.images[1].url = fileUrl[0] as string;
+                                                setInput(inputCopy);
+                                            }} />
+                                        </ListItem>
+                                    </List>
+                                )}
+                                {activeStep === 1 && (
+                                    <List sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 2 }}>
+                                        {input.structure.peices.map((peice, index) => (
+                                            <Grid container key={peice.id} sx={{ margin: 0, width: "100%", background: theme.palette.action.hover, paddingX: 2, paddingLeft: 0, borderRadius: "10px" }} spacing={1}>
+                                                <Grid item sx={{ display: "flex", gap: 2, paddingTop: 2 }} xs={12}>
+                                                    <ListItemText primary={peice.name} sx={{ paddingLeft: 2, width: "100%", [`& .MuiListItemText-primary`]: { fontSize: "1.2rem" } }} />
+                                                    <IconButton aria-label="addField" sx={{ color: "info.main" }} onClick={() => handleAddField(index)}>
+                                                        <AddIcon />
+                                                    </IconButton>
+                                                    {input.structure.peices.length > 1 && input.structure.peices.length - 1 === index && (
+                                                        <IconButton aria-label="delete" sx={{ color: "error.main" }} onClick={() => handleDeletePeice(peice.id)}>
+                                                            <DeleteIcon />
+                                                        </IconButton>
+                                                    )}
+                                                </Grid>
+                                                <ListItem sx={{ display: "flex", flexDirection: "column", gap: 2, width: "50%", [theme.breakpoints.down('sm')]: { width: "100%" } }}>
+                                                    <TextField id="filled-basic" label="Name" variant="outlined" sx={{ width: "100%" }} onChange={handleChange} name={`structure.peices[${index}].name`} value={peice.name} size='small' />
+                                                </ListItem>
+                                                <ListItem sx={{ display: "flex", flexDirection: "column", gap: 2, width: "25%", [theme.breakpoints.down('sm')]: { width: "100%" } }}>
+                                                    <TextField id="filled-basic" label="Width" variant="outlined" sx={{ width: "100%" }}
+                                                        size='small'
+                                                        onChange={handleChange}
+                                                        name={`structure.peices[${index}].equation.width`}
+                                                        value={peice.equation.width}
+                                                    />
+                                                </ListItem>
+                                                <ListItem sx={{ display: "flex", flexDirection: "column", gap: 2, width: "25%", [theme.breakpoints.down('sm')]: { width: "100%" } }}>
+                                                    <TextField id="filled-basic" label="Height" variant="outlined" sx={{ width: "100%" }}
+                                                        size='small'
+                                                        onChange={handleChange}
+                                                        name={`structure.peices[${index}].equation.height`}
+                                                        value={peice.equation.height}
+                                                    />
+                                                </ListItem>
+                                                <List sx={{ padding: 2, width: "100%", display: "flex", flexDirection: "row", gap: 2, flexWrap: "wrap", [theme.breakpoints.down('sm')]: { flexDirection: "column" } }}>
+                                                    {peice.fields.map((field, fieldIndex) => (
+                                                        <ListItem key={field.id} sx={{ display: "flex", gap: 2, background: theme.palette.action.hover, borderRadius: "10px", paddingY: 2, paddingX: 2, width: "49%", [theme.breakpoints.down('sm')]: { width: "100%" } }}>
+                                                            <TextField id="filled-basic" label="Key" variant="outlined" sx={{
+                                                                width: "5rem",
+                                                                [`& .MuiInputBase-input`]: { textAlign: "center" },
+                                                                [`& .MuiInputLabel-root`]: { textAlign: "center" },
+                                                                backgroundColor: theme.palette.action.hover
+                                                            }} size='small' value={field.key} color="info" />
+                                                            <TextField id="filled-basic" label="Name" variant="outlined" sx={{ width: "100%" }}
+                                                                onChange={handleChange}
+                                                                name={`structure.peices[${index}].fields[${fieldIndex}].name`}
+                                                                value={field.name}
+                                                                size='small'
+                                                            />
+                                                            {peice.fields.length > 1 && peice.fields.length - 1 === fieldIndex && (
+                                                                <IconButton aria-label="delete" sx={{ color: "error.main" }} onClick={() => handleDeleteField(peice.id, field.id)}>
                                                                     <DeleteIcon />
                                                                 </IconButton>
                                                             )}
-                                                        </Grid>
-                                                        <Grid item xs={6}>
-                                                            <TextField id="filled-basic" label="Name" variant="outlined" sx={{ width: "100%" }} onChange={handleChange} name={`structure.peices[${index}].name`} value={peice.name} />
-                                                        </Grid>
-                                                        <Grid item xs={3}>
-                                                            <TextField id="filled-basic" label="Width" variant="outlined" sx={{ width: "100%" }}
-                                                                onChange={handleChange}
-                                                                name={`structure.peices[${index}].equation.width`}
-                                                                value={peice.equation.width}
-                                                            />
-                                                        </Grid>
-                                                        <Grid item xs={3}>
-                                                            <TextField id="filled-basic" label="Height" variant="outlined" sx={{ width: "100%" }}
-                                                                onChange={handleChange}
-                                                                name={`structure.peices[${index}].equation.height`}
-                                                                value={peice.equation.height}
-                                                            />
-                                                        </Grid>
-                                                        <List sx={{ padding: 2, width: "100%", display: "flex", flexDirection: "column", gap: 2 }}>
-                                                            {peice.fields.map((field, fieldIndex) => (
-                                                                <ListItem key={field.id} sx={{ display: "flex", gap: 2, background: theme.palette.background.paper, borderRadius: "10px", paddingY: 2 }}>
-                                                                    <TextField id="filled-basic" label="Key" variant="outlined" sx={{
-                                                                        width: "5rem",
-                                                                        [`& .MuiInputBase-input`]: { textAlign: "center" },
-                                                                        [`& .MuiInputLabel-root`]: { textAlign: "center" },
-                                                                        backgroundColor: theme.palette.action.hover
-                                                                    }} value={field.key} color="info" />
-                                                                    <TextField id="filled-basic" label="Name" variant="outlined" sx={{ width: "100%" }}
-                                                                        onChange={handleChange}
-                                                                        name={`structure.peices[${index}].fields[${fieldIndex}].name`}
-                                                                        value={field.name}
-                                                                    />
-                                                                    {peice.fields.length > 1 && peice.fields.length - 1 === fieldIndex && (
-                                                                        <IconButton aria-label="delete" sx={{ color: "error.main" }} onClick={() => handleDeleteField(peice.id, field.id)}>
-                                                                            <DeleteIcon />
-                                                                        </IconButton>
-                                                                    )}
-                                                                </ListItem>
-                                                            ))}
-                                                        </List>
-                                                    </Grid>
-                                                ))}
-                                                <Box sx={{ display: "flex", gap: 2, justifyContent: "end" }}>
-                                                    <Button onClick={handleAddPeice}>
-                                                        Add Peice
-                                                    </Button>
-                                                </Box>
-                                            </ListItem>
-                                        )}
-                                        {activeStep === 2 && (
-                                            <ListItem sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 2 }}>
-                                                {input.structure.peices.map((peice, index) => {
-                                                    const width = convertTextToEquation(peice.equation.width, input, peice.id);
-                                                    const height = convertTextToEquation(peice.equation.height, input, peice.id);
-                                                    return (
-                                                        <Grid container key={peice.id} sx={{ margin: 0, width: "100%", background: theme.palette.action.hover, padding: 2, borderRadius: "10px" }} spacing={2}>
-
-                                                            <ListItemText primary={peice.name} sx={{ width: "100%", [`& .MuiListItemText-primary`]: { fontSize: "1.2rem" }, paddingBottom: 2 }} />
-                                                            {peice.fields.map((field, fieldIndex) => (
-                                                                <Grid item xs={6} key={field.id}>
-                                                                    <TextField id="filled-basic" label={`${field.name} [${field.key}]`} variant="outlined" value={field.value} onChange={handleChange} name={`structure.peices[${index}].fields[${fieldIndex}].value`} sx={{ width: "100%" }} />
-                                                                </Grid>
-                                                            ))}
-                                                            <ListItemText primary={`${width}mm x ${height}mm`} sx={{ width: "100%", [`& .MuiListItemText-primary`]: { fontSize: "1.2rem", fontWeight: "700" }, paddingTop: 2, textAlign: "end" }} />
-                                                        </Grid>
-                                                    )
-                                                })}
-                                                <ListItemText primary="Total" sx={{ width: "100%", [`& .MuiListItemText-primary`]: { fontSize: "1.2rem" }, paddingTop: 2, textAlign: "end" }} />
-                                                <div style={{ display: "flex", flexDirection: "row", gap: 2, justifyContent: "end", fontSize: "1.2rem", fontWeight: "700", width: "100%" }}>
-                                                    {getTotals().width}mm x {getTotals().height}mm
-                                                </div>
-                                            </ListItem>
-                                        )}
-                                    </List>
-                                    <Divider />
-                                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                                        <Button
-                                            color="inherit"
-                                            disabled={activeStep === 0}
-                                            onClick={handleBack}
-                                            sx={{ mr: 1 }}
-                                        >
-                                            Back
-                                        </Button>
-                                        <Box sx={{ flex: '1 1 auto' }} />
-                                        {activeStep === steps.length - 1 ? null : (
-                                            <Button onClick={handleNext}>
-                                                Next
+                                                        </ListItem>
+                                                    ))}
+                                                </List>
+                                            </Grid>
+                                        ))}
+                                        <Box sx={{ display: "flex", gap: 2, justifyContent: "end" }}>
+                                            <Button onClick={handleAddPeice}>
+                                                Add Peice
                                             </Button>
-                                        )}
-                                    </Box>
-                                </React.Fragment>
-                            )}
+                                        </Box>
+                                    </List>
+                                )}
+                                {activeStep === 2 && (
+                                    <List>
+                                        <ListItem sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 2 }}>
+                                            {input.structure.peices.map((peice, index) => {
+                                                const width = convertTextToEquation(peice.equation.width, input, peice.id);
+                                                const height = convertTextToEquation(peice.equation.height, input, peice.id);
+                                                return (
+                                                    <Grid container key={peice.id} sx={{ margin: 0, width: "100%", background: theme.palette.action.hover, padding: 2, borderRadius: "10px" }} spacing={2}>
+
+                                                        <ListItemText primary={peice.name} sx={{ width: "100%", [`& .MuiListItemText-primary`]: { fontSize: "1.2rem" }, paddingBottom: 2 }} />
+                                                        {peice.fields.map((field, fieldIndex) => (
+                                                            <Grid item xs={6} key={field.id}>
+                                                                <TextField size='small' id="filled-basic" label={`${field.name} [${field.key}]`} variant="outlined" value={field.value} onChange={handleChange} name={`structure.peices[${index}].fields[${fieldIndex}].value`} sx={{ width: "100%" }} />
+                                                            </Grid>
+                                                        ))}
+                                                        <ListItemText primary={`${width}mm x ${height}mm`} sx={{ width: "100%", [`& .MuiListItemText-primary`]: { fontSize: "1rem", fontWeight: "500" }, paddingTop: 2, textAlign: "end" }} />
+                                                    </Grid>
+                                                )
+                                            })}
+                                            <ListItemText primary="Total" sx={{ width: "100%", [`& .MuiListItemText-primary`]: { fontSize: "1rem" }, paddingTop: 2, textAlign: "end" }} />
+                                            <div style={{ display: "flex", flexDirection: "row", gap: 2, justifyContent: "end", fontSize: "1.1rem", fontWeight: "600", width: "100%" }}>
+                                                {getTotals().width}mm x {getTotals().height}mm
+                                            </div>
+                                        </ListItem>
+                                    </List>
+                                )}
+                                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                                    <Button
+                                        color="inherit"
+                                        disabled={activeStep === 0}
+                                        onClick={handleBack}
+                                        sx={{ mr: 1 }}
+                                    >
+                                        Back
+                                    </Button>
+                                    <Box sx={{ flex: '1 1 auto' }} />
+                                    {activeStep === steps.length - 1 ? null : (
+                                        <Button onClick={handleNext}>
+                                            Next
+                                        </Button>
+                                    )}
+                                </Box>
+                            </React.Fragment>
                         </Step>
                     </Box>
-                </ListItem>
-            </List>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: "20%", borderLeft: "1px solid #ccc", padding: 2, [theme.breakpoints.down('sm')]: { borderLeft: "none", borderTop: "1px solid #ccc", width: '100%' } }}>
+                        {input.images.length > 0 && input.images.map((image) => (
+                            <div key={image.id}>
+                                {image.url && <Image key={image.id} src={image.url} width={200} height={200} alt="Image" className="aspect-square" />}
+                                {!image.url && <Image key={image.id} src="/placeholder.svg" width={200} height={200} alt="Image" className="aspect-square" />}
+                            </div>
+                        ))}
+                    </Box>
+                </Box>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={() => {
+                    onSubmit(input);
+                    handleClose();
+                }} autoFocus variant="contained" color="primary">
+                    {initialValues ? "Save" : "Create"}
+                </Button>
+            </DialogActions>
         </Dialog>
     );
 }

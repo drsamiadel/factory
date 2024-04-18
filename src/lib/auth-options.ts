@@ -20,10 +20,11 @@ export const authOptions: NextAuthOptions = {
                     where: { email: credentials?.email },
                 });
                 if (!user) throw new Error("User not found");
-                if (!user.password)
+                if (!user.password) {
                     throw new Error(
                         "No password set, try to login with google or reset your password"
                     );
+                }
                 const match = await bcrypt.compare(
                     credentials?.password!,
                     user.password

@@ -41,6 +41,8 @@ const openedMixin = (theme: Theme): CSSObject => ({
         duration: theme.transitions.duration.enteringScreen,
     }),
     overflowX: 'hidden',
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.primary.contrastText,
 });
 
 const closedMixin = (theme: Theme): CSSObject => ({
@@ -53,6 +55,8 @@ const closedMixin = (theme: Theme): CSSObject => ({
     [theme.breakpoints.up('sm')]: {
         width: `calc(${theme.spacing(8)} + 1px)`,
     },
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.primary.contrastText,
 });
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -201,24 +205,25 @@ export default function MainLayout({ children, user }: {
             </AppBar>
             <Drawer variant="permanent" open={open}>
                 <DrawerHeader>
-                    <IconButton onClick={handleDrawerClose}>
+                    <IconButton onClick={handleDrawerClose} sx={{ color: "primary.contrastText" }}>
                         {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                     </IconButton>
                 </DrawerHeader>
-                <Divider />
-                <List>
+                <Divider sx={{ backgroundColor: "action.hover" }} />
+                <List sx={{ display: 'flex', flexDirection: 'column', height: "100%", gap: 0.5 }}>
                     {routes.map((route, index) => (
-                        <ListItem key={route.text} disablePadding sx={{ display: 'block' }}>
+                        <ListItem key={route.text} disablePadding sx={{ display: 'block', px: 1 }}>
                             <ListItemButton
                                 sx={{
                                     minHeight: 48,
                                     justifyContent: open ? 'initial' : 'center',
                                     px: 2.5,
-                                    bgcolor: isActive(route.path) ? "primary.main" : "inherit",
-                                    color: isActive(route.path) ? "primary.contrastText" : "inherit",
+                                    bgcolor: isActive(route.path) ? "secondary.main" : "inherit",
+                                    color: isActive(route.path) ? "primary.main" : "inherit",
                                     '&:hover': {
-                                        bgcolor: isActive(route.path) ? "primary.main" : "action.hover",
+                                        bgcolor: isActive(route.path) ? "secondary.main" : "action.hover",
                                     },
+                                    borderRadius: theme.shape.borderRadius,
                                 }}
                                 onClick={() => router.push(route.path)}
                             >
@@ -227,7 +232,7 @@ export default function MainLayout({ children, user }: {
                                         minWidth: 0,
                                         mr: open ? 3 : 'auto',
                                         justifyContent: 'center',
-                                        color: isActive(route.path) ? "primary.contrastText" : "",
+                                        color: isActive(route.path) ? "primary.main" : "inherit",
                                     }}
                                 >
                                     {route.icon}
@@ -238,12 +243,13 @@ export default function MainLayout({ children, user }: {
                     ))}
                 </List>
                 <List sx={{ marginTop: "auto" }}>
-                    <ListItem disablePadding sx={{ display: 'block' }}>
+                    <ListItem disablePadding sx={{ display: 'block', px: 1 }}>
                         <ListItemButton
                             sx={{
                                 minHeight: 48,
                                 justifyContent: open ? 'initial' : 'center',
                                 px: 2.5,
+                                borderRadius: theme.shape.borderRadius,
                             }}
                         >
                             <ListItemIcon
@@ -251,6 +257,7 @@ export default function MainLayout({ children, user }: {
                                     minWidth: 0,
                                     mr: open ? 3 : 'auto',
                                     justifyContent: 'center',
+                                    color: "primary.contrastText",
                                 }}
                             >
                                 {user.image ? (<Image src={user.image} alt={user.name} style={{ width: 24, height: 24, borderRadius: "50%" }} width={24} height={24} />) :
@@ -261,12 +268,13 @@ export default function MainLayout({ children, user }: {
                         </ListItemButton>
                     </ListItem>
                     {userRoutes.map((route, index) => (
-                        <ListItem key={route.text} disablePadding sx={{ display: 'block' }}>
+                        <ListItem key={route.text} disablePadding sx={{ display: 'block', px: 1 }}>
                             <ListItemButton
                                 sx={{
                                     minHeight: 48,
                                     justifyContent: open ? 'initial' : 'center',
                                     px: 2.5,
+                                    borderRadius: theme.shape.borderRadius,
                                 }}
                             >
                                 <ListItemIcon
@@ -274,6 +282,7 @@ export default function MainLayout({ children, user }: {
                                         minWidth: 0,
                                         mr: open ? 3 : 'auto',
                                         justifyContent: 'center',
+                                        color: "primary.contrastText",
                                     }}
                                 >
                                     {route.icon}
@@ -282,23 +291,25 @@ export default function MainLayout({ children, user }: {
                             </ListItemButton>
                         </ListItem>
                     ))}
-                    <ListItem disablePadding sx={{ display: 'block' }}>
+                    <ListItem disablePadding sx={{ display: 'block', px: 1 }}>
                         <ListItemButton
                             sx={{
                                 minHeight: 48,
                                 justifyContent: open ? 'initial' : 'center',
                                 px: 2.5,
+                                borderRadius: theme.shape.borderRadius,
                             }}
-                            onClick={() => signOut({callbackUrl: "/signin"})}
+                            onClick={() => signOut({ callbackUrl: "/signin" })}
                         >
                             <ListItemIcon
                                 sx={{
                                     minWidth: 0,
                                     mr: open ? 3 : 'auto',
                                     justifyContent: 'center',
+                                    color: "error.main",
                                 }}
                             >
-                            <LogoutRoundedIcon />
+                                <LogoutRoundedIcon />
                             </ListItemIcon>
                             <ListItemText primary={"Logout"} sx={{ opacity: open ? 1 : 0 }} />
                         </ListItemButton>

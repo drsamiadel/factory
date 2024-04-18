@@ -13,11 +13,11 @@ export type UserSession = {
 export const getUserSession = async (): Promise<UserSession> => {
     try {
         const session = await getServerSession(authOptions);
-        if (!session) redirect("/login");
+        if (!session) redirect("/signin");
         const { user } = session;
         return user;
     } catch (error) {
         console.log(error);
-        redirect("/login");
+        redirect("/signin");
     }
 };

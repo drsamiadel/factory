@@ -2,7 +2,7 @@
 
 import { Input } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
-import { getUserSession } from "../../src/hooks/get-user.session";
+import { getUserSession } from "../../src/hooks/get-user-session";
 
 const DELETE = async (
     id: string

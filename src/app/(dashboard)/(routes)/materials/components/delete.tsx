@@ -41,8 +41,8 @@ export default function DeleteBTN({
 
     return (
         <React.Fragment>
-            <IconButton aria-label="delete" sx={{ color: "error.main" }} onClick={handleClickOpen}>
-                <DeleteIcon />
+            <IconButton aria-label="delete" sx={{ color: "error.main", p: 0 }} onClick={handleClickOpen}>
+                <DeleteIcon sx={{ fontSize: 16 }} />
             </IconButton>
             <Dialog
                 open={open}
