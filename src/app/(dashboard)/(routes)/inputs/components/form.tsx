@@ -310,7 +310,7 @@ export default function Form({
                                                                 [`& .MuiInputBase-input`]: { textAlign: "center" },
                                                                 [`& .MuiInputLabel-root`]: { textAlign: "center" },
                                                                 backgroundColor: theme.palette.action.hover
-                                                            }} size='small' value={field.key} color="info" />
+                                                            }} size='small' value={field.key} color="info" tabIndex={-1} />
                                                             <TextField id="filled-basic" label="Name" variant="outlined" sx={{ width: "100%" }}
                                                                 onChange={handleChange}
                                                                 name={`structure.peices[${index}].fields[${fieldIndex}].name`}
