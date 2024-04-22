@@ -32,7 +32,7 @@ const CREATE = async (
 
         return createdDelegate;
     } catch (error: Error | any) {
-        throw new Error(error);
+        throw error
     }
 };
 
