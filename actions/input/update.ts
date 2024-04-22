@@ -37,7 +37,7 @@ const UPDATE = async (
 
         const validatedData = schema.parse(input);
 
-        const filteredImages = validatedData.images.map(({ id, url }) => ({ url }));
+        const filteredImages = validatedData.images.map(({ id, url }) => ({ id, url }))
 
         const getInput = await prisma.input.findFirst({
             where: {
