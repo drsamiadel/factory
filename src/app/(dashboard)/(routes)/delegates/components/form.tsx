@@ -235,6 +235,8 @@ export default function Form({
                         }).catch((e: any) => {
                             setLoading(false);
                             setErrors(JSON.parse(e.message));
+                            console.log(e.message);
+                            console.log(JSON.parse(e.message));
                         })
                     }} disabled={loading}
                     variant="contained" color="primary">
