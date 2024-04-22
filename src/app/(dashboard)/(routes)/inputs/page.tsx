@@ -230,44 +230,50 @@ export default function CustomizedTables() {
 
             const uploadedImages = await response.json();
 
-            data.images[0].url = uploadedImages[0].data.url;
-            data.images[1].url = uploadedImages[1].data.url;
+            const updatedImages = images.map((image: any, i: number) => {
+                return { ...image, url: uploadedImages[i].data.url };
+            });
+
+            data.images = updatedImages;
 
             await CREATE(data).then((res) => {
                 setRows([res as InputWithUserAndImages, ...rows]);
-                handleClose();
-            }).catch((err) => {
-                console.log(err);
-            });
+            })
         } catch (error) {
-            console.log(error);
+            throw error;
         }
     };
 
     const handleUpdate = async (data: any) => {
         const images = data.images;
 
-        if (images[0].url.startsWith('blob')) {
-            const files = images.map((image: any, i: number) => dataURLtoFile(image.url, `${data.name + i}.png`));
-            const formData = new FormData();
-            files.forEach((file: any) => {
-                formData.append('files', file);
-            });
+        const newImages = images.filter((image: any) => image.url.startsWith('data:image'));
 
-            const response = await fetch('/api/upload', {
-                method: 'POST',
-                body: formData,
-            });
+        const files = newImages.map((image: any, i: number) => dataURLtoFile(image.url, `${data.name + i}.png`));
 
-            if (!response.ok) {
-                throw new Error('Failed to upload images');
-            }
+        const formData = new FormData();
+        files.forEach((file: any) => {
+            formData.append('files', file);
+        });
 
-            const uploadedImages = await response.json();
+        const response = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData,
+        });
 
-            data.images[0].url = uploadedImages[0].data.url;
-            data.images[1].url = uploadedImages[1].data.url;
+        if (!response.ok) {
+            throw new Error('Failed to upload images');
         }
+
+        const uploadedImages = await response.json();
+
+        const updatedImages = newImages.map((image: any, i: number) => {
+            return { ...image, url: uploadedImages[i].data.url };
+        });
+
+        // set the new images with max 2 images
+
+        data.images = [...images.filter((image: any) => !image.url.startsWith('data:image')), ...updatedImages].slice(0, 2);
 
         await UPDATE(data).then((res) => {
             const updatedRows = rows.map((row) => {
@@ -277,9 +283,8 @@ export default function CustomizedTables() {
                 return row;
             });
             setRows(updatedRows as InputWithUserAndImages[]);
-            handleClose();
         }).catch((err) => {
-            console.log(err);
+            throw err;
         });
     };
 

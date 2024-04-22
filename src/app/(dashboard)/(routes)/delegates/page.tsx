@@ -161,12 +161,9 @@ export default function CustomizedTables() {
         try {
             await CREATE(data).then((res) => {
                 setRows([res as DelegateWithUser, ...rows]);
-                handleClose();
-            }).catch((err) => {
-                console.log(err);
-            });
-        } catch (error) {
-            console.log(error);
+            })
+        } catch (err) {
+            throw err;
         }
     };
 
@@ -179,9 +176,8 @@ export default function CustomizedTables() {
                 return row;
             });
             setRows(updatedRows as DelegateWithUser[]);
-            handleClose();
         }).catch((err) => {
-            console.log(err);
+            throw err;
         });
     };
 

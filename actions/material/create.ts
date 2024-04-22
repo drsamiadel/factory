@@ -14,7 +14,7 @@ const CREATE = async (
             category: z.string().optional(),
             name: z.string(),
             type: z.string(),
-            thickness: z.number().int().optional(),
+            thickness: z.number().optional(),
             size: z.string().optional(),
             unit: z.string().optional(),
             piecesInPackage: z.number().optional(),
@@ -41,6 +41,9 @@ const CREATE = async (
                 supplierId: validatedData.supplier,
                 userId: id,
             },
+            include: {
+                supplier: true,
+            }
         });
 
         return createdMaterial;

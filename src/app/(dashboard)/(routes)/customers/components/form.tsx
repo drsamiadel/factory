@@ -15,6 +15,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 import { set } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
+import theme from '../../../../../theme';
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -33,7 +34,7 @@ export default function Form({
 }: {
     open: boolean;
     onClose: () => void;
-    onSubmit: (values: any) => void;
+    onSubmit: (values: any) => Promise<void>;
     initialValues?: any;
 }) {
     const [input, setInput] = React.useState({
@@ -50,6 +51,9 @@ export default function Form({
         location: "",
         dealingType: "",
     });
+
+    const [loading, setLoading] = React.useState(false);
+    const [errors, setErrors] = React.useState([]);
 
     React.useEffect(() => {
         if (initialValues) {
@@ -79,6 +83,7 @@ export default function Form({
             location: "",
             dealingType: "",
         });
+        setErrors([]);
     };
 
     const handleClose = () => {
@@ -228,14 +233,33 @@ export default function Form({
                             </Grid>
                         </Grid>
                     </Grid>
+                    {errors.length > 0 && (
+                        <Grid item xs={12} sx={{ color: theme.palette.error.main }}>
+                            <ul>
+                                {errors.map((error: any) => (
+                                    <li key={error.message}>
+                                        <b className="uppercase">{error.path.join(".")}: </b>
+                                        {error.message}</li>
+                                ))}
+                            </ul>
+                        </Grid>
+                    )}
                 </Grid>
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={() => {
-                    onSubmit(input);
-                    handleClose();
-                }} variant="contained" color="primary">
+                <Button onClick={
+                    async () => {
+                        setLoading(true);
+                        await onSubmit(input).then(() => {
+                            setLoading(false);
+                            handleClose();
+                        }).catch((e: any) => {
+                            setLoading(false);
+                            setErrors(JSON.parse(e.message));
+                        })
+                    }} disabled={loading}
+                    variant="contained" color="primary">
                     {initialValues ? "Save" : "Create"}
                 </Button>
             </DialogActions>

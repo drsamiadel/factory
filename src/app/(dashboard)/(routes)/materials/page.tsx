@@ -169,13 +169,11 @@ export default function CustomizedTables() {
     const handleCreate = async (data: any) => {
         try {
             await CREATE(data).then((res) => {
+                console.log(res);
                 setRows([res as MaterialWithUserAndSupplier, ...rows]);
-                handleClose();
-            }).catch((err) => {
-                console.log(err);
-            });
-        } catch (error) {
-            console.log(error);
+            })
+        } catch (err) {
+            throw err;
         }
     };
 
@@ -188,9 +186,8 @@ export default function CustomizedTables() {
                 return row;
             });
             setRows(updatedRows as MaterialWithUserAndSupplier[]);
-            handleClose();
         }).catch((err) => {
-            console.log(err);
+            throw err;
         });
     };
 

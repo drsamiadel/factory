@@ -39,6 +39,36 @@ const UPDATE = async (
 
         const filteredImages = validatedData.images.map(({ id, url }) => ({ url }));
 
+        const getInput = await prisma.input.findFirst({
+            where: {
+                id: input.id as string,
+            },
+            include: {
+                images: true,
+                user: {
+                    select: {
+                        name: true,
+                        email: true
+                    }
+                }
+            }
+        });
+
+        if (!getInput) throw new Error("Input not found");
+
+        // map the images to be deleted from the database if they are not in the new images array
+        const imagesToDelete = getInput.images.filter((image) => !filteredImages.find(({ id }) => id === image.id));
+
+        // delete the images that are not in the new images array
+
+        await prisma.image.deleteMany({
+            where: {
+                id: {
+                    in: imagesToDelete.map(({ id }) => id)
+                }
+            }
+        });
+
         const updatedInput = await prisma.input.update({
             where: {
                 id: input.id as string,

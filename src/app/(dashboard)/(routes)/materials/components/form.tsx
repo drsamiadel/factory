@@ -18,6 +18,7 @@ import { set } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { useDebounce } from '../../../../../lib/use-debounce';
 import { Supplier, User } from '@prisma/client';
+import theme from '../../../../../theme';
 
 const categoryFilter = createFilterOptions<CategoryOptionType>();
 const nameFilter = createFilterOptions<NameOptionType>();
@@ -129,7 +130,7 @@ export default function Form({
 }: {
     open: boolean;
     onClose: () => void;
-    onSubmit: (values: any) => void;
+    onSubmit: (input: any) => Promise<void>;
     initialValues?: any;
 }) {
     const [input, setInput] = React.useState({
@@ -146,6 +147,9 @@ export default function Form({
         description: "",
         supplier: "",
     });
+
+    const [loading, setLoading] = React.useState(false);
+    const [errors, setErrors] = React.useState([]);
 
     const [suppliers, setSuppliers] = React.useState<SupplierWithUser[]>([]);
     const [suppliersLoading, setSuppliersLoading] = React.useState<boolean>(false);
@@ -181,6 +185,7 @@ export default function Form({
             description: "",
             supplier: "",
         });
+        setErrors([]);
     };
 
     const handleClose = () => {
@@ -271,7 +276,7 @@ export default function Form({
                                 }
                                 return option.title;
                             }}
-                            renderOption={(props, option) => <li {...props}>{option.title}</li>}
+                            renderOption={(props, option) => <li {...props} key={option.title || option.inputValue}>{option.title}</li>}
                             freeSolo
                             renderInput={(params) => (
                                 <TextField {...params} label="Category" fullWidth size='small' />
@@ -319,7 +324,7 @@ export default function Form({
                                 }
                                 return option.title;
                             }}
-                            renderOption={(props, option) => <li {...props}>{option.title}</li>}
+                            renderOption={(props, option) => <li {...props} key={option.title || option.inputValue}>{option.title}</li>}
                             freeSolo
                             renderInput={(params) => (
                                 <TextField {...params} label="Name" fullWidth size='small' />
@@ -367,7 +372,7 @@ export default function Form({
                                 }
                                 return option.title;
                             }}
-                            renderOption={(props, option) => <li {...props}>{option.title}</li>}
+                            renderOption={(props, option) => <li {...props} key={option.title || option.inputValue}>{option.title}</li>}
                             freeSolo
                             renderInput={(params) => (
                                 <TextField {...params} label="Type" fullWidth size='small' />
@@ -425,7 +430,7 @@ export default function Form({
                                 }
                                 return option.title;
                             }}
-                            renderOption={(props, option) => <li {...props}>{option.title}</li>}
+                            renderOption={(props, option) => <li {...props} key={option.title || option.inputValue}>{option.title}</li>}
                             freeSolo
                             renderInput={(params) => (
                                 <TextField {...params} label="Size" fullWidth size='small' />
@@ -473,7 +478,7 @@ export default function Form({
                                 }
                                 return option.title;
                             }}
-                            renderOption={(props, option) => <li {...props}>{option.title}</li>}
+                            renderOption={(props, option) => <li {...props} key={option.title || option.inputValue}>{option.title}</li>}
                             freeSolo
                             renderInput={(params) => (
                                 <TextField {...params} label="Unit" fullWidth size='small' />
@@ -546,14 +551,33 @@ export default function Form({
                             </Select>
                         </FormControl>
                     </Grid>
+                    {errors.length > 0 && (
+                        <Grid item xs={12} sx={{ color: theme.palette.error.main }}>
+                            <ul>
+                                {errors.map((error: any) => (
+                                    <li key={error.message}>
+                                        <b className="uppercase">{error.path.join(".")}: </b>
+                                        {error.message}</li>
+                                ))}
+                            </ul>
+                        </Grid>
+                    )}
                 </Grid>
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={() => {
-                    onSubmit(input);
-                    handleClose();
-                }} variant="contained" color="primary">
+                <Button onClick={
+                    async () => {
+                        setLoading(true);
+                        await onSubmit(input).then(() => {
+                            setLoading(false);
+                            handleClose();
+                        }).catch((e: any) => {
+                            setLoading(false);
+                            setErrors(JSON.parse(e.message));
+                        })
+                    }} disabled={loading}
+                    variant="contained" color="primary">
                     {initialValues ? "Save" : "Create"}
                 </Button>
             </DialogActions>

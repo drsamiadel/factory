@@ -1,12 +1,12 @@
 "use server";
 
-import { Material } from "@prisma/client";
+import { Material, Supplier } from "@prisma/client";
 import * as z from "zod";
 import { prisma } from "@/lib/db/prisma";
 import { getUserSession } from "../../src/hooks/get-user-session";
 
 const UPDATE = async (
-    material: Partial<Material>
+    material: Partial<Material> & { supplier: Partial<Supplier> },
 ): Promise<Partial<Material>> => {
     try {
         const { id } = await getUserSession();
@@ -15,7 +15,7 @@ const UPDATE = async (
             category: z.string().optional(),
             name: z.string(),
             type: z.string(),
-            thickness: z.number().int().optional(),
+            thickness: z.number().optional(),
             size: z.string().optional(),
             unit: z.string().optional(),
             piecesInPackage: z.number().optional(),

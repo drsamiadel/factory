@@ -22,9 +22,10 @@ const Transition = React.forwardRef(function Transition(
 export default function DeleteBTN({
     onAgree,
 }: {
-    onAgree: () => void;
+    onAgree: () => Promise<void>;
 }) {
     const [open, setOpen] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -34,9 +35,11 @@ export default function DeleteBTN({
         setOpen(false);
     };
 
-    const handleAgree = () => {
-        onAgree();
-        handleClose();
+    const handleAgree = async () => {
+        setLoading(true);
+        await onAgree();
+        setLoading(false);
+        setOpen(false);
     };
 
     return (
@@ -61,7 +64,7 @@ export default function DeleteBTN({
                     <Button onClick={handleClose}>
                         Cancel
                     </Button>
-                    <Button onClick={handleAgree} variant="contained" color="error">
+                    <Button onClick={handleAgree} variant="contained" color="error" disabled={loading}>
                         Delete
                     </Button>
                 </DialogActions>

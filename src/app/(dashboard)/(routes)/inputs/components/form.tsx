@@ -51,7 +51,7 @@ export default function Form({
 }: {
     open: boolean;
     onClose: () => void;
-    onSubmit: (values: any) => void;
+    onSubmit: (values: any) => Promise<void>;
     initialValues?: any;
 }) {
 
@@ -60,16 +60,7 @@ export default function Form({
     const [input, setInput] = React.useState({
         code: "",
         name: "",
-        images: [
-            {
-                id: uuidv4(),
-                url: "",
-            },
-            {
-                id: uuidv4(),
-                url: "",
-            }
-        ],
+        images: [],
         structure: {
             peices: [{
                 id: uuidv4(),
@@ -87,6 +78,8 @@ export default function Form({
             }]
         }
     });
+    const [loading, setLoading] = React.useState(false);
+    const [errors, setErrors] = React.useState([]);
 
     React.useEffect(() => {
         if (initialValues) {
@@ -102,10 +95,10 @@ export default function Form({
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>, number?: boolean) => {
         const { name, value } = event.target;
         const inputCopy = { ...input };
-        set(inputCopy, name, value);
+        set(inputCopy, name, number ? parseFloat(value) : value);
         setInput(inputCopy);
     };
 
@@ -175,16 +168,7 @@ export default function Form({
         setInput({
             code: "",
             name: "",
-            images: [
-                {
-                    id: uuidv4(),
-                    url: "",
-                },
-                {
-                    id: uuidv4(),
-                    url: "",
-                }
-            ],
+            images: [],
             structure: {
                 peices: [{
                     id: uuidv4(),
@@ -202,7 +186,7 @@ export default function Form({
                 }]
             }
         });
-
+        setErrors([]);
         setActiveStep(0);
     };
 
@@ -267,18 +251,20 @@ export default function Form({
                                         </ListItem>
                                         <ListItem sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 2, justifyContent: "start", alignItems: "start" }}>
                                             <Typography>Photos</Typography>
-                                            <input type="file" name="images[0].url" onChange={async (e) => {
-                                                const fileUrl = await convertFilesToBase64(e.target.files as FileList);
+                                            <input type="file" name="files" onChange={async (e) => {
+                                                if (e.target.files && e.target.files.length > 2) {
+                                                    alert("You can only upload 2 images");
+                                                    return;
+                                                }
+                                                const fileUrls = await convertFilesToBase64(e.target.files as FileList) as string[];
                                                 const inputCopy = { ...input };
-                                                inputCopy.images[0].url = fileUrl[0] as string;
+                                                const images = fileUrls.map((url: string) => ({ id: uuidv4(), url }));
+                                                inputCopy.images = images as any;
                                                 setInput(inputCopy);
-                                            }} />
-                                            <input type="file" name="images[1].url" onChange={async (e) => {
-                                                const fileUrl = await convertFilesToBase64(e.target.files as FileList);
-                                                const inputCopy = { ...input };
-                                                inputCopy.images[1].url = fileUrl[0] as string;
-                                                setInput(inputCopy);
-                                            }} />
+                                            }}
+                                                multiple
+                                            />
+                                            <p>Max 2 images</p>
                                         </ListItem>
                                     </List>
                                 )}
@@ -360,7 +346,7 @@ export default function Form({
                                                         <ListItemText primary={peice.name} sx={{ width: "100%", [`& .MuiListItemText-primary`]: { fontSize: "1.2rem" }, paddingBottom: 2 }} />
                                                         {peice.fields.map((field, fieldIndex) => (
                                                             <Grid item xs={6} key={field.id}>
-                                                                <TextField size='small' id="filled-basic" label={`${field.name} [${field.key}]`} variant="outlined" value={field.value} onChange={handleChange} name={`structure.peices[${index}].fields[${fieldIndex}].value`} sx={{ width: "100%" }} />
+                                                                <TextField size='small' id="filled-basic" label={`${field.name} [${field.key}]`} variant="outlined" value={field.value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e, true)} name={`structure.peices[${index}].fields[${fieldIndex}].value`} sx={{ width: "100%" }} />
                                                             </Grid>
                                                         ))}
                                                         <ListItemText primary={`${width}mm x ${height}mm`} sx={{ width: "100%", [`& .MuiListItemText-primary`]: { fontSize: "1rem", fontWeight: "500" }, paddingTop: 2, textAlign: "end" }} />
@@ -394,7 +380,7 @@ export default function Form({
                         </Step>
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: "20%", borderLeft: "1px solid #ccc", padding: 2, [theme.breakpoints.down('sm')]: { borderLeft: "none", borderTop: "1px solid #ccc", width: '100%' } }}>
-                        {input.images.length > 0 && input.images.map((image) => (
+                        {input.images.length > 0 && input.images.map((image: { id: string, url: string }) => (
                             <div key={image.id}>
                                 {image.url && <Image key={image.id} src={image.url} width={200} height={200} alt="Image" className="aspect-square" />}
                                 {!image.url && <Image key={image.id} src="/placeholder.svg" width={200} height={200} alt="Image" className="aspect-square" />}
@@ -402,13 +388,37 @@ export default function Form({
                         ))}
                     </Box>
                 </Box>
+                {errors.length > 0 && (
+                    <Grid item xs={12} sx={{ color: theme.palette.error.main }}>
+                        <ul>
+                            {errors.map((error: any) => (
+                                <li key={error.message}>
+                                    <b className="uppercase">{error.path.join(".")}: </b>
+                                    {error.message}</li>
+                            ))}
+                        </ul>
+                    </Grid>
+                )}
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={() => {
-                    onSubmit(input);
-                    handleClose();
-                }} autoFocus variant="contained" color="primary">
+                <Button onClick={
+                    async () => {
+                        setLoading(true);
+                        await onSubmit(input).then(() => {
+                            setLoading(false);
+                            handleClose();
+                        }).catch((e: any) => {
+                            setLoading(false);
+                            // check if error ZodError
+                            if (e.errors) {
+                                setErrors(JSON.parse(e.message));
+                            } else {
+                                alert(e.message);
+                            }
+                        })
+                    }} disabled={loading}
+                    variant="contained" color="primary">
                     {initialValues ? "Save" : "Create"}
                 </Button>
             </DialogActions>
