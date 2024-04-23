@@ -410,12 +410,7 @@ export default function Form({
                             handleClose();
                         }).catch((e: any) => {
                             setLoading(false);
-                            // check if error ZodError
-                            if (e.errors) {
-                                setErrors(JSON.parse(e.message));
-                            } else {
-                                alert(e.message);
-                            }
+                            setErrors(JSON.parse(e.message));
                         })
                     }} disabled={loading}
                     variant="contained" color="primary">

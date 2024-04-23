@@ -165,12 +165,9 @@ export default function CustomizedTables() {
         try {
             await CREATE(data).then((res) => {
                 setRows([res as SupplierWithUser, ...rows]);
-                handleClose();
-            }).catch((err) => {
-                console.log(err);
-            });
+            })
         } catch (error) {
-            console.log(error);
+            throw error;
         }
     };
 
@@ -183,9 +180,8 @@ export default function CustomizedTables() {
                 return row;
             });
             setRows(updatedRows as SupplierWithUser[]);
-            handleClose();
         }).catch((err) => {
-            console.log(err);
+            throw err;
         });
     };
 

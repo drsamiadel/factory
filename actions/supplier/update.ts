@@ -10,19 +10,18 @@ const UPDATE = async (
 ): Promise<Partial<Supplier>> => {
     try {
         const { id } = await getUserSession();
-
         const schema = z.object({
             companyName: z.string().min(3).max(255),
             managerName: z.string().min(3).max(255),
-            vatNumber: z.string().min(3).max(255),
-            crNumber: z.string().min(3).max(255),
-            phone1: z.string().min(3).max(255),
+            vatNumber: z.string().max(255),
+            crNumber: z.string().max(255),
+            phone1: z.string().max(255),
             phone2: z.string().max(255),
-            fax: z.string().min(3).max(255),
-            email: z.string().email().min(3).max(255),
-            address: z.string().min(3).max(255),
-            location: z.string().min(3).max(255),
-            dealingType: z.string().min(3).max(255),
+            fax: z.string().max(255),
+            email: z.string().max(255),
+            address: z.string().max(255),
+            location: z.string().max(255),
+            dealingType: z.string().max(255),
         });
 
         const validatedData = schema.parse(supplier);

@@ -13,8 +13,8 @@ const UPDATE = async (
 
         const schema = z.object({
             category: z.string().optional(),
-            name: z.string(),
-            type: z.string(),
+            name: z.string().min(1),
+            type: z.string().min(1),
             thickness: z.number().optional(),
             size: z.string().optional(),
             unit: z.string().optional(),
@@ -22,7 +22,7 @@ const UPDATE = async (
             packagePrice: z.number().optional(),
             unitPrice: z.number().optional(),
             description: z.string().optional(),
-            supplierId: z.string(),
+            supplier: z.string().min(1)
         });
 
         const validatedData = schema.parse(material);
