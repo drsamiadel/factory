@@ -18,7 +18,7 @@ import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import Form from './components/form';
 
 import Button from '@mui/material/Button';
-import { CREATE, DELETE, UPDATE } from '../../../../../actions/material';
+import { CREATE, DELETE, UPDATE } from '@/actions/material';
 import { Supplier, Material, User } from '@prisma/client';
 import Skeleton from '@mui/material/Skeleton';
 

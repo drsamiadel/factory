@@ -19,12 +19,11 @@ import Form from './components/form';
 
 import Button from '@mui/material/Button';
 import Image from 'next/image';
-import { CREATE, DELETE } from '../../../../../actions/input';
+import { CREATE, DELETE, UPDATE } from '@/actions/input';
 import { Image as ImageType, Input, User } from '@prisma/client';
 import Skeleton from '@mui/material/Skeleton';
 
 import { useDebounce } from "@/lib/use-debounce";
-import UPDATE from '../../../../../actions/input/update';
 import DeleteBTN from './components/delete';
 
 
