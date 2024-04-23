@@ -18,7 +18,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { REGISTER } from "@/../actions/user"
+import { REGISTER } from "@/actions/user"
 
 export default function SignInSide() {
     const [error, setError] = React.useState<string | null>(null);

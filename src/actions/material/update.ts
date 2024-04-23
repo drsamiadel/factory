@@ -3,7 +3,7 @@
 import { Material, Supplier } from "@prisma/client";
 import * as z from "zod";
 import { prisma } from "@/lib/db/prisma";
-import { getUserSession } from "../../src/hooks/get-user-session";
+import { getUserSession } from "@/hooks/get-user-session";
 
 const UPDATE = async (
     material: Partial<Material> & { supplier: Partial<Supplier> },
