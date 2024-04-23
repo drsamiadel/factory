@@ -1,3 +1,5 @@
+"use server";
+
 import { Customer } from "@prisma/client";
 import * as z from "zod";
 import { prisma } from "@/lib/db/prisma";
