@@ -25,7 +25,7 @@ const CREATE = async (
                         id: z.string(),
                         name: z.string().min(1),
                         key: z.string(),
-                        value: z.number(),
+                        value: z.number().default(0),
                     })),
                     equation: z.object({
                         width: z.string().min(1),

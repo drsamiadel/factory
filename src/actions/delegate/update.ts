@@ -13,13 +13,13 @@ const UPDATE = async (
 
         const schema = z.object({
             name: z.string().min(3).max(255),
-            type: z.string().min(3).max(255),
+            type: z.string().min(3).max(255).default("freelancer"),
             phone1: z.string().max(255),
             phone2: z.string().max(255),
             email: z.string().max(255),
             address: z.string().max(255),
             location: z.string().max(255),
-            dealingType: z.string().max(255),
+            dealingType: z.string().max(255).default("cash")
         });
 
         const validatedData = schema.parse(delegate);

@@ -25,7 +25,7 @@ const UPDATE = async (
                         id: z.string(),
                         name: z.string(),
                         key: z.string(),
-                        value: z.number(),
+                        value: z.number().default(0)
                     })),
                     equation: z.object({
                         width: z.string(),

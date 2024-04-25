@@ -163,10 +163,10 @@ export default function Form({
         }
     }, [initialValues]);
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>, number = false) => {
         const { name, value } = event.target;
         const inputCopy = { ...input };
-        set(inputCopy, name, +value);
+        set(inputCopy, name, number ? parseFloat(value) : value);
         setInput(inputCopy);
     };
 

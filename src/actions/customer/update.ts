@@ -22,7 +22,7 @@ const UPDATE = async (
             email: z.string().max(255).optional(),
             address: z.string().max(255),
             location: z.string().max(255),
-            dealingType: z.string().max(255),
+            dealingType: z.string().max(255).default("cash"),
         });
 
         const validatedData = schema.parse(customer);
