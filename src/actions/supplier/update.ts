@@ -12,7 +12,7 @@ const UPDATE = async (
         const { id } = await getUserSession();
         const schema = z.object({
             companyName: z.string().min(3).max(255),
-            managerName: z.string().min(3).max(255),
+            managerName: z.string().max(255),
             vatNumber: z.string().max(255),
             crNumber: z.string().max(255),
             phone1: z.string().max(255),

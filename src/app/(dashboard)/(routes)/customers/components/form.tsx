@@ -112,21 +112,21 @@ export default function Form({
                             <Grid item xs={12}>
                                 <TextField
                                     fullWidth
-                                    label="Manager Name"
-                                    name="managerName"
-                                    value={input.managerName}
-                                    onChange={handleChange}
-                                    size="small"
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    fullWidth
                                     label="Company Name"
                                     name="companyName"
                                     value={input.companyName}
                                     size="small"
                                     onChange={handleChange}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Manager Name"
+                                    name="managerName"
+                                    value={input.managerName}
+                                    onChange={handleChange}
+                                    size="small"
                                 />
                             </Grid>
                             <Grid item xs={12}>

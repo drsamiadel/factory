@@ -21,7 +21,7 @@ const CREATE = async (
             packagePrice: z.number().optional(),
             unitPrice: z.number().optional(),
             description: z.string().optional(),
-            supplier: z.string().min(1)
+            supplier: z.string()
         });
 
         const validatedData = schema.parse(material);
