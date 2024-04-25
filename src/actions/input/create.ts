@@ -11,7 +11,7 @@ const CREATE = async (
     try {
         const { id } = await getUserSession();
         const schema = z.object({
-            code: z.string().min(3).max(20),
+            code: z.string().max(20),
             name: z.string().min(3),
             images: z.array(z.object({
                 id: z.string(),
@@ -20,16 +20,16 @@ const CREATE = async (
             structure: z.object({
                 peices: z.array(z.object({
                     id: z.string(),
-                    name: z.string().min(1),
+                    name: z.string(),
                     fields: z.array(z.object({
                         id: z.string(),
-                        name: z.string().min(1),
+                        name: z.string(),
                         key: z.string(),
                         value: z.number().default(0),
                     })),
                     equation: z.object({
-                        width: z.string().min(1),
-                        height: z.string().min(1),
+                        width: z.string(),
+                        height: z.string(),
                     })
                 }))
             })

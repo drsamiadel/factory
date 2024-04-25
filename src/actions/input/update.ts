@@ -11,8 +11,8 @@ const UPDATE = async (
     try {
         const { id } = await getUserSession();
         const schema = z.object({
-            code: z.string(),
-            name: z.string(),
+            code: z.string().max(20),
+            name: z.string().min(3),
             images: z.array(z.object({
                 id: z.string(),
                 url: z.string(),
@@ -25,7 +25,7 @@ const UPDATE = async (
                         id: z.string(),
                         name: z.string(),
                         key: z.string(),
-                        value: z.number().default(0)
+                        value: z.number().default(0),
                     })),
                     equation: z.object({
                         width: z.string(),

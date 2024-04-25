@@ -385,7 +385,7 @@ export default function Form({
                             label="Thickness"
                             name="thickness"
                             value={input.thickness}
-                            onChange={handleChange}
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event, true)}
                             size='small'
                         />
                     </Grid>
@@ -491,7 +491,7 @@ export default function Form({
                             label="Pieces in Package"
                             name="piecesInPackage"
                             value={input.piecesInPackage}
-                            onChange={handleChange}
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event, true)}
                             size='small'
                         />
                     </Grid>
@@ -501,7 +501,7 @@ export default function Form({
                             label="Package Price"
                             name="packagePrice"
                             value={input.packagePrice}
-                            onChange={handleChange}
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event, true)}
                             size='small'
                         />
                     </Grid>
