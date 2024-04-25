@@ -258,7 +258,7 @@ export default function Form({
                                                 }
                                                 const fileUrls = await convertFilesToBase64(e.target.files as FileList) as string[];
                                                 const inputCopy = { ...input };
-                                                const images = fileUrls.map((url: string) => ({ id: uuidv4(), url }));
+                                                const images = fileUrls.map((url: string) => (url));
                                                 inputCopy.images = images as any;
                                                 setInput(inputCopy);
                                             }}
@@ -380,10 +380,10 @@ export default function Form({
                         </Step>
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: "20%", borderLeft: "1px solid #ccc", padding: 2, [theme.breakpoints.down('sm')]: { borderLeft: "none", borderTop: "1px solid #ccc", width: '100%' } }}>
-                        {input.images.length > 0 && input.images.map((image: { id: string, url: string }) => (
-                            <div key={image.id}>
-                                {image.url && <Image key={image.id} src={image.url} width={200} height={200} alt="Image" className="aspect-square" />}
-                                {!image.url && <Image key={image.id} src="/placeholder.svg" width={200} height={200} alt="Image" className="aspect-square" />}
+                        {input.images.length > 0 && input.images.map((image: string) => (
+                            <div key={image}>
+                                {image && <Image key={image} src={image} width={200} height={200} alt="Image" className="aspect-square" />}
+                                {!image && <Image key={image} src="/placeholder.svg" width={200} height={200} alt="Image" className="aspect-square" />}
                             </div>
                         ))}
                     </Box>
@@ -411,8 +411,6 @@ export default function Form({
                         }).catch((e: any) => {
                             setLoading(false);
                             console.log(e);
-                            console.log(e.message);
-                            setErrors(JSON.parse(e.message));
                         })
                     }} disabled={loading}
                     variant="contained" color="primary">

@@ -44,7 +44,7 @@ interface InputWithUserAndImages extends Partial<Input> {
             };
         }[];
     };
-    images: Partial<ImageType>[];
+    images: string[];
     user: Partial<User>;
 }
 
@@ -212,7 +212,7 @@ export default function CustomizedTables() {
     const handleCreate = async (data: any) => {
         try {
             const images = data.images;
-            const files = images.map((image: any, i: number) => dataURLtoFile(image.url, `${data.name + i}.png`));
+            const files = images.map((image: any, i: number) => dataURLtoFile(image, `${data.name + i}.png`));
             const formData = new FormData();
             files.forEach((file: any) => {
                 formData.append('files', file);
@@ -230,8 +230,8 @@ export default function CustomizedTables() {
             const uploadedImages = await response.json();
 
             const updatedImages = images.map((image: any, i: number) => {
-                return { ...image, url: uploadedImages[i].data.url };
-            });
+                return uploadedImages[i].data.url
+            }) as String[];
 
             data.images = updatedImages;
 
@@ -244,11 +244,11 @@ export default function CustomizedTables() {
     };
 
     const handleUpdate = async (data: any) => {
-        const images = data.images;
+        const images = data.images as String[];
 
-        const newImages = images.filter((image: any) => image.url.startsWith('data:image'));
+        const newImages = images.filter((image: any) => image.startsWith('data:image'));
 
-        const files = newImages.map((image: any, i: number) => dataURLtoFile(image.url, `${data.name + i}.png`));
+        const files = newImages.map((image: any, i: number) => dataURLtoFile(image, `${data.name + i}.png`));
 
         const formData = new FormData();
         files.forEach((file: any) => {
@@ -267,12 +267,10 @@ export default function CustomizedTables() {
         const uploadedImages = await response.json();
 
         const updatedImages = newImages.map((image: any, i: number) => {
-            return { ...image, url: uploadedImages[i].data.url };
-        });
+            return uploadedImages[i].data.url
+        }) as String[];
 
-        // set the new images with max 2 images
-
-        data.images = [...images.filter((image: any) => !image.url.startsWith('data:image')), ...updatedImages].slice(0, 2);
+        data.images = updatedImages;
 
         await UPDATE(data).then((res) => {
             const updatedRows = rows.map((row) => {
@@ -395,7 +393,7 @@ export default function CustomizedTables() {
                                 <StyledTableRow key={row.name}>
                                     <StyledTableCell component="th" scope="row">
                                         <Box sx={{ display: 'flex', gap: 2, flexDirection: "row", justifyContent: "start", alignItems: "center" }}>
-                                            {row.images.length !== 0 && <Image src={row.images[0].url!} alt={row.name as string} width={50} height={50} priority style={{ borderRadius: 6, height: "1.75rem", width: "1.75rem", overflow: "hidden" }} />}
+                                            {row.images.length !== 0 && <Image src={row.images[0]!} alt={row.name as string} width={50} height={50} priority style={{ borderRadius: 6, height: "1.75rem", width: "1.75rem", overflow: "hidden" }} />}
                                             {row.name}
                                         </Box>
                                     </StyledTableCell>

@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     // upload files
 
     const uploadedFiles = await api.uploadFiles(files);
-
+    console.log(uploadedFiles);
     // return response
 
     return NextResponse.json(uploadedFiles);

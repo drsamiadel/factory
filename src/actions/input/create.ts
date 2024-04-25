@@ -13,10 +13,7 @@ const CREATE = async (
         const schema = z.object({
             code: z.string().max(20),
             name: z.string().min(3),
-            images: z.array(z.object({
-                id: z.string(),
-                url: z.string(),
-            })),
+            images: z.array(z.string()),
             structure: z.object({
                 peices: z.array(z.object({
                     id: z.string(),
@@ -37,20 +34,12 @@ const CREATE = async (
 
         const validatedData = schema.parse(input);
 
-        const filteredImages = validatedData.images.map(({ id, url }) => ({ url }));
-
         const createdInput = await prisma.input.create({
             data: {
                 ...validatedData,
                 userId: id,
-                images: {
-                    createMany: {
-                        data: filteredImages
-                    }
-                },
             },
             include: {
-                images: true,
                 user: {
                     select: {
                         name: true,

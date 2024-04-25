@@ -13,10 +13,7 @@ const UPDATE = async (
         const schema = z.object({
             code: z.string().max(20),
             name: z.string().min(3),
-            images: z.array(z.object({
-                id: z.string(),
-                url: z.string(),
-            })),
+            images: z.array(z.string()),
             structure: z.object({
                 peices: z.array(z.object({
                     id: z.string(),
@@ -37,53 +34,14 @@ const UPDATE = async (
 
         const validatedData = schema.parse(input);
 
-        const filteredImages = validatedData.images.map(({ id, url }) => ({ id, url }))
-
-        const getInput = await prisma.input.findFirst({
-            where: {
-                id: input.id as string,
-            },
-            include: {
-                images: true,
-                user: {
-                    select: {
-                        name: true,
-                        email: true
-                    }
-                }
-            }
-        });
-
-        if (!getInput) throw new Error("Input not found");
-
-        // map the images to be deleted from the database if they are not in the new images array
-        const imagesToDelete = getInput.images.filter((image) => !filteredImages.find(({ id }) => id === image.id));
-
-        // delete the images that are not in the new images array
-
-        await prisma.image.deleteMany({
-            where: {
-                id: {
-                    in: imagesToDelete.map(({ id }) => id)
-                }
-            }
-        });
-
         const updatedInput = await prisma.input.update({
             where: {
                 id: input.id as string,
             },
             data: {
                 ...validatedData,
-                userId: id,
-                images: {
-                    createMany: {
-                        data: filteredImages
-                    }
-                },
             },
             include: {
-                images: true,
                 user: {
                     select: {
                         name: true,

@@ -61,7 +61,6 @@ export async function GET(request: ExtededRequest, response: NextResponse<Inputs
             skip,
             take: +limit,
             include: {
-                images: true,
                 user: {
                     select: {
                         name: true,
