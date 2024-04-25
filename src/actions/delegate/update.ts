@@ -13,7 +13,7 @@ const UPDATE = async (
 
         const schema = z.object({
             name: z.string().min(3).max(255),
-            type: z.string().min(3).max(255).default("freelancer"),
+            type: z.string().max(255).default("freelancer"),
             phone1: z.string().max(255),
             phone2: z.string().max(255),
             email: z.string().max(255),
