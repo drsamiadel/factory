@@ -20,7 +20,30 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
 
     const currentPeice = finishing.peiceId;
     const currentPage = input.structure.additional.find((page: any) => page.peiceId === currentPeice && page.code === 1);
-    const sheetsQuantity = currentPage ? currentPage.structure.sheetsQuantity : 0;
+    const allPages = input.structure.additional.find((page: any) => page.peiceId === "all" && page.code === 1);
+    const sheetsQuantity = currentPage ? currentPage.structure.sheetsQuantity : allPages ? allPages.structure.sheetsQuantity : 0;
+
+    React.useEffect(() => {
+        function setAllQuantitiesAsSheetQuantity() {
+            const blockCopy = { ...finishing };
+            blockCopy.structure.plasticWindow.quantity = sheetsQuantity;
+            blockCopy.structure.gum.quantity = sheetsQuantity;
+            blockCopy.structure.pasting.quantity = sheetsQuantity;
+            blockCopy.structure.cut.quantity = sheetsQuantity;
+            blockCopy.structure.binding.quantity = sheetsQuantity;
+            blockCopy.structure.packing.quantity = sheetsQuantity;
+            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.plasticWindow.quantity`, value: blockCopy.structure.plasticWindow.quantity } }, true);
+            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.gum.quantity`, value: blockCopy.structure.gum.quantity } }, true);
+            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.pasting.quantity`, value: blockCopy.structure.pasting.quantity } }, true);
+            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.cut.quantity`, value: blockCopy.structure.cut.quantity } }, true);
+            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.binding.quantity`, value: blockCopy.structure.binding.quantity } }, true);
+            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.packing.quantity`, value: blockCopy.structure.packing.quantity } }, true);
+        }
+
+        setAllQuantitiesAsSheetQuantity();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [sheetsQuantity]);
 
     React.useEffect(() => {
         function updatePlasticWindow() {
@@ -101,14 +124,29 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
 
     React.useEffect(() => {
         function updateTotalCost() {
-            const totalCost = (+finishing.structure.plasticWindow.totalCost || 0) + (+finishing.structure.gum.totalCost || 0) + (+finishing.structure.pasting.totalCost || 0) + (+finishing.structure.cut.totalCost || 0) + (+finishing.structure.binding.totalCost || 0) + (+finishing.structure.packing.totalCost || 0) + (+finishing.structure.delivery.totalCost || 0);
+            const totalCost = (
+                finishing.structure.plasticWindow.active ? (+finishing.structure.plasticWindow.totalCost || 0) : 0
+            ) + (
+                    finishing.structure.gum.active ? (+finishing.structure.gum.totalCost || 0) : 0
+                ) + (
+                    finishing.structure.pasting.active ? (+finishing.structure.pasting.totalCost || 0) : 0
+                ) + (
+                    finishing.structure.cut.active ? (+finishing.structure.cut.totalCost || 0) : 0
+                ) + (
+                    finishing.structure.binding.active ? (+finishing.structure.binding.totalCost || 0) : 0
+                ) + (
+                    finishing.structure.packing.active ? (+finishing.structure.packing.totalCost || 0) : 0
+                ) + (
+                    finishing.structure.delivery.active ? (+finishing.structure.delivery.totalCost || 0) : 0
+                );
+
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.totalCost`, value: totalCost } }, true);
         }
 
         updateTotalCost();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [finishing.structure.plasticWindow.totalCost, finishing.structure.gum.totalCost, finishing.structure.pasting.totalCost, finishing.structure.cut.totalCost, finishing.structure.binding.totalCost, finishing.structure.packing.totalCost, finishing.structure.delivery.totalCost]);
+    }, [finishing.structure.plasticWindow.totalCost, finishing.structure.gum.totalCost, finishing.structure.pasting.totalCost, finishing.structure.cut.totalCost, finishing.structure.binding.totalCost, finishing.structure.packing.totalCost, finishing.structure.delivery.totalCost, finishing.structure.plasticWindow.active, finishing.structure.gum.active, finishing.structure.pasting.active, finishing.structure.cut.active, finishing.structure.binding.active, finishing.structure.packing.active, finishing.structure.delivery.active]);
 
     return (
         <Grid item xs={12}>
@@ -120,11 +158,12 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
                             size='small'
                             labelId="selectPart"
                             id="selectPart"
-                            value={finishing.peiceId ? finishing.peiceId : ""}
+                            value={finishing.peiceId ? finishing.peiceId : "all"}
                             label="select a part"
                             name={`structure.additional[${blockIndex}].peiceId`}
                             onChange={(e: SelectChangeEvent) => handleChange(e)}
                         >
+                            <MenuItem value="all" key="all">All</MenuItem>
                             {input.structure.input.structure.peices.map((peice: any) => (
                                 <MenuItem value={peice.id} key={peice.id}>{peice.name}</MenuItem>
                             ))}
@@ -136,11 +175,11 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
-                        <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'row', alignItems: 'start' }}>
+                        <Grid item sx={{ display: 'flex', flexDirection: 'row', alignItems: 'start' }} xs>
                             <Checkbox checked={finishing.structure.plasticWindow.active} name={`structure.additional[${blockIndex}].structure.plasticWindow.active`} onChange={(e) => handleChange({ target: { name: e.target.name, value: e.target.checked } })} />
-                            <Typography sx={{ marginTop: "7px"}}>Plastic Window</Typography>
+                            <Typography sx={{ marginTop: "7px" }}>Plastic Window</Typography>
                         </Grid>
-                        <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Quantity"
@@ -150,17 +189,19 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
                                 size='small'
                                 disabled={!!!finishing.structure.plasticWindow.active}
                             />
+                        </Grid>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Size"
-                                value={finishing.structure.plasticWindow.size || 0}
+                                value={finishing.structure.plasticWindow.size || ""}
                                 name={`structure.additional[${blockIndex}].structure.plasticWindow.size`}
                                 onChange={handleChange}
                                 size='small'
                                 disabled={!!!finishing.structure.plasticWindow.active}
                             />
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Cost"
@@ -171,13 +212,14 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
                                 size='small'
                             />
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Total"
                                 value={finishing.structure.plasticWindow.totalCost || 0}
+                                name={`structure.additional[${blockIndex}].structure.plasticWindow.totalCost`}
                                 onChange={(e) => handleChange(e)}
-                                disabled
+                                disabled={!!!finishing.structure.plasticWindow.active}
                                 size='small'
                             />
                         </Grid>
@@ -188,11 +230,11 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
-                        <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'row', alignItems: 'start' }}>
+                        <Grid item xs sx={{ display: 'flex', flexDirection: 'row', alignItems: 'start' }}>
                             <Checkbox checked={finishing.structure.gum.active} name={`structure.additional[${blockIndex}].structure.gum.active`} onChange={(e) => handleChange({ target: { name: e.target.name, value: e.target.checked } })} />
                             <Typography sx={{ marginTop: "7px" }}>Gum</Typography>
                         </Grid>
-                        <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Quantity"
@@ -202,6 +244,8 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
                                 size='small'
                                 disabled={!!!finishing.structure.gum.active}
                             />
+                        </Grid>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Point"
@@ -212,16 +256,7 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
                                 disabled={!!!finishing.structure.gum.active}
                             />
                         </Grid>
-                        <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            <TextField
-                                fullWidth
-                                label="Cost"
-                                value={finishing.structure.gum.cost || 0}
-                                name={`structure.additional[${blockIndex}].structure.gum.cost`}
-                                onChange={handleChange}
-                                disabled={!!!finishing.structure.gum.active}
-                                size='small'
-                            />
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Point Cost"
@@ -232,13 +267,14 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
                                 disabled={!!!finishing.structure.gum.active}
                             />
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Total"
                                 value={finishing.structure.gum.totalCost || 0}
+                                name={`structure.additional[${blockIndex}].structure.gum.totalCost`}
                                 onChange={(e) => handleChange(e)}
-                                disabled
+                                disabled={!!!finishing.structure.gum.active}
                                 size='small'
                             />
                         </Grid>
@@ -249,11 +285,11 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
-                        <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'row', alignItems: 'start' }}>
+                        <Grid item xs sx={{ display: 'flex', flexDirection: 'row', alignItems: 'start' }}>
                             <Checkbox checked={finishing.structure.pasting.active} name={`structure.additional[${blockIndex}].structure.pasting.active`} onChange={(e) => handleChange({ target: { name: e.target.name, value: e.target.checked } })} />
                             <Typography sx={{ marginTop: "7px" }}>Pasting</Typography>
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Quantity"
@@ -264,7 +300,7 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
                                 disabled={!!!finishing.structure.pasting.active}
                             />
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Cost"
@@ -275,13 +311,14 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
                                 size='small'
                             />
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Total"
                                 value={finishing.structure.pasting.totalCost || 0}
                                 onChange={(e) => handleChange(e)}
-                                disabled
+                                name={`structure.additional[${blockIndex}].structure.pasting.totalCost`}
+                                disabled={!!!finishing.structure.pasting.active}
                                 size='small'
                             />
                         </Grid>
@@ -292,11 +329,11 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
-                        <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'row', alignItems: 'start' }}>
+                        <Grid item xs sx={{ display: 'flex', flexDirection: 'row', alignItems: 'start' }}>
                             <Checkbox checked={finishing.structure.cut.active} name={`structure.additional[${blockIndex}].structure.cut.active`} onChange={(e) => handleChange({ target: { name: e.target.name, value: e.target.checked } })} />
                             <Typography sx={{ marginTop: "7px" }}>Cut</Typography>
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Quantity"
@@ -307,7 +344,7 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
                                 disabled={!!!finishing.structure.cut.active}
                             />
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Cost"
@@ -318,13 +355,14 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
                                 size='small'
                             />
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Total"
                                 value={finishing.structure.cut.totalCost || 0}
+                                name={`structure.additional[${blockIndex}].structure.cut.totalCost`}
                                 onChange={(e) => handleChange(e)}
-                                disabled
+                                disabled={!!!finishing.structure.cut.active}
                                 size='small'
                             />
                         </Grid>
@@ -335,11 +373,11 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
-                        <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'row', alignItems: 'start' }}>
+                        <Grid item xs sx={{ display: 'flex', flexDirection: 'row', alignItems: 'start' }}>
                             <Checkbox checked={finishing.structure.binding.active} name={`structure.additional[${blockIndex}].structure.binding.active`} onChange={(e) => handleChange({ target: { name: e.target.name, value: e.target.checked } })} />
                             <Typography sx={{ marginTop: "7px" }}>Binding</Typography>
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Quantity"
@@ -350,7 +388,7 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
                                 disabled={!!!finishing.structure.binding.active}
                             />
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Cost"
@@ -361,13 +399,14 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
                                 size='small'
                             />
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Total"
                                 value={finishing.structure.binding.totalCost || 0}
                                 onChange={(e) => handleChange(e)}
-                                disabled
+                                name={`structure.additional[${blockIndex}].structure.binding.totalCost`}
+                                disabled={!!!finishing.structure.binding.active}
                                 size='small'
                             />
                         </Grid>
@@ -378,11 +417,11 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
-                        <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'row', alignItems: 'start' }}>
+                        <Grid item xs sx={{ display: 'flex', flexDirection: 'row', alignItems: 'start' }}>
                             <Checkbox checked={finishing.structure.packing.active} name={`structure.additional[${blockIndex}].structure.packing.active`} onChange={(e) => handleChange({ target: { name: e.target.name, value: e.target.checked } })} />
                             <Typography sx={{ marginTop: "7px" }}>Packing</Typography>
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Quantity"
@@ -393,7 +432,7 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
                                 disabled={!!!finishing.structure.packing.active}
                             />
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Cost"
@@ -404,13 +443,14 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
                                 size='small'
                             />
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Total"
                                 value={finishing.structure.packing.totalCost || 0}
+                                name={`structure.additional[${blockIndex}].structure.packing.totalCost`}
                                 onChange={(e) => handleChange(e)}
-                                disabled
+                                disabled={!!!finishing.structure.packing.active}
                                 size='small'
                             />
                         </Grid>
@@ -421,13 +461,13 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
-                        <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'row', alignItems: 'start' }}>
+                        <Grid item xs sx={{ display: 'flex', flexDirection: 'row', alignItems: 'start' }}>
                             <Checkbox checked={finishing.structure.delivery.active} name={`structure.additional[${blockIndex}].structure.delivery.active`} onChange={(e) => handleChange({ target: { name: e.target.name, value: e.target.checked } })} />
                             <Typography sx={{ marginTop: "7px" }}>Delivery</Typography>
                         </Grid>
                         <Grid item xs={6}>
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Total"
@@ -444,7 +484,7 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container spacing={2} sx={{ justifyContent: "end", alignItems: "end" }} direction="column">
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Total Cost"

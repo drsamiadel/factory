@@ -45,7 +45,6 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
         function calculatePaperTotal() {
             const paperTotal = (+sheetsQuantity + +paper.structure.destroyRate || 0);
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.paperTotal`, value: paperTotal } });
-            console.log(paperTotal);
         }
         calculatePaperTotal();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -62,7 +61,7 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
 
     React.useEffect(() => {
         function calculateQuantity() {
-            const quantity = +input.structure.sheetsQuantity;
+            const quantity = input.structure.sheetsQuantity ? input.structure.sheetsQuantity : 0;
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.quantity`, value: quantity } });
         }
         calculateQuantity();
@@ -71,8 +70,8 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
 
     React.useEffect(() => {
         function calculateSheetsQuantity() {
-            const sheetsQuantity = (+paper.structure.quantity / +paper.structure.upsInSheet).toFixed(0);
-            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.sheetsQuantity`, value: sheetsQuantity } });
+            const sheetsQuantity = ((+paper.structure.quantity ? +paper.structure.quantity : 0) / (+paper.structure.upsInSheet ? +paper.structure.upsInSheet : 1)).toFixed(0);
+            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.sheetsQuantity`, value: +sheetsQuantity } });
         }
         calculateSheetsQuantity();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -87,18 +86,20 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
                         <Select
                             labelId="selectPart"
                             id="selectPart"
-                            value={paper.peiceId ? paper.peiceId : ""}
+                            value={paper.peiceId ? paper.peiceId : "all"}
                             label="select a part"
                             name={`structure.additional[${blockIndex}].peiceId`}
                             onChange={(e: SelectChangeEvent) => handleChange(e)}
+                            size='small'
                         >
+                            <MenuItem value="all" key="all">All</MenuItem>
                             {input.structure.input.structure.peices.map((peice: any) => (
                                 <MenuItem value={peice.id} key={peice.id}>{peice.name}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Quantity"
@@ -109,7 +110,7 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
                         disabled
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <Autocomplete
                         id="combo-for-ups"
                         options={[1, 2, 3, 4, 5, 6]}
@@ -122,7 +123,7 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
                         freeSolo
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Sheets Quantity"
@@ -133,7 +134,7 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
                         disabled
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Destroy Rate"
@@ -143,7 +144,7 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
                         size='small'
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <Autocomplete
                         fullWidth
                         options={materials ? materials : []}
@@ -167,7 +168,7 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
                         size='small'
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Type"
@@ -177,7 +178,7 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
                         size='small'
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Thickness"
@@ -187,7 +188,7 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
                         size='small'
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Size"
@@ -197,7 +198,7 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
                         size='small'
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Pieces in Package"
@@ -207,7 +208,7 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
                         size='small'
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Unit Price"
@@ -222,7 +223,7 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container spacing={2} sx={{ justifyContent: "end", alignItems: "end" }} direction="column">
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Paper Total"
@@ -232,7 +233,7 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
                                 size='small'
                             />
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <div style={{ display: "flex", flexDirection: "row", gap: 2, justifyContent: "end", fontSize: "1.1rem", fontWeight: "600", width: "100%" }}>
                                 <Checkbox checked={paper.structure.vat.active} onChange={(e) => handleChange({ target: { name: `structure.additional[${blockIndex}].structure.vat.active`, value: e.target.checked } })} />
                                 <TextField

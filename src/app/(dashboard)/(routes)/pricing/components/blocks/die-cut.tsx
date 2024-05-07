@@ -23,7 +23,8 @@ const DieCutFormComponent = ({ dieCut, input, handleChange, initialValues }: { d
 
     const currentPeice = dieCut.peiceId;
     const currentPage = input.structure.additional.find((page: any) => page.peiceId === currentPeice && page.code === 1);
-    const sheetsQuantity = currentPage ? currentPage.structure.sheetsQuantity : 0;
+    const allPage = input.structure.additional.find((page: any) => page.peiceId === "all" && page.code === 1);
+    const sheetsQuantity = currentPage ? currentPage.structure.sheetsQuantity : allPage ? allPage.structure.sheetsQuantity : 0;
 
     React.useEffect(() => {
         function calculateQuantity() {
@@ -85,11 +86,12 @@ const DieCutFormComponent = ({ dieCut, input, handleChange, initialValues }: { d
                             size='small'
                             labelId="selectPart"
                             id="selectPart"
-                            value={dieCut.peiceId ? dieCut.peiceId : ""}
+                            value={dieCut.peiceId ? dieCut.peiceId : "all"}
                             label="select a part"
                             name={`structure.additional[${blockIndex}].peiceId`}
                             onChange={(e: SelectChangeEvent) => handleChange(e)}
                         >
+                            <MenuItem value="all" key="all">All</MenuItem>
                             {input.structure.input.structure.peices.map((peice: any) => (
                                 <MenuItem value={peice.id} key={peice.id}>{peice.name}</MenuItem>
                             ))}
@@ -116,7 +118,7 @@ const DieCutFormComponent = ({ dieCut, input, handleChange, initialValues }: { d
                 <Grid item xs={12}>
                     <Divider />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Die Cut Quantity"
@@ -127,7 +129,7 @@ const DieCutFormComponent = ({ dieCut, input, handleChange, initialValues }: { d
                         disabled
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Cost First Die cut"
@@ -137,7 +139,7 @@ const DieCutFormComponent = ({ dieCut, input, handleChange, initialValues }: { d
                         size='small'
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Cost Second Die cut"
@@ -149,7 +151,7 @@ const DieCutFormComponent = ({ dieCut, input, handleChange, initialValues }: { d
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container spacing={2} sx={{ justifyContent: "end", alignItems: "end" }} direction="column">
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Die Cut Cost"
@@ -165,7 +167,7 @@ const DieCutFormComponent = ({ dieCut, input, handleChange, initialValues }: { d
                 <Grid item xs={12}>
                     <Divider />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Die Cut Form"
@@ -175,7 +177,7 @@ const DieCutFormComponent = ({ dieCut, input, handleChange, initialValues }: { d
                         size='small'
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Meter Cost"
@@ -187,7 +189,7 @@ const DieCutFormComponent = ({ dieCut, input, handleChange, initialValues }: { d
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container spacing={2} sx={{ justifyContent: "end", alignItems: "end" }} direction="column">
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Form Cost"
@@ -205,7 +207,7 @@ const DieCutFormComponent = ({ dieCut, input, handleChange, initialValues }: { d
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container spacing={2} sx={{ justifyContent: "end", alignItems: "end" }} direction="column">
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Total Cost"

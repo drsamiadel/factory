@@ -81,8 +81,48 @@ export default function Form({
             },
             sheetsQuantity: 0,
             additional: []
-        }
+        },
+        total: 0,
+        profit: 25,
+        vat: 15,
+        discount: 0,
+        totalCost: 0,
     });
+
+    React.useEffect(() => {
+        function updateTotal() {
+            const additional = input.structure.additional;
+
+            let totalCost = 0;
+            if (additional.length > 0) {
+                additional.forEach((block: any) => {
+                    totalCost += block.structure.totalCost;
+                });
+            }
+            handleChange({ target: { name: "total", value: totalCost } });
+        }
+
+        updateTotal();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [JSON.stringify(input.structure.additional)]);
+
+    React.useEffect(() => {
+        function updateTotalCost() {
+            const costAfterProfit = +(+input.total * +input.profit / 100).toFixed(2) + +input.total;
+            const costAfterVat = +(+(+costAfterProfit * +input.vat / 100).toFixed(2) + +costAfterProfit).toFixed(2);
+            const costAfterDiscount = costAfterVat - +input.discount;
+            console.log(costAfterVat);
+            handleChange({ target: { name: "totalCost", value: costAfterDiscount } });
+        }
+
+        updateTotalCost();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [input.total, input.profit, input.vat, input.discount]);
+
+    
+    const costAfterProfit = +(+input.total * +input.profit / 100).toFixed(2) + +input.total;
+    const costAfterVat = +(+(+costAfterProfit * +input.vat / 100).toFixed(2) + +costAfterProfit).toFixed(2);
+
 
     const [customers, setCustomers] = React.useState<Partial<Customer>[] | null>(null);
     const [customerLoading, setCustomerLoading] = React.useState<boolean>(false);
@@ -131,10 +171,10 @@ export default function Form({
             id: uuidv4(),
             code: 1,
             name: "Paper",
-            peiceId: "",
+            peiceId: "all",
             structure: {
                 quantity: 0,
-                upsInSheet: 0,
+                upsInSheet: 1,
                 sheetsQuantity: 0,
                 destroyRate: 0,
                 material: "",
@@ -142,7 +182,7 @@ export default function Form({
                 totalCost: 0,
                 vat: {
                     active: false,
-                    value: 0
+                    value: 15,
                 }
             }
         },
@@ -150,7 +190,7 @@ export default function Form({
             id: uuidv4(),
             code: 2,
             name: "Offset Printing",
-            peiceId: "",
+            peiceId: "all",
             structure: {
                 quantity: 0,
                 printSize: 1,
@@ -185,7 +225,7 @@ export default function Form({
             id: uuidv4(),
             code: 3,
             name: "Hot Foil Printing",
-            peiceId: "",
+            peiceId: "all",
             structure: {
                 quantity: 0,
                 paperSize: 1,
@@ -200,7 +240,7 @@ export default function Form({
             id: uuidv4(),
             code: 4,
             name: "Embossing Printing",
-            peiceId: "",
+            peiceId: "all",
             structure: {
                 quantity: 0,
                 paperSize: 1,
@@ -214,7 +254,7 @@ export default function Form({
             id: uuidv4(),
             code: 5,
             name: "Die Cut & Form",
-            peiceId: "",
+            peiceId: "all",
             structure: {
                 quantity: 0,
                 dieCutSize: 1,
@@ -231,7 +271,7 @@ export default function Form({
             id: uuidv4(),
             code: 6,
             name: "Lamination",
-            peiceId: "",
+            peiceId: "all",
             structure: {
                 faces: [
                     {
@@ -260,7 +300,7 @@ export default function Form({
             id: uuidv4(),
             code: 7,
             name: "Varnish",
-            peiceId: "",
+            peiceId: "all",
             structure: {
                 faces: [
                     {
@@ -287,7 +327,7 @@ export default function Form({
             id: uuidv4(),
             code: 8,
             name: "Finishing",
-            peiceId: "",
+            peiceId: "all",
             structure: {
                 plasticWindow: {
                     active: false,
@@ -301,7 +341,6 @@ export default function Form({
                     quantity: 0,
                     point: 0,
                     pointCost: 0,
-                    cost: 0,
                     totalCost: 0,
                 },
                 pasting: {
@@ -339,7 +378,7 @@ export default function Form({
             id: uuidv4(),
             code: 9,
             name: "Silk Screen Print",
-            peiceId: "",
+            peiceId: "all",
             structure: {
                 quantity: 0,
                 paperSize: 1,
@@ -376,13 +415,11 @@ export default function Form({
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement> | { target: { name: string, value: any } }, number?: boolean) => {
         const { name, value } = event.target;
-        console.log(name, value);
         const inputCopy = { ...input };
         set(inputCopy, name, number ? parseFloat(
             (value === "" || value === null || value === undefined || isNaN(value)) ? 0 : value
         ) : value);
         setInput(inputCopy);
-        console.log(input);
     };
 
     const clear = () => {
@@ -488,7 +525,7 @@ export default function Form({
                     <Grid item xs={4}>
                         <TextField
                             fullWidth
-                            label="Sheets Quantity"
+                            label="Quantity"
                             name="structure.sheetsQuantity"
                             value={input.structure.sheetsQuantity}
                             onChange={handleChange}
@@ -585,38 +622,14 @@ export default function Form({
                                 </Typography>
                             </Grid>
                             <Grid item xs={12}>
-                                <Grid sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
-                                    <FormControl fullWidth>
-                                        <InputLabel id="demo-simple-select-label">add block</InputLabel>
-                                        <Select
-                                            labelId="demo-simple-select-label"
-                                            id="demo-simple-select"
-                                            value={selectedBlock}
-                                            label="add block"
-                                            onChange={(e: SelectChangeEvent) => setSelectedBlock(e.target.value)}
-                                        >
-                                            {additionalFields.map((field) => (
-                                                <MenuItem value={field.code} key={field.id}>{field.name}</MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-                                    <Button onClick={() => {
-                                        const selectedBlockData = additionalFields.find((field) => field.code === selectedBlock);
-                                        const inputCopy = { ...input };
-                                        inputCopy.structure.additional.push(selectedBlockData);
-                                        setInput(inputCopy);
-                                    }}>
-                                        Add
-                                    </Button>
-                                </Grid>
                                 {input.structure.additional.map((block: any) => {
                                     return (
                                         <div key={block.id} style={{ width: "100%", paddingLeft: "1rem" }}>
                                             <Grid container spacing={2} key={block.id} sx={{ background: theme.palette.action.hover, padding: 2, borderRadius: "10px", marginTop: 2 }}>
-                                                <Grid item xs={12}>
+                                                <Grid item xs={12} sx={{ padding: "0!important" }}>
                                                     <Grid container spacing={2}>
                                                         <Grid item xs={12}>
-                                                            <Typography variant="h6" gutterBottom sx={{ fontWeight: "600" }}>
+                                                            <Typography variant="h6" gutterBottom sx={{ fontWeight: "600", '& .MuiTypography-root': { paddingTop: 0 } }}>
                                                                 {block.name}
                                                                 <IconButton aria-label="delete" onClick={() => {
                                                                     const inputCopy = { ...input };
@@ -660,10 +673,156 @@ export default function Form({
                                         </div>
                                     )
                                 })}
-
+                                <Grid sx={{ display: "flex", flexDirection: "row", gap: 2, marginTop: 2 }}>
+                                    <FormControl fullWidth>
+                                        <InputLabel id="demo-simple-select-label">add block</InputLabel>
+                                        <Select
+                                            labelId="demo-simple-select-label"
+                                            id="demo-simple-select"
+                                            value={selectedBlock}
+                                            label="add block"
+                                            onChange={(e: SelectChangeEvent) => setSelectedBlock(e.target.value)}
+                                        >
+                                            {additionalFields.map((field) => (
+                                                <MenuItem value={field.code} key={field.id}>{field.name}</MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                    <Button onClick={() => {
+                                        const selectedBlockData = additionalFields.find((field) => field.code === selectedBlock);
+                                        const inputCopy = { ...input };
+                                        inputCopy.structure.additional.push(selectedBlockData);
+                                        setInput(inputCopy);
+                                    }}>
+                                        Add
+                                    </Button>
+                                </Grid>
                             </Grid>
                         </div>
                     )}
+                    <Grid item xs={12} sx={{ marginLeft: 2 }}>
+                        <Grid container spacing={2} sx={{ background: theme.palette.action.hover, padding: 2, borderRadius: "10px", marginTop: 2 }} alignContent="end" direction="column">
+                            <Grid item xs={12}>
+                                <Grid container spacing={2} sx={{ justifyContent: "end" }}>
+                                    <Grid item xs={2}>
+                                        <TextField
+                                            fullWidth
+                                            label="Pics Cost"
+                                            value={(input.total / (input.structure.sheetsQuantity || 1)) || 0}
+                                            size='small'
+                                            disabled
+                                        />
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <TextField
+                                            fullWidth
+                                            label="Total Cost"
+                                            name="total"
+                                            value={input.total}
+                                            onChange={handleChange}
+                                            size='small'
+                                        />
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Grid container spacing={2} sx={{ justifyContent: "end" }}>
+                                    <Grid item xs={2}>
+                                        <TextField
+                                            fullWidth
+                                            label="Pics Cost"
+                                            value={(costAfterProfit / (input.structure.sheetsQuantity || 1)) || 0}
+                                            size='small'
+                                        />
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                        <TextField
+                                            fullWidth
+                                            label="Profit"
+                                            name="profit"
+                                            value={input.profit}
+                                            onChange={handleChange}
+                                            size='small'
+                                        />
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <TextField
+                                            fullWidth
+                                            value={costAfterProfit}
+                                            onChange={handleChange}
+                                            disabled
+                                            label="Cost After Profit"
+                                            size='small'
+                                        />
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Grid container spacing={2} sx={{ justifyContent: "end" }}>
+                                    <Grid item xs={2}>
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                        <TextField
+                                            fullWidth
+                                            label="VAT"
+                                            name="vat"
+                                            value={input.vat}
+                                            onChange={handleChange}
+                                            size='small'
+                                        />
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <TextField
+                                            fullWidth
+                                            value={costAfterVat}
+                                            onChange={handleChange}
+                                            disabled
+                                            size='small'
+                                            label="Cost After VAT"
+                                        />
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Grid container spacing={2} sx={{ justifyContent: "end" }}>
+                                    <Grid item xs={4}>
+                                        <TextField
+                                            fullWidth
+                                            label="Discount"
+                                            name="discount"
+                                            value={input.discount}
+                                            onChange={handleChange}
+                                            size='small'
+                                        />
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Grid container spacing={2} sx={{ justifyContent: "end" }}>
+                                    <Grid item xs={2}>
+                                        <TextField
+                                            fullWidth
+                                            label="Pics Cost"
+                                            value={(input.totalCost / (input.structure.sheetsQuantity || 1)) || 0}
+                                            size='small'
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Total"
+                                            name="total"
+                                            value={input.totalCost || 0}
+                                            onChange={handleChange}
+                                            size='small'
+                                        />
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
                 </Grid>
             </DialogContent>
             <DialogActions>

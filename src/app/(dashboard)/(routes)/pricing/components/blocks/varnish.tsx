@@ -22,7 +22,8 @@ const VarnishComponent = ({ varnish, input, handleChange, initialValues }: { var
     const currentPage = input.structure.additional.find((page: any) => page.peiceId === currentPeice && page.code === 1);
     const sheetsQuantity = currentPage ? currentPage.structure.sheetsQuantity : 0;
     const currentOffset = input.structure.additional.find((page: any) => page.peiceId === currentPeice && page.code === 2);
-    const offsetQuantity = currentOffset ? currentOffset.structure.quantity : 0;
+    const allOffset = input.structure.additional.find((page: any) => page.peiceId === "all" && page.code === 2);
+    const offsetQuantity = currentOffset ? currentOffset.structure.quantity : allOffset ? allOffset.structure.quantity : 0;
 
     React.useEffect(() => {
         function calculateCostFront() {
@@ -67,11 +68,12 @@ const VarnishComponent = ({ varnish, input, handleChange, initialValues }: { var
                             size='small'
                             labelId="selectPart"
                             id="selectPart"
-                            value={varnish.peiceId ? varnish.peiceId : ""}
+                            value={varnish.peiceId ? varnish.peiceId : "all"}
                             label="select a part"
                             name={`structure.additional[${blockIndex}].peiceId`}
                             onChange={(e: SelectChangeEvent) => handleChange(e)}
                         >
+                            <MenuItem value="all" key="all">All</MenuItem>
                             {input.structure.input.structure.peices.map((peice: any) => (
                                 <MenuItem value={peice.id} key={peice.id}>{peice.name}</MenuItem>
                             ))}
@@ -81,11 +83,11 @@ const VarnishComponent = ({ varnish, input, handleChange, initialValues }: { var
                 <Grid item xs={12}>
                     <Divider />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <Checkbox checked={varnish.structure.faces[0].active} onChange={(e) => handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[0].active`, value: e.target.checked } })} />
                     {varnish.structure.faces[0].name}
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <Autocomplete
                         id="combo-for-varnishType"
                         options={["MATT", "GLOSSY", "UV", "UV Spot"]}
@@ -102,7 +104,7 @@ const VarnishComponent = ({ varnish, input, handleChange, initialValues }: { var
                         disabled={!!!varnish.structure.faces[0].active}
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Varnish Quantity"
@@ -113,7 +115,7 @@ const VarnishComponent = ({ varnish, input, handleChange, initialValues }: { var
                         disabled
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Varnish Cost"
@@ -137,11 +139,11 @@ const VarnishComponent = ({ varnish, input, handleChange, initialValues }: { var
                 <Grid item xs={12}>
                     <Divider />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <Checkbox checked={varnish.structure.faces[1].active} onChange={(e) => handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[1].active`, value: e.target.checked } })} />
                     {varnish.structure.faces[1].name}
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <Autocomplete
                         id="combo-for-varnishType"
                         options={["MATT", "GLOSSY", "UV", "UV Spot"]}
@@ -158,7 +160,7 @@ const VarnishComponent = ({ varnish, input, handleChange, initialValues }: { var
                         disabled={!!!varnish.structure.faces[1].active}
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Varnish Quantity"
@@ -169,7 +171,7 @@ const VarnishComponent = ({ varnish, input, handleChange, initialValues }: { var
                         disabled
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Varnish Cost"
@@ -195,7 +197,7 @@ const VarnishComponent = ({ varnish, input, handleChange, initialValues }: { var
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container spacing={2} sx={{ justifyContent: "end", alignItems: "end" }} direction="column">
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Total Cost"

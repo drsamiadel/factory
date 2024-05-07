@@ -23,7 +23,8 @@ const OffsetComponent = ({ offset, input, handleChange, initialValues }: { offse
 
     const currentPeice = offset.peiceId;
     const currentPage = input.structure.additional.find((page: any) => page.peiceId === currentPeice && page.code === 1);
-    const sheetsQuantity = currentPage ? currentPage.structure.sheetsQuantity : 0;
+    const allPage = input.structure.additional.find((page: any) => page.peiceId === "all" && page.code === 1);
+    const sheetsQuantity = currentPage ? currentPage.structure.sheetsQuantity : allPage ? allPage.structure.sheetsQuantity : 0;
 
     React.useEffect(() => {
         function calculateQuantity() {
@@ -68,7 +69,7 @@ const OffsetComponent = ({ offset, input, handleChange, initialValues }: { offse
         }
 
         function calculateTotalCost() {
-            const totalCost = (offset.structure.faces[0].totalCost || 0) + (offset.structure.faces[1].totalCost || 0);
+            const totalCost = (offset.structure.faces[0].active ? offset.structure.faces[0].totalCost : 0) + (offset.structure.faces[1].active ? offset.structure.faces[1].totalCost : 0);
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.totalCost`, value: totalCost } }, true);
         }
 
@@ -90,11 +91,12 @@ const OffsetComponent = ({ offset, input, handleChange, initialValues }: { offse
                             size='small'
                             labelId="selectPart"
                             id="selectPart"
-                            value={offset.peiceId ? offset.peiceId : ""}
+                            value={offset.peiceId ? offset.peiceId : "all"}
                             label="select a part"
                             name={`structure.additional[${blockIndex}].peiceId`}
                             onChange={(e: SelectChangeEvent) => handleChange(e)}
                         >
+                            <MenuItem value="all" key="all">All</MenuItem>
                             {input.structure.input.structure.peices.map((peice: any) => (
                                 <MenuItem value={peice.id} key={peice.id}>{peice.name}</MenuItem>
                             ))}
@@ -121,11 +123,11 @@ const OffsetComponent = ({ offset, input, handleChange, initialValues }: { offse
                 <Grid item xs={12}>
                     <Divider />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <Checkbox checked={offset.structure.faces[0].active} onChange={(e) => handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[0].active`, value: e.target.checked } })} />
                     {offset.structure.faces[0].name}
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <Autocomplete
                         id="combo-for-colorType"
                         options={["CMYK", "PANTON"]}
@@ -142,7 +144,7 @@ const OffsetComponent = ({ offset, input, handleChange, initialValues }: { offse
                         disabled={!!!offset.structure.faces[0].active}
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Number of Color"
@@ -153,7 +155,7 @@ const OffsetComponent = ({ offset, input, handleChange, initialValues }: { offse
                         disabled={!!!offset.structure.faces[0].active}
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Print Quantity"
@@ -164,7 +166,7 @@ const OffsetComponent = ({ offset, input, handleChange, initialValues }: { offse
                         disabled
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Cost First Print"
@@ -175,7 +177,7 @@ const OffsetComponent = ({ offset, input, handleChange, initialValues }: { offse
                         disabled={!!!offset.structure.faces[0].active}
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Cost Second Print"
@@ -199,11 +201,11 @@ const OffsetComponent = ({ offset, input, handleChange, initialValues }: { offse
                 <Grid item xs={12}>
                     <Divider />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <Checkbox checked={offset.structure.faces[1].active} onChange={(e) => handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[1].active`, value: e.target.checked } })} />
                     {offset.structure.faces[1].name}
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <Autocomplete
                         id="combo-for-colorType"
                         options={["CMYK", "PANTON"]}
@@ -220,7 +222,7 @@ const OffsetComponent = ({ offset, input, handleChange, initialValues }: { offse
                         disabled={!!!offset.structure.faces[1].active}
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Number of Color"
@@ -231,7 +233,7 @@ const OffsetComponent = ({ offset, input, handleChange, initialValues }: { offse
                         disabled={!!!offset.structure.faces[1].active}
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Print Quantity"
@@ -242,7 +244,7 @@ const OffsetComponent = ({ offset, input, handleChange, initialValues }: { offse
                         disabled
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Cost First Print"
@@ -253,7 +255,7 @@ const OffsetComponent = ({ offset, input, handleChange, initialValues }: { offse
                         disabled={!!!offset.structure.faces[1].active}
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <TextField
                         fullWidth
                         label="Cost Second Print"
@@ -280,7 +282,7 @@ const OffsetComponent = ({ offset, input, handleChange, initialValues }: { offse
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container spacing={2} sx={{ justifyContent: "end", alignItems: "end" }} direction="column">
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField
                                 fullWidth
                                 label="Total Cost"
