@@ -210,36 +210,35 @@ export default function CustomizedTables() {
     };
 
     const handleCreate = async (data: any) => {
-        try {
-            const images = data.images;
-            const files = images.map((image: any, i: number) => dataURLtoFile(image, `${data.name + i}.png`));
-            const formData = new FormData();
-            files.forEach((file: any) => {
-                formData.append('files', file);
-            });
+        const images = data.images;
+        const files = images.map((image: any, i: number) => dataURLtoFile(image, `${data.name + i}.png`));
+        const formData = new FormData();
+        files.forEach((file: any) => {
+            formData.append('files', file);
+        });
 
-            const response = await fetch('/api/upload', {
-                method: 'POST',
-                body: formData,
-            });
+        const response = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData,
+        });
 
-            if (!response.ok) {
-                throw new Error('Failed to upload images');
-            }
+        if (!response.ok) {
+            throw new Error('Failed to upload images');
+        }
 
-            const uploadedImages = await response.json();
+        const uploadedImages = await response.json();
 
-            const updatedImages = images.map((image: any, i: number) => {
-                return uploadedImages[i].data.url
-            }) as String[];
+        const updatedImages = images.map((image: any, i: number) => {
+            return uploadedImages[i].data.url
+        }) as String[];
 
-            data.images = updatedImages;
+        data.images = updatedImages;
 
-            await CREATE(data).then((res) => {
-                setRows([res as InputWithUserAndImages, ...rows]);
-            })
-        } catch (error) {
-            throw error;
+        const result = await CREATE(data);
+        if ('error' in result) {
+            throw new Error(result.error.message);
+        } else {
+            setRows((prev) => [...prev, result as InputWithUserAndImages]);
         }
     };
 
@@ -272,17 +271,18 @@ export default function CustomizedTables() {
 
         data.images = updatedImages;
 
-        await UPDATE(data).then((res) => {
+        const result = await UPDATE(data);
+        if ('error' in result) {
+            throw new Error(result.error.message);
+        } else {
             const updatedRows = rows.map((row) => {
-                if (row.id === res.id) {
-                    return res;
+                if (row.id === result.id) {
+                    return result as InputWithUserAndImages;
                 }
                 return row;
             });
-            setRows(updatedRows as InputWithUserAndImages[]);
-        }).catch((err) => {
-            throw err;
-        });
+            setRows(updatedRows);
+        }
     };
 
     const handleEdit = (id: string) => {

@@ -410,7 +410,7 @@ export default function Form({
                             handleClose();
                         }).catch((e: any) => {
                             setLoading(false);
-                            console.log(e);
+                            setErrors(JSON.parse(e.message));
                         })
                     }} disabled={loading}
                     variant="contained" color="primary">

@@ -4,10 +4,11 @@ import { Delegate } from "@prisma/client";
 import * as z from "zod";
 import { prisma } from "@/lib/db/prisma";
 import { getUserSession } from "@/hooks/get-user-session";
+import { getErrorMessage } from "@/lib/get-error-message";
 
 const CREATE = async (
     delegate: Partial<Delegate>
-): Promise<Partial<Delegate>> => {
+): Promise<Partial<Delegate> | { error: { message: string } }> => {
     try {
         const { id } = await getUserSession();
         const schema = z.object({
@@ -31,8 +32,12 @@ const CREATE = async (
         });
 
         return createdDelegate;
-    } catch (error: Error | any) {
-        throw error
+    } catch (error) {
+        return {
+            error: {
+                message: getErrorMessage(error),
+            },
+        }
     }
 };
 

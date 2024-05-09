@@ -162,27 +162,27 @@ export default function CustomizedTables() {
     };
 
     const handleCreate = async (data: any) => {
-        try {
-            await CREATE(data).then((res) => {
-                setRows([res as SupplierWithUser, ...rows]);
-            })
-        } catch (error) {
-            throw error;
+        const result = await CREATE(data);
+        if ('error' in result) {
+            throw new Error(result.error.message);
+        } else {
+            setRows((prev) => [...prev, result as SupplierWithUser]);
         }
     };
 
     const handleUpdate = async (data: any) => {
-        await UPDATE(data).then((res) => {
+        const result = await UPDATE(data);
+        if ('error' in result) {
+            throw new Error(result.error.message);
+        } else {
             const updatedRows = rows.map((row) => {
-                if (row.id === res.id) {
-                    return res;
+                if (row.id === result.id) {
+                    return result;
                 }
                 return row;
             });
             setRows(updatedRows as SupplierWithUser[]);
-        }).catch((err) => {
-            throw err;
-        });
+        }
     };
 
     const handleEdit = (id: string) => {
@@ -293,7 +293,7 @@ export default function CustomizedTables() {
                             rows.map((row) => (
                                 <StyledTableRow key={row.id}>
                                     <StyledTableCell component="th" scope="row">
-                                        {row.companyName} - {row.managerName}
+                                        {row.companyName} {row.managerName ? `(${row.managerName})` : ""}
                                     </StyledTableCell>
                                     <StyledTableCell align="left">{row.phone1}</StyledTableCell>
                                     <StyledTableCell align="left">{row.email}</StyledTableCell>

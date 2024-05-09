@@ -167,28 +167,22 @@ export default function CustomizedTables() {
     };
 
     const handleCreate = async (data: any) => {
-        try {
-            await CREATE(data).then((res) => {
-                console.log(res);
-                setRows([res as MaterialWithUserAndSupplier, ...rows]);
-            })
-        } catch (err) {
-            throw err;
+        const result = await CREATE(data);
+        if ('error' in result) {
+            throw new Error(result.error.message);
+        } else {
+            setRows((prev) => [...prev, result as MaterialWithUserAndSupplier]);
         }
     };
 
     const handleUpdate = async (data: any) => {
-        await UPDATE(data).then((res) => {
-            const updatedRows = rows.map((row) => {
-                if (row.id === res.id) {
-                    return res;
-                }
-                return row;
-            });
-            setRows(updatedRows as MaterialWithUserAndSupplier[]);
-        }).catch((err) => {
-            throw err;
-        });
+        const result = await UPDATE(data);
+        if ('error' in result) {
+            throw new Error(result.error.message);
+        } else {
+            const updatedRows = rows.map((row) => row.id === selectedId ? result as MaterialWithUserAndSupplier : row);
+            setRows(updatedRows);
+        }
     };
 
     const handleEdit = (id: string) => {

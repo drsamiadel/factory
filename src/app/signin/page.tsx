@@ -43,21 +43,20 @@ export default function SignInSide() {
         try {
             setError(null);
             setLoading(true);
-            await signIn("credentials", {
+            const res = await signIn("credentials", {
                 email: values.email,
                 password: values.password,
                 redirect: false,
-            }).then((response: any) => {
-                const { error, ok } = response;
-                if (ok) {
-                    router.push("/");
-                } else {
-                    setError(error);
-                    setLoading(false);
-                }
-            });
+            })
+            if (res?.ok) {
+                router.push("/");
+            } else {
+                setError(res?.error || "An error occurred");
+            }
         } catch (error: Error | any) {
             setError(error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -153,7 +152,7 @@ export default function SignInSide() {
                         >
                             Sign In
                         </Button>
-                        
+
                         <Grid container>
                             {/*
                             <Grid item xs>
@@ -168,7 +167,7 @@ export default function SignInSide() {
                                 </Link>
                             </Grid>
                         </Grid>
-                        
+
                         <Copyright sx={{ mt: 5 }} />
                     </Box>
                 </Box>

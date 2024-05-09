@@ -4,10 +4,11 @@ import { Input } from "@prisma/client";
 import * as z from "zod";
 import { prisma } from "@/lib/db/prisma";
 import { getUserSession } from "@/hooks/get-user-session";
+import { getErrorMessage } from "@/lib/get-error-message";
 
 const UPDATE = async (
     input: Partial<Input>
-): Promise<Partial<Input>> => {
+): Promise<Partial<Input> | { error: { message: string } }> => {
     try {
         const { id } = await getUserSession();
         const schema = z.object({
@@ -52,8 +53,12 @@ const UPDATE = async (
         });
 
         return updatedInput;
-    } catch (error: Error | any) {
-        throw new Error(error);
+    } catch (error) {
+        return {
+            error: {
+                message: getErrorMessage(error),
+            },
+        }
     }
 };
 
