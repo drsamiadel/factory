@@ -472,7 +472,7 @@ export default function Form({
             </DialogTitle>
             <DialogContent dividers={true}>
                 <Grid container spacing={2}>
-                    <Grid item xs={6}>
+                    <Grid item xs={4}>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 <Grid container spacing={2}>
@@ -555,7 +555,7 @@ export default function Form({
                                                     Box Dimensions
                                                 </Typography>
                                             </Grid>
-                                            <Grid item xs={4}>
+                                            <Grid item xs={6}>
                                                 <Autocomplete
                                                     fullWidth
                                                     options={inputs ? inputs : []}
@@ -582,7 +582,7 @@ export default function Form({
                                                     size='small'
                                                 />
                                             </Grid>
-                                            <Grid item xs={4}>
+                                            <Grid item xs={6}>
                                                 <TextField
                                                     fullWidth
                                                     placeholder="Box Code"
@@ -600,14 +600,18 @@ export default function Form({
                                                         const width = convertTextToEquation(peice.equation.width, input.structure.input, peice.id);
                                                         const height = convertTextToEquation(peice.equation.height, input.structure.input, peice.id);
                                                         return (
-                                                            <div key={peice.id} style={{ display: "flex", flexDirection: "row", gap: 2, width: "100%" }}>
-                                                                <ListItemText primary={peice.name} sx={{ width: "100%", [`& .MuiListItemText-primary`]: { fontSize: "1.2rem" }, paddingBottom: 2 }} />
-                                                                {peice.fields.map((field: any, fieldIndex: any) => (
-                                                                    <Grid item xs={6} key={field.id}>
-                                                                        <TextField size='small' id="filled-basic" label={`${field.name} [${field.key}]`} variant="outlined" value={field.value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e, true)} name={`structure.input.structure.peices[${index}].fields[${fieldIndex}].value`} sx={{ width: "100%" }} />
-                                                                    </Grid>
-                                                                ))}
-                                                                <ListItemText primary={`${width}mm x ${height}mm`} sx={{ width: "100%", [`& .MuiListItemText-primary`]: { fontSize: "1rem", fontWeight: "500" }, paddingTop: 2, textAlign: "end" }} />
+                                                            <div key={peice.id} style={{ display: "flex", flexDirection: "column", gap: 2, width: "100%" }}>
+                                                                <div style={{ display: "flex", flexDirection: "row", gap: 2, justifyContent: "space-between", width: "100%", alignItems: "center" }}>
+                                                                    <span>{peice.name}</span>
+                                                                    <span>{`${width}mm x ${height}mm`}</span>
+                                                                </div>
+                                                                <div style={{ display: "flex", flexDirection: "row", gap: 10, width: "100%", alignItems: "center", flexWrap: "wrap", paddingTop: "1rem" }}>
+                                                                    {peice.fields.map((field: any, fieldIndex: any) => (
+                                                                        <div key={field.id} style={{ width: "18%" }}>
+                                                                            <TextField size='small' id="filled-basic" label={`${field.name} [${field.key}]`} variant="outlined" value={field.value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e, true)} name={`structure.input.structure.peices[${index}].fields[${fieldIndex}].value`} sx={{ width: "100%" }} />
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
                                                             </div>
                                                         )
                                                     })}
@@ -623,7 +627,7 @@ export default function Form({
                                         <Grid container spacing={2} sx={{ background: theme.palette.action.hover, padding: 2, borderRadius: "10px", marginTop: 2 }} alignContent="end" direction="column">
                                             <Grid item xs={12}>
                                                 <Grid container spacing={2} sx={{ justifyContent: "end" }}>
-                                                    <Grid item xs={2}>
+                                                    <Grid item xs={3}>
                                                         <TextField
                                                             fullWidth
                                                             label="Pics Cost"
@@ -648,7 +652,7 @@ export default function Form({
                                             </Grid>
                                             <Grid item xs={12}>
                                                 <Grid container spacing={2} sx={{ justifyContent: "end" }}>
-                                                    <Grid item xs={2}>
+                                                    <Grid item xs={3}>
                                                         <TextField
                                                             fullWidth
                                                             label="Pics Cost"
@@ -720,7 +724,7 @@ export default function Form({
                                             </Grid>
                                             <Grid item xs={12}>
                                                 <Grid container spacing={2} sx={{ justifyContent: "end" }}>
-                                                    <Grid item xs={2}>
+                                                    <Grid item xs={3}>
                                                         <TextField
                                                             fullWidth
                                                             label="Pics Cost"
@@ -746,120 +750,121 @@ export default function Form({
                             </Grid>
                         </Grid>
                     </Grid>
-                    
-                    <Grid item xs={6}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} sx={{ marginTop: 2 }}>
-                                <Typography variant="h6" sx={{ fontWeight: "600" }}>
-                                    Additional Details
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={12}>
-                                {input.structure.additional.map((block: any) => {
-                                    const blockIndex = input.structure.additional.findIndex((blockP: any) => blockP.id === block.id);
-                                    return (
-                                        <div key={block.id} style={{ width: "100%", paddingLeft: "1rem" }}>
-                                            <Grid container spacing={2} key={block.id} sx={{ background: theme.palette.action.hover, padding: 2, borderRadius: "10px", marginTop: 2 }}>
-                                                <Grid item xs={12} sx={{ padding: "0!important" }}>
-                                                    <Grid container spacing={2}>
-                                                        <Grid item xs={12}>
-                                                            <Grid container spacing={2} >
-                                                                <Grid item xs={7.4}>
-                                                                    <Typography variant="h6" sx={{ fontWeight: "600", '& .MuiTypography-root': { paddingTop: 0 } }}>
-                                                                        {block.name}
-                                                                    </Typography>
-                                                                </Grid>
-                                                                <Grid item xs={4}>
-                                                                    <FormControl fullWidth>
-                                                                        <InputLabel id="selectPart">select a part</InputLabel>
-                                                                        <Select
-                                                                            labelId="selectPart"
-                                                                            id="selectPart"
-                                                                            value={block.peiceId ? block.peiceId : "all"}
-                                                                            label="select a part"
-                                                                            name={`structure.additional[${blockIndex}].peiceId`}
-                                                                            onChange={(e: SelectChangeEvent) => handleChange(e)}
-                                                                            size='small'
-                                                                        >
-                                                                            <MenuItem value="all" key="all">All</MenuItem>
-                                                                            {input.structure.input.structure.peices.map((peice: any) => (
-                                                                                <MenuItem value={peice.id} key={peice.id}>{peice.name}</MenuItem>
-                                                                            ))}
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                </Grid>
-                                                                <Grid item xs={.5} sx={{ textAlign: "end" }}>
-                                                                    <IconButton aria-label="delete" onClick={() => {
-                                                                        const inputCopy = { ...input };
-                                                                        inputCopy.structure.additional = inputCopy.structure.additional.filter((blockP: any) => blockP.id !== block.id);
-                                                                        setInput(inputCopy);
-                                                                    }}>
-                                                                        <DeleteIcon />
-                                                                    </IconButton>
+                    {input.structure.input.structure && input.structure.input.structure.peices && input.structure.input.structure.peices.length > 0 && (
+                        <Grid item xs={8}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} sx={{ marginTop: 2 }}>
+                                    <Typography variant="h6" sx={{ fontWeight: "600" }}>
+                                        Additional Details
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    {input.structure.additional.map((block: any) => {
+                                        const blockIndex = input.structure.additional.findIndex((blockP: any) => blockP.id === block.id);
+                                        return (
+                                            <div key={block.id} style={{ width: "100%", paddingLeft: "1rem" }}>
+                                                <Grid container spacing={2} key={block.id} sx={{ background: theme.palette.action.hover, padding: 2, borderRadius: "10px", marginTop: 2 }}>
+                                                    <Grid item xs={12} sx={{ padding: "0!important" }}>
+                                                        <Grid container spacing={2}>
+                                                            <Grid item xs={12}>
+                                                                <Grid container spacing={2} >
+                                                                    <Grid item xs={7.4}>
+                                                                        <Typography variant="h6" sx={{ fontWeight: "600", '& .MuiTypography-root': { paddingTop: 0 } }}>
+                                                                            {block.name}
+                                                                        </Typography>
+                                                                    </Grid>
+                                                                    <Grid item xs={4}>
+                                                                        <FormControl fullWidth>
+                                                                            <InputLabel id="selectPart">select a part</InputLabel>
+                                                                            <Select
+                                                                                labelId="selectPart"
+                                                                                id="selectPart"
+                                                                                value={block.peiceId ? block.peiceId : "all"}
+                                                                                label="select a part"
+                                                                                name={`structure.additional[${blockIndex}].peiceId`}
+                                                                                onChange={(e: SelectChangeEvent) => handleChange(e)}
+                                                                                size='small'
+                                                                            >
+                                                                                <MenuItem value="all" key="all">All</MenuItem>
+                                                                                {input.structure.input.structure.peices.map((peice: any) => (
+                                                                                    <MenuItem value={peice.id} key={peice.id}>{peice.name}</MenuItem>
+                                                                                ))}
+                                                                            </Select>
+                                                                        </FormControl>
+                                                                    </Grid>
+                                                                    <Grid item xs={.5} sx={{ textAlign: "end" }}>
+                                                                        <IconButton aria-label="delete" onClick={() => {
+                                                                            const inputCopy = { ...input };
+                                                                            inputCopy.structure.additional = inputCopy.structure.additional.filter((blockP: any) => blockP.id !== block.id);
+                                                                            setInput(inputCopy);
+                                                                        }}>
+                                                                            <DeleteIcon />
+                                                                        </IconButton>
+                                                                    </Grid>
                                                                 </Grid>
                                                             </Grid>
+                                                            {block.code === 1 && (
+                                                                <PaperComponent paper={block} input={input} handleChange={handleChange} initialValues={initialValues} />
+                                                            )}
+                                                            {block.code === 2 && (
+                                                                <OffsetComponent offset={block} input={input} handleChange={handleChange} initialValues={initialValues} />
+                                                            )}
+                                                            {block.code === 3 && (
+                                                                <HotFoilComponent hotFoil={block} input={input} handleChange={handleChange} initialValues={initialValues} />
+                                                            )}
+                                                            {block.code === 4 && (
+                                                                <EmbossingComponent embossing={block} input={input} handleChange={handleChange} initialValues={initialValues} />
+                                                            )}
+                                                            {block.code === 5 && (
+                                                                <DieCutFormComponent dieCut={block} input={input} handleChange={handleChange} initialValues={initialValues} />
+                                                            )}
+                                                            {block.code === 6 && (
+                                                                <LaminationComponent lamination={block} input={input} handleChange={handleChange} initialValues={initialValues} />
+                                                            )}
+                                                            {block.code === 7 && (
+                                                                <VarnishComponent varnish={block} input={input} handleChange={handleChange} initialValues={initialValues} />
+                                                            )}
+                                                            {block.code === 8 && (
+                                                                <FinishingComponent finishing={block} input={input} handleChange={handleChange} initialValues={initialValues} />
+                                                            )}
+                                                            {block.code === 9 && (
+                                                                <SilkScreenComponent silkScreen={block} input={input} handleChange={handleChange} initialValues={initialValues} />
+                                                            )}
                                                         </Grid>
-                                                        {block.code === 1 && (
-                                                            <PaperComponent paper={block} input={input} handleChange={handleChange} initialValues={initialValues} />
-                                                        )}
-                                                        {block.code === 2 && (
-                                                            <OffsetComponent offset={block} input={input} handleChange={handleChange} initialValues={initialValues} />
-                                                        )}
-                                                        {block.code === 3 && (
-                                                            <HotFoilComponent hotFoil={block} input={input} handleChange={handleChange} initialValues={initialValues} />
-                                                        )}
-                                                        {block.code === 4 && (
-                                                            <EmbossingComponent embossing={block} input={input} handleChange={handleChange} initialValues={initialValues} />
-                                                        )}
-                                                        {block.code === 5 && (
-                                                            <DieCutFormComponent dieCut={block} input={input} handleChange={handleChange} initialValues={initialValues} />
-                                                        )}
-                                                        {block.code === 6 && (
-                                                            <LaminationComponent lamination={block} input={input} handleChange={handleChange} initialValues={initialValues} />
-                                                        )}
-                                                        {block.code === 7 && (
-                                                            <VarnishComponent varnish={block} input={input} handleChange={handleChange} initialValues={initialValues} />
-                                                        )}
-                                                        {block.code === 8 && (
-                                                            <FinishingComponent finishing={block} input={input} handleChange={handleChange} initialValues={initialValues} />
-                                                        )}
-                                                        {block.code === 9 && (
-                                                            <SilkScreenComponent silkScreen={block} input={input} handleChange={handleChange} initialValues={initialValues} />
-                                                        )}
                                                     </Grid>
                                                 </Grid>
-                                            </Grid>
-                                        </div>
-                                    )
-                                })}
-                                <Grid sx={{ display: "flex", flexDirection: "row", gap: 2, marginTop: 2 }}>
-                                    <FormControl fullWidth>
-                                        <InputLabel id="demo-simple-select-label">add block</InputLabel>
-                                        <Select
-                                            labelId="demo-simple-select-label"
-                                            id="demo-simple-select"
-                                            value={selectedBlock}
-                                            label="add block"
-                                            onChange={(e: SelectChangeEvent) => setSelectedBlock(e.target.value)}
-                                            size="small"
-                                        >
-                                            {additionalFields.map((field) => (
-                                                <MenuItem value={field.code} key={field.id}>{field.name}</MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-                                    <Button onClick={() => {
-                                        const selectedBlockData = additionalFields.find((field) => field.code === selectedBlock);
-                                        const inputCopy = { ...input };
-                                        inputCopy.structure.additional.push(selectedBlockData);
-                                        setInput(inputCopy);
-                                    }}>
-                                        Add
-                                    </Button>
+                                            </div>
+                                        )
+                                    })}
+                                    <Grid sx={{ display: "flex", flexDirection: "row", gap: 2, marginTop: 2 }}>
+                                        <FormControl fullWidth>
+                                            <InputLabel id="demo-simple-select-label">add block</InputLabel>
+                                            <Select
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                value={selectedBlock}
+                                                label="add block"
+                                                onChange={(e: SelectChangeEvent) => setSelectedBlock(e.target.value)}
+                                                size="small"
+                                            >
+                                                {additionalFields.map((field) => (
+                                                    <MenuItem value={field.code} key={field.id}>{field.name}</MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                        <Button onClick={() => {
+                                            const selectedBlockData = additionalFields.find((field) => field.code === selectedBlock);
+                                            const inputCopy = { ...input };
+                                            inputCopy.structure.additional.push(selectedBlockData);
+                                            setInput(inputCopy);
+                                        }}>
+                                            Add
+                                        </Button>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>
+                    )}
                 </Grid>
             </DialogContent>
             <DialogActions>

@@ -125,7 +125,7 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
                         size='small'
                     />
                 </Grid>
-                <Grid item xs={1.5}>
+                <Grid item xs={3}>
                     <Autocomplete
                         fullWidth
                         options={materials ? materials : []}
