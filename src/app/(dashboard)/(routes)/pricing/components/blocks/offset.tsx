@@ -84,26 +84,7 @@ const OffsetComponent = ({ offset, input, handleChange, initialValues }: { offse
     return (
         <Grid item xs={12}>
             <Grid container spacing={2}>
-                <Grid item xs={8}>
-                    <FormControl fullWidth>
-                        <InputLabel id="selectPart">select a part</InputLabel>
-                        <Select
-                            size='small'
-                            labelId="selectPart"
-                            id="selectPart"
-                            value={offset.peiceId ? offset.peiceId : "all"}
-                            label="select a part"
-                            name={`structure.additional[${blockIndex}].peiceId`}
-                            onChange={(e: SelectChangeEvent) => handleChange(e)}
-                        >
-                            <MenuItem value="all" key="all">All</MenuItem>
-                            {input.structure.input.structure.peices.map((peice: any) => (
-                                <MenuItem value={peice.id} key={peice.id}>{peice.name}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={3}>
                     <Autocomplete
                         id="combo-for-printSize"
                         options={printSizeOptions}
@@ -120,166 +101,167 @@ const OffsetComponent = ({ offset, input, handleChange, initialValues }: { offse
                         isOptionEqualToValue={(option, value) => option.id === value.id}
                     />
                 </Grid>
-                <Grid item xs={12}>
-                    <Divider />
-                </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={!!offset.structure.faces[0].active || !!offset.structure.faces[1].active ? 12 : 0} />
+                <Grid item xs={3}>
                     <Checkbox checked={offset.structure.faces[0].active} onChange={(e) => handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[0].active`, value: e.target.checked } })} />
                     {offset.structure.faces[0].name}
                 </Grid>
-                <Grid item xs={2}>
-                    <Autocomplete
-                        id="combo-for-colorType"
-                        options={["CMYK", "PANTON"]}
-                        getOptionLabel={(option) => option.toString()}
-                        renderOption={(props, option) => (
-                            <ListItem {...props} key={option}> <ListItemText primary={option} /> </ListItem>
-                        )}
-                        renderInput={(params) => <TextField {...params} label="Color Type" />}
-                        onChange={(event, value) => {
-                            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[0].colorType`, value: value ? value : null } });
-                        }}
-                        size='small'
-                        value={offset.structure.faces[0].colorType || ""}
-                        disabled={!!!offset.structure.faces[0].active}
-                    />
+                {!!offset.structure.faces[0].active && (
+                    <>
+                        <Grid item xs={1.5}>
+                            <Autocomplete
+                                id="combo-for-colorType"
+                                options={["CMYK", "PANTON"]}
+                                getOptionLabel={(option) => option.toString()}
+                                renderOption={(props, option) => (
+                                    <ListItem {...props} key={option}> <ListItemText primary={option} /> </ListItem>
+                                )}
+                                renderInput={(params) => <TextField {...params} label="Color Type" />}
+                                onChange={(event, value) => {
+                                    handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[0].colorType`, value: value ? value : null } });
+                                }}
+                                size='small'
+                                value={offset.structure.faces[0].colorType || ""}
+                                disabled={!!!offset.structure.faces[0].active}
+                            />
+                        </Grid>
+                        <Grid item xs={1.5}>
+                            <TextField
+                                fullWidth
+                                label="Number of Color"
+                                name={`structure.additional[${blockIndex}].structure.faces[0].numberOfColor`}
+                                value={offset.structure.faces[0].numberOfColor || ""}
+                                onChange={handleChange}
+                                size='small'
+                                disabled={!!!offset.structure.faces[0].active}
+                            />
+                        </Grid>
+                        <Grid item xs={1.5}>
+                            <TextField
+                                fullWidth
+                                label="Print Quantity"
+                                name={`structure.additional[${blockIndex}].structure.quantity`}
+                                value={offset.structure.quantity || 0}
+                                onChange={handleChange}
+                                size='small'
+                                disabled
+                            />
+                        </Grid>
+                        <Grid item xs={1.5}>
+                            <TextField
+                                fullWidth
+                                label="Cost First Print"
+                                name={`structure.additional[${blockIndex}].structure.faces[0].costFirstThousand`}
+                                value={+offset.structure.faces[0].costFirstThousand || 0}
+                                onChange={handleChange}
+                                size='small'
+                                disabled={!!!offset.structure.faces[0].active}
+                            />
+                        </Grid>
+                        <Grid item xs={1.5}>
+                            <TextField
+                                fullWidth
+                                label="Cost Second Print"
+                                name={`structure.additional[${blockIndex}].structure.faces[0].costNextThousand`}
+                                value={+offset.structure.faces[0].costNextThousand || 0}
+                                onChange={handleChange}
+                                size='small'
+                                disabled={!!!offset.structure.faces[0].active}
+                            />
+                        </Grid>
+                        <Grid item xs={1.5}>
+                            <TextField
+                                fullWidth
+                                label="Cost"
+                                value={offset.structure.faces[0].totalCost || 0}
+                                onChange={(e) => handleChange(e)}
+                                disabled
+                                size='small'
+                            />
+                        </Grid>
+                    </>
+                )}
+                <Grid item xs={!!offset.structure.faces[0].active || !!offset.structure.faces[1].active ? 12 : 0}>
                 </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        fullWidth
-                        label="Number of Color"
-                        name={`structure.additional[${blockIndex}].structure.faces[0].numberOfColor`}
-                        value={offset.structure.faces[0].numberOfColor || ""}
-                        onChange={handleChange}
-                        size='small'
-                        disabled={!!!offset.structure.faces[0].active}
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        fullWidth
-                        label="Print Quantity"
-                        name={`structure.additional[${blockIndex}].structure.quantity`}
-                        value={offset.structure.quantity || 0}
-                        onChange={handleChange}
-                        size='small'
-                        disabled
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        fullWidth
-                        label="Cost First Print"
-                        name={`structure.additional[${blockIndex}].structure.faces[0].costFirstThousand`}
-                        value={+offset.structure.faces[0].costFirstThousand || 0}
-                        onChange={handleChange}
-                        size='small'
-                        disabled={!!!offset.structure.faces[0].active}
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        fullWidth
-                        label="Cost Second Print"
-                        name={`structure.additional[${blockIndex}].structure.faces[0].costNextThousand`}
-                        value={+offset.structure.faces[0].costNextThousand || 0}
-                        onChange={handleChange}
-                        size='small'
-                        disabled={!!!offset.structure.faces[0].active}
-                    />
-                </Grid>
-                <Grid item xs={12} sx={{ display: "flex", justifyContent: "end" }}>
-                    <TextField
-                        sx={{ width: "250px" }}
-                        label="Cost"
-                        value={offset.structure.faces[0].totalCost || 0}
-                        onChange={(e) => handleChange(e)}
-                        disabled
-                        size='small'
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <Divider />
-                </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={3}>
                     <Checkbox checked={offset.structure.faces[1].active} onChange={(e) => handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[1].active`, value: e.target.checked } })} />
                     {offset.structure.faces[1].name}
                 </Grid>
-                <Grid item xs={2}>
-                    <Autocomplete
-                        id="combo-for-colorType"
-                        options={["CMYK", "PANTON"]}
-                        getOptionLabel={(option) => option.toString()}
-                        renderOption={(props, option) => (
-                            <ListItem {...props} key={option}> <ListItemText primary={option} /> </ListItem>
-                        )}
-                        renderInput={(params) => <TextField {...params} label="Color Type" />}
-                        onChange={(event, value) => {
-                            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[1].colorType`, value: value ? value : null } });
-                        }}
-                        size='small'
-                        value={offset.structure.faces[1].colorType}
-                        disabled={!!!offset.structure.faces[1].active}
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        fullWidth
-                        label="Number of Color"
-                        name={`structure.additional[${blockIndex}].structure.faces[1].numberOfColor`}
-                        value={offset.structure.faces[1].numberOfColor || ""}
-                        onChange={handleChange}
-                        size='small'
-                        disabled={!!!offset.structure.faces[1].active}
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        fullWidth
-                        label="Print Quantity"
-                        name={`structure.additional[${blockIndex}].structure.quantity`}
-                        value={offset.structure.quantity || 0}
-                        onChange={handleChange}
-                        size='small'
-                        disabled
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        fullWidth
-                        label="Cost First Print"
-                        name={`structure.additional[${blockIndex}].structure.faces[1].costFirstThousand`}
-                        value={+offset.structure.faces[1].costFirstThousand || 0}
-                        onChange={handleChange}
-                        size='small'
-                        disabled={!!!offset.structure.faces[1].active}
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        fullWidth
-                        label="Cost Second Print"
-                        name={`structure.additional[${blockIndex}].structure.faces[1].costNextThousand`}
-                        value={+offset.structure.faces[1].costNextThousand || 0}
-                        onChange={handleChange}
-                        size='small'
-                        disabled={!!!offset.structure.faces[1].active}
-                    />
-                </Grid>
-                <Grid item xs={12} sx={{ display: "flex", justifyContent: "end" }}>
-                    <TextField
-                        sx={{ width: "250px" }}
-                        label="Cost"
-                        value={offset.structure.faces[1].totalCost || 0}
-                        onChange={(e) => handleChange(e)}
-                        disabled
-                        size='small'
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <Divider />
-                </Grid>
+                {!!offset.structure.faces[1].active && (
+                    <>
+                        <Grid item xs={1.5}>
+                            <Autocomplete
+                                id="combo-for-colorType"
+                                options={["CMYK", "PANTON"]}
+                                getOptionLabel={(option) => option.toString()}
+                                renderOption={(props, option) => (
+                                    <ListItem {...props} key={option}> <ListItemText primary={option} /> </ListItem>
+                                )}
+                                renderInput={(params) => <TextField {...params} label="Color Type" />}
+                                onChange={(event, value) => {
+                                    handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[1].colorType`, value: value ? value : null } });
+                                }}
+                                size='small'
+                                value={offset.structure.faces[1].colorType}
+                                disabled={!!!offset.structure.faces[1].active}
+                            />
+                        </Grid>
+                        <Grid item xs={1.5}>
+                            <TextField
+                                fullWidth
+                                label="Number of Color"
+                                name={`structure.additional[${blockIndex}].structure.faces[1].numberOfColor`}
+                                value={offset.structure.faces[1].numberOfColor || ""}
+                                onChange={handleChange}
+                                size='small'
+                                disabled={!!!offset.structure.faces[1].active}
+                            />
+                        </Grid>
+                        <Grid item xs={1.5}>
+                            <TextField
+                                fullWidth
+                                label="Print Quantity"
+                                name={`structure.additional[${blockIndex}].structure.quantity`}
+                                value={offset.structure.quantity || 0}
+                                onChange={handleChange}
+                                size='small'
+                                disabled
+                            />
+                        </Grid>
+                        <Grid item xs={1.5}>
+                            <TextField
+                                fullWidth
+                                label="Cost First Print"
+                                name={`structure.additional[${blockIndex}].structure.faces[1].costFirstThousand`}
+                                value={+offset.structure.faces[1].costFirstThousand || 0}
+                                onChange={handleChange}
+                                size='small'
+                                disabled={!!!offset.structure.faces[1].active}
+                            />
+                        </Grid>
+                        <Grid item xs={1.5}>
+                            <TextField
+                                fullWidth
+                                label="Cost Second Print"
+                                name={`structure.additional[${blockIndex}].structure.faces[1].costNextThousand`}
+                                value={+offset.structure.faces[1].costNextThousand || 0}
+                                onChange={handleChange}
+                                size='small'
+                                disabled={!!!offset.structure.faces[1].active}
+                            />
+                        </Grid>
+                        <Grid item xs={1.5}>
+                            <TextField
+                                fullWidth
+                                label="Cost"
+                                value={offset.structure.faces[1].totalCost || 0}
+                                onChange={(e) => handleChange(e)}
+                                disabled
+                                size='small'
+                            />
+                        </Grid>
+                    </>
+                )}
                 <Grid item xs={12}>
                     <Grid container spacing={2} sx={{ justifyContent: "end", alignItems: "end" }} direction="column">
                         <Grid item xs={2}>

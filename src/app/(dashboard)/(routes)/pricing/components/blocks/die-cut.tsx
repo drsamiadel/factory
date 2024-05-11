@@ -17,9 +17,7 @@ import Typography from '@mui/material/Typography';
 
 const DieCutFormComponent = ({ dieCut, input, handleChange, initialValues }: { dieCut: any, input: any, handleChange: any, initialValues?: any }) => {
     const blockIndex = input.structure.additional.findIndex((block: any) => block.id === dieCut.id);
-
     const printSizeOptions = [{ id: 1, name: "100x70", value: 1 }, { id: 2, name: "50x70", value: 2 }, { id: 3, name: "50x35", value: 4 }];
-
 
     const currentPeice = dieCut.peiceId;
     const currentPage = input.structure.additional.find((page: any) => page.peiceId === currentPeice && page.code === 1);
@@ -79,26 +77,7 @@ const DieCutFormComponent = ({ dieCut, input, handleChange, initialValues }: { d
     return (
         <Grid item xs={12}>
             <Grid container spacing={2}>
-                <Grid item xs={8}>
-                    <FormControl fullWidth>
-                        <InputLabel id="selectPart">select a part</InputLabel>
-                        <Select
-                            size='small'
-                            labelId="selectPart"
-                            id="selectPart"
-                            value={dieCut.peiceId ? dieCut.peiceId : "all"}
-                            label="select a part"
-                            name={`structure.additional[${blockIndex}].peiceId`}
-                            onChange={(e: SelectChangeEvent) => handleChange(e)}
-                        >
-                            <MenuItem value="all" key="all">All</MenuItem>
-                            {input.structure.input.structure.peices.map((peice: any) => (
-                                <MenuItem value={peice.id} key={peice.id}>{peice.name}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={2}>
                     <Autocomplete
                         id="combo-for-dieCutSize"
                         options={printSizeOptions}
@@ -115,10 +94,7 @@ const DieCutFormComponent = ({ dieCut, input, handleChange, initialValues }: { d
                         isOptionEqualToValue={(option, value) => option.id === value.id}
                     />
                 </Grid>
-                <Grid item xs={12}>
-                    <Divider />
-                </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={1.5}>
                     <TextField
                         fullWidth
                         label="Die Cut Quantity"
@@ -129,7 +105,7 @@ const DieCutFormComponent = ({ dieCut, input, handleChange, initialValues }: { d
                         disabled
                     />
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={1.5}>
                     <TextField
                         fullWidth
                         label="Cost First Die cut"
@@ -139,7 +115,7 @@ const DieCutFormComponent = ({ dieCut, input, handleChange, initialValues }: { d
                         size='small'
                     />
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={1.5}>
                     <TextField
                         fullWidth
                         label="Cost Second Die cut"
@@ -149,25 +125,21 @@ const DieCutFormComponent = ({ dieCut, input, handleChange, initialValues }: { d
                         size='small'
                     />
                 </Grid>
-                <Grid item xs={12}>
-                    <Grid container spacing={2} sx={{ justifyContent: "end", alignItems: "end" }} direction="column">
-                        <Grid item xs={2}>
-                            <TextField
-                                fullWidth
-                                label="Die Cut Cost"
-                                name={`structure.additional[${blockIndex}].structure.dieCutCost`}
-                                value={+dieCut.structure.dieCutCost || 0}
-                                onChange={handleChange}
-                                size='small'
-                                disabled
-                            />
-                        </Grid>
-                    </Grid>
+                <Grid item xs={1.5} sx={{ marginLeft: "auto" }}>
+                    <TextField
+                        fullWidth
+                        label="Die Cut Cost"
+                        name={`structure.additional[${blockIndex}].structure.dieCutCost`}
+                        value={+dieCut.structure.dieCutCost || 0}
+                        onChange={handleChange}
+                        size='small'
+                        disabled
+                    />
                 </Grid>
                 <Grid item xs={12}>
                     <Divider />
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={1.5}>
                     <TextField
                         fullWidth
                         label="Die Cut Form"
@@ -177,7 +149,7 @@ const DieCutFormComponent = ({ dieCut, input, handleChange, initialValues }: { d
                         size='small'
                     />
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={1.5}>
                     <TextField
                         fullWidth
                         label="Meter Cost"
@@ -187,27 +159,20 @@ const DieCutFormComponent = ({ dieCut, input, handleChange, initialValues }: { d
                         size='small'
                     />
                 </Grid>
-                <Grid item xs={12}>
-                    <Grid container spacing={2} sx={{ justifyContent: "end", alignItems: "end" }} direction="column">
-                        <Grid item xs={2}>
-                            <TextField
-                                fullWidth
-                                label="Form Cost"
-                                name={`structure.additional[${blockIndex}].structure.formCost`}
-                                value={+dieCut.structure.formCost || 0}
-                                onChange={handleChange}
-                                size='small'
-                                disabled
-                            />
-                        </Grid>
-                    </Grid>
-                </Grid>
-                <Grid item xs={12}>
-                    <Divider />
+                <Grid item xs={1.5} sx={{ marginLeft: "auto" }}>
+                    <TextField
+                        fullWidth
+                        label="Form Cost"
+                        name={`structure.additional[${blockIndex}].structure.formCost`}
+                        value={+dieCut.structure.formCost || 0}
+                        onChange={handleChange}
+                        size='small'
+                        disabled
+                    />
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container spacing={2} sx={{ justifyContent: "end", alignItems: "end" }} direction="column">
-                        <Grid item xs={2}>
+                        <Grid item xs={1.5}>
                             <TextField
                                 fullWidth
                                 label="Total Cost"

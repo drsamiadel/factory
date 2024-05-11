@@ -119,7 +119,7 @@ export default function Form({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [input.total, input.profit, input.vat, input.discount]);
 
-    
+
     const costAfterProfit = +(+input.total * +input.profit / 100).toFixed(2) + +input.total;
     const costAfterVat = +(+(+costAfterProfit * +input.vat / 100).toFixed(2) + +costAfterProfit).toFixed(2);
 
@@ -465,180 +465,339 @@ export default function Form({
             TransitionComponent={Transition}
             aria-labelledby="scroll-dialog-title"
             aria-describedby="scroll-dialog-description"
-            scroll="body"
-            fullWidth
-            maxWidth="lg"
+            fullScreen
         >
             <DialogTitle id="scroll-dialog-title">
                 {initialValues ? `Update: ${initialValues.name}` : "Add Qutation"}
             </DialogTitle>
             <DialogContent dividers={true}>
                 <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <Typography variant="h6" gutterBottom sx={{ fontWeight: "600" }}>
-                            Customer Details
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={4}>
-                        <Autocomplete
-                            fullWidth
-                            options={customers ? customers : []}
-                            getOptionLabel={(option) => option.companyName ? option.companyName : ""}
-                            renderOption={(props, option) => (
-                                customerLoading ? <ListItem key={uuidv4()}>Loading...</ListItem> : <ListItem {...props} key={option.id}> <ListItemText primary={option.companyName} /> </ListItem>
-                            )}
-                            defaultValue={initialValues ? customers?.find((customer) => customer.id === initialValues.customerId) : null}
-                            renderInput={(params) => <TextField {...params} label="Customer" />}
-                            onChange={(event, value) => {
-                                setInput({ ...input, customerId: value ? value.id : null });
-                            }}
-                            onInputChange={(event, value) => {
-                                setCustomerSearch(value);
-                            }}
-                            isOptionEqualToValue={(option, value) => option.id === value.id}
-                            selectOnFocus
-                            clearOnBlur
-                            handleHomeEndKeys
-                            size='small'
-                        />
-                    </Grid>
-                    <Grid item xs={4}>
-                        <TextField
-                            fullWidth
-                            placeholder="Code"
-                            name="customerId"
-                            value={input.customerId ? customers?.find((customer) => customer.id === input.customerId)?.id : ""}
-                            disabled
-                            size='small'
-                        />
-                    </Grid>
-                    <Grid item xs={4}>
-                        <TextField
-                            fullWidth
-                            placeholder="Phone"
-                            name="customerPhone"
-                            value={input.customerId ? customers?.find((customer) => customer.id === input.customerId)?.phone1 : ""}
-                            disabled
-                            size='small'
-                        />
-                    </Grid>
-                    <Grid item xs={4}>
-                        <TextField
-                            fullWidth
-                            label="Quantity"
-                            name="structure.sheetsQuantity"
-                            value={input.structure.sheetsQuantity}
-                            onChange={handleChange}
-                            size='small'
-                        />
-                    </Grid>
-                    <Grid item xs={8}>
-                        <TextField
-                            fullWidth
-                            label="Description"
-                            name="description"
-                            value={input.description}
-                            onChange={handleChange}
-                            size='small'
-                            sx={{
-                                '& .MuiOutlinedInput-input': { minHeight: 40 }
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Divider />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Typography variant="h6" gutterBottom sx={{ fontWeight: "600" }}>
-                            Box Dimensions
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={4}>
-                        <Autocomplete
-                            fullWidth
-                            options={inputs ? inputs : []}
-                            getOptionLabel={(option) => option.name ? option.name : ""}
-                            renderOption={(props, option) => (
-                                customerLoading ? <ListItem key={uuidv4()}>Loading...</ListItem> : <ListItem {...props} key={option.id}> <ListItemText primary={option.name} /> </ListItem>
-                            )}
-                            defaultValue={initialValues ? inputs?.find((customer) => customer.id === initialValues.customerId) : null}
-                            renderInput={(params) => <TextField {...params} label="Select a box" />}
-                            onChange={(event, value) => {
-                                handleChange({ target: { name: "structure.input.id", value: value ? value.id as string : "" } });
-                                const inputContent = value ? value.structure : {};
-                                const inputCopy = { ...input };
-                                inputCopy.structure.input.structure = inputContent;
-                                setInput(inputCopy);
-                            }}
-                            onInputChange={(event, value) => {
-                                setInputSearch(value);
-                            }}
-                            isOptionEqualToValue={(option, value) => option.id === value.id}
-                            selectOnFocus
-                            clearOnBlur
-                            handleHomeEndKeys
-                            size='small'
-                        />
-                    </Grid>
-                    <Grid item xs={4}>
-                        <TextField
-                            fullWidth
-                            placeholder="Box Code"
-                            name="boxCode"
-                            value={input.structure.input.id ? inputs?.find((inputDb) => inputDb.id === input.structure.input.id)?.code : ""}
-                            disabled
-                            size='small'
-                        />
-                    </Grid>
-                    {input.structure.input.structure && input.structure.input.structure.peices && input.structure.input.structure.peices.length > 0 && (
-                        <div style={{ width: "100%", paddingLeft: "1rem", paddingTop: "1rem" }} key={input.structure.input.id}>
-                            <Grid container sx={{ margin: 0, width: "100%", background: theme.palette.action.hover, padding: 2, borderRadius: "10px" }} spacing={2}>
-                                {input.structure.input.structure.peices.map((peice: any, index: any) => {
-                                    const width = convertTextToEquation(peice.equation.width, input.structure.input, peice.id);
-                                    const height = convertTextToEquation(peice.equation.height, input.structure.input, peice.id);
-                                    return (
-                                        <div key={peice.id} style={{ display: "flex", flexDirection: "row", gap: 2, width: "100%" }}>
-                                            <ListItemText primary={peice.name} sx={{ width: "100%", [`& .MuiListItemText-primary`]: { fontSize: "1.2rem" }, paddingBottom: 2 }} />
-                                            {peice.fields.map((field: any, fieldIndex: any) => (
-                                                <Grid item xs={6} key={field.id}>
-                                                    <TextField size='small' id="filled-basic" label={`${field.name} [${field.key}]`} variant="outlined" value={field.value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e, true)} name={`structure.input.structure.peices[${index}].fields[${fieldIndex}].value`} sx={{ width: "100%" }} />
-                                                </Grid>
-                                            ))}
-                                            <ListItemText primary={`${width}mm x ${height}mm`} sx={{ width: "100%", [`& .MuiListItemText-primary`]: { fontSize: "1rem", fontWeight: "500" }, paddingTop: 2, textAlign: "end" }} />
-                                        </div>
-                                    )
-                                })}
-                                <Grid item xs={12}>
-                                    <Divider />
+                    <Grid item xs={6}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12}>
+                                        <Typography variant="h6" sx={{ fontWeight: "600" }}>
+                                            Customer Details
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <Autocomplete
+                                            fullWidth
+                                            options={customers ? customers : []}
+                                            getOptionLabel={(option) => option.companyName ? option.companyName : ""}
+                                            renderOption={(props, option) => (
+                                                customerLoading ? <ListItem key={uuidv4()}>Loading...</ListItem> : <ListItem {...props} key={option.id}> <ListItemText primary={option.companyName} /> </ListItem>
+                                            )}
+                                            defaultValue={initialValues ? customers?.find((customer) => customer.id === initialValues.customerId) : null}
+                                            renderInput={(params) => <TextField {...params} label="Customer" />}
+                                            onChange={(event, value) => {
+                                                setInput({ ...input, customerId: value ? value.id : null });
+                                            }}
+                                            onInputChange={(event, value) => {
+                                                setCustomerSearch(value);
+                                            }}
+                                            isOptionEqualToValue={(option, value) => option.id === value.id}
+                                            selectOnFocus
+                                            clearOnBlur
+                                            handleHomeEndKeys
+                                            size='small'
+                                        />
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <TextField
+                                            fullWidth
+                                            placeholder="Code"
+                                            name="customerId"
+                                            value={input.customerId ? customers?.find((customer) => customer.id === input.customerId)?.id : ""}
+                                            disabled
+                                            size='small'
+                                        />
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <TextField
+                                            fullWidth
+                                            placeholder="Phone"
+                                            name="customerPhone"
+                                            value={input.customerId ? customers?.find((customer) => customer.id === input.customerId)?.phone1 : ""}
+                                            disabled
+                                            size='small'
+                                        />
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <TextField
+                                            fullWidth
+                                            label="Quantity"
+                                            name="structure.sheetsQuantity"
+                                            value={input.structure.sheetsQuantity}
+                                            onChange={handleChange}
+                                            size='small'
+                                        />
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        <TextField
+                                            fullWidth
+                                            label="Description"
+                                            name="description"
+                                            value={input.description}
+                                            onChange={handleChange}
+                                            size='small'
+                                        />
+                                    </Grid>
                                 </Grid>
-                                <ListItemText primary="Total" sx={{ width: "100%", [`& .MuiListItemText-primary`]: { fontSize: "1rem" }, paddingTop: 2, textAlign: "end" }} />
-                                <div style={{ display: "flex", flexDirection: "row", gap: 2, justifyContent: "end", fontSize: "1.1rem", fontWeight: "600", width: "100%" }}>
-                                    {getTotals().width}mm x {getTotals().height}mm
-                                </div>
                             </Grid>
+                            <Grid item xs={12}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12}>
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={12}>
+                                                <Typography variant="h6" sx={{ fontWeight: "600" }}>
+                                                    Box Dimensions
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={4}>
+                                                <Autocomplete
+                                                    fullWidth
+                                                    options={inputs ? inputs : []}
+                                                    getOptionLabel={(option) => option.name ? option.name : ""}
+                                                    renderOption={(props, option) => (
+                                                        customerLoading ? <ListItem key={uuidv4()}>Loading...</ListItem> : <ListItem {...props} key={option.id}> <ListItemText primary={option.name} /> </ListItem>
+                                                    )}
+                                                    defaultValue={initialValues ? inputs?.find((customer) => customer.id === initialValues.customerId) : null}
+                                                    renderInput={(params) => <TextField {...params} label="Select a box" />}
+                                                    onChange={(event, value) => {
+                                                        handleChange({ target: { name: "structure.input.id", value: value ? value.id as string : "" } });
+                                                        const inputContent = value ? value.structure : {};
+                                                        const inputCopy = { ...input };
+                                                        inputCopy.structure.input.structure = inputContent;
+                                                        setInput(inputCopy);
+                                                    }}
+                                                    onInputChange={(event, value) => {
+                                                        setInputSearch(value);
+                                                    }}
+                                                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                                                    selectOnFocus
+                                                    clearOnBlur
+                                                    handleHomeEndKeys
+                                                    size='small'
+                                                />
+                                            </Grid>
+                                            <Grid item xs={4}>
+                                                <TextField
+                                                    fullWidth
+                                                    placeholder="Box Code"
+                                                    name="boxCode"
+                                                    value={input.structure.input.id ? inputs?.find((inputDb) => inputDb.id === input.structure.input.id)?.code : ""}
+                                                    disabled
+                                                    size='small'
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                        {input.structure.input.structure && input.structure.input.structure.peices && input.structure.input.structure.peices.length > 0 && (
+                                            <Grid item xs={12} style={{ paddingTop: "1rem" }} key={input.structure.input.id}>
+                                                <Grid container sx={{ margin: 0, width: "100%", background: theme.palette.action.hover, padding: 2, borderRadius: "10px" }} spacing={2}>
+                                                    {input.structure.input.structure.peices.map((peice: any, index: any) => {
+                                                        const width = convertTextToEquation(peice.equation.width, input.structure.input, peice.id);
+                                                        const height = convertTextToEquation(peice.equation.height, input.structure.input, peice.id);
+                                                        return (
+                                                            <div key={peice.id} style={{ display: "flex", flexDirection: "row", gap: 2, width: "100%" }}>
+                                                                <ListItemText primary={peice.name} sx={{ width: "100%", [`& .MuiListItemText-primary`]: { fontSize: "1.2rem" }, paddingBottom: 2 }} />
+                                                                {peice.fields.map((field: any, fieldIndex: any) => (
+                                                                    <Grid item xs={6} key={field.id}>
+                                                                        <TextField size='small' id="filled-basic" label={`${field.name} [${field.key}]`} variant="outlined" value={field.value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e, true)} name={`structure.input.structure.peices[${index}].fields[${fieldIndex}].value`} sx={{ width: "100%" }} />
+                                                                    </Grid>
+                                                                ))}
+                                                                <ListItemText primary={`${width}mm x ${height}mm`} sx={{ width: "100%", [`& .MuiListItemText-primary`]: { fontSize: "1rem", fontWeight: "500" }, paddingTop: 2, textAlign: "end" }} />
+                                                            </div>
+                                                        )
+                                                    })}
+                                                    <div style={{ display: "flex", flexDirection: "row", gap: 2, justifyContent: "end", fontSize: "1.1rem", fontWeight: "600", width: "100%", flexWrap: "nowrap", textWrap: "nowrap", alignContent: "center" }}>
+                                                        Total:
+                                                        {" " + getTotals().width}mm x {getTotals().height}mm
+                                                    </div>
+                                                </Grid>
+                                            </Grid>
+                                        )}
+                                    </Grid>
+                                    <Grid item xs={12} style={{ paddingLeft: "2rem" }}>
+                                        <Grid container spacing={2} sx={{ background: theme.palette.action.hover, padding: 2, borderRadius: "10px", marginTop: 2 }} alignContent="end" direction="column">
+                                            <Grid item xs={12}>
+                                                <Grid container spacing={2} sx={{ justifyContent: "end" }}>
+                                                    <Grid item xs={2}>
+                                                        <TextField
+                                                            fullWidth
+                                                            label="Pics Cost"
+                                                            value={(input.total / (input.structure.sheetsQuantity || 1)) || 0}
+                                                            size='small'
+                                                            disabled
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={2}>
+                                                    </Grid>
+                                                    <Grid item xs={4}>
+                                                        <TextField
+                                                            fullWidth
+                                                            label="Total Cost"
+                                                            name="total"
+                                                            value={input.total}
+                                                            onChange={handleChange}
+                                                            size='small'
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <Grid container spacing={2} sx={{ justifyContent: "end" }}>
+                                                    <Grid item xs={2}>
+                                                        <TextField
+                                                            fullWidth
+                                                            label="Pics Cost"
+                                                            value={(costAfterProfit / (input.structure.sheetsQuantity || 1)) || 0}
+                                                            size='small'
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={2}>
+                                                        <TextField
+                                                            fullWidth
+                                                            label="Profit"
+                                                            name="profit"
+                                                            value={input.profit}
+                                                            onChange={handleChange}
+                                                            size='small'
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={4}>
+                                                        <TextField
+                                                            fullWidth
+                                                            value={costAfterProfit}
+                                                            onChange={handleChange}
+                                                            disabled
+                                                            label="Cost After Profit"
+                                                            size='small'
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <Grid container spacing={2} sx={{ justifyContent: "end" }}>
+                                                    <Grid item xs={2}>
+                                                    </Grid>
+                                                    <Grid item xs={2}>
+                                                        <TextField
+                                                            fullWidth
+                                                            label="VAT"
+                                                            name="vat"
+                                                            value={input.vat}
+                                                            onChange={handleChange}
+                                                            size='small'
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={4}>
+                                                        <TextField
+                                                            fullWidth
+                                                            value={costAfterVat}
+                                                            onChange={handleChange}
+                                                            disabled
+                                                            size='small'
+                                                            label="Cost After VAT"
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <Grid container spacing={2} sx={{ justifyContent: "end" }}>
+                                                    <Grid item xs={4}>
+                                                        <TextField
+                                                            fullWidth
+                                                            label="Discount"
+                                                            name="discount"
+                                                            value={input.discount}
+                                                            onChange={handleChange}
+                                                            size='small'
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <Grid container spacing={2} sx={{ justifyContent: "end" }}>
+                                                    <Grid item xs={2}>
+                                                        <TextField
+                                                            fullWidth
+                                                            label="Pics Cost"
+                                                            value={(input.totalCost / (input.structure.sheetsQuantity || 1)) || 0}
+                                                            size='small'
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                        <TextField
+                                                            fullWidth
+                                                            label="Total"
+                                                            name="total"
+                                                            value={input.totalCost || 0}
+                                                            onChange={handleChange}
+                                                            size='small'
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    
+                    <Grid item xs={6}>
+                        <Grid container spacing={2}>
                             <Grid item xs={12} sx={{ marginTop: 2 }}>
-                                <Typography variant="h6" gutterBottom sx={{ fontWeight: "600" }}>
+                                <Typography variant="h6" sx={{ fontWeight: "600" }}>
                                     Additional Details
                                 </Typography>
                             </Grid>
                             <Grid item xs={12}>
                                 {input.structure.additional.map((block: any) => {
+                                    const blockIndex = input.structure.additional.findIndex((blockP: any) => blockP.id === block.id);
                                     return (
                                         <div key={block.id} style={{ width: "100%", paddingLeft: "1rem" }}>
                                             <Grid container spacing={2} key={block.id} sx={{ background: theme.palette.action.hover, padding: 2, borderRadius: "10px", marginTop: 2 }}>
                                                 <Grid item xs={12} sx={{ padding: "0!important" }}>
                                                     <Grid container spacing={2}>
                                                         <Grid item xs={12}>
-                                                            <Typography variant="h6" gutterBottom sx={{ fontWeight: "600", '& .MuiTypography-root': { paddingTop: 0 } }}>
-                                                                {block.name}
-                                                                <IconButton aria-label="delete" onClick={() => {
-                                                                    const inputCopy = { ...input };
-                                                                    inputCopy.structure.additional = inputCopy.structure.additional.filter((blockP: any) => blockP.id !== block.id);
-                                                                    setInput(inputCopy);
-                                                                }}>
-                                                                    <DeleteIcon />
-                                                                </IconButton>
-                                                            </Typography>
+                                                            <Grid container spacing={2} >
+                                                                <Grid item xs={7.4}>
+                                                                    <Typography variant="h6" sx={{ fontWeight: "600", '& .MuiTypography-root': { paddingTop: 0 } }}>
+                                                                        {block.name}
+                                                                    </Typography>
+                                                                </Grid>
+                                                                <Grid item xs={4}>
+                                                                    <FormControl fullWidth>
+                                                                        <InputLabel id="selectPart">select a part</InputLabel>
+                                                                        <Select
+                                                                            labelId="selectPart"
+                                                                            id="selectPart"
+                                                                            value={block.peiceId ? block.peiceId : "all"}
+                                                                            label="select a part"
+                                                                            name={`structure.additional[${blockIndex}].peiceId`}
+                                                                            onChange={(e: SelectChangeEvent) => handleChange(e)}
+                                                                            size='small'
+                                                                        >
+                                                                            <MenuItem value="all" key="all">All</MenuItem>
+                                                                            {input.structure.input.structure.peices.map((peice: any) => (
+                                                                                <MenuItem value={peice.id} key={peice.id}>{peice.name}</MenuItem>
+                                                                            ))}
+                                                                        </Select>
+                                                                    </FormControl>
+                                                                </Grid>
+                                                                <Grid item xs={.5} sx={{ textAlign: "end" }}>
+                                                                    <IconButton aria-label="delete" onClick={() => {
+                                                                        const inputCopy = { ...input };
+                                                                        inputCopy.structure.additional = inputCopy.structure.additional.filter((blockP: any) => blockP.id !== block.id);
+                                                                        setInput(inputCopy);
+                                                                    }}>
+                                                                        <DeleteIcon />
+                                                                    </IconButton>
+                                                                </Grid>
+                                                            </Grid>
                                                         </Grid>
                                                         {block.code === 1 && (
                                                             <PaperComponent paper={block} input={input} handleChange={handleChange} initialValues={initialValues} />
@@ -682,6 +841,7 @@ export default function Form({
                                             value={selectedBlock}
                                             label="add block"
                                             onChange={(e: SelectChangeEvent) => setSelectedBlock(e.target.value)}
+                                            size="small"
                                         >
                                             {additionalFields.map((field) => (
                                                 <MenuItem value={field.code} key={field.id}>{field.name}</MenuItem>
@@ -696,129 +856,6 @@ export default function Form({
                                     }}>
                                         Add
                                     </Button>
-                                </Grid>
-                            </Grid>
-                        </div>
-                    )}
-                    <Grid item xs={12} sx={{ marginLeft: 2 }}>
-                        <Grid container spacing={2} sx={{ background: theme.palette.action.hover, padding: 2, borderRadius: "10px", marginTop: 2 }} alignContent="end" direction="column">
-                            <Grid item xs={12}>
-                                <Grid container spacing={2} sx={{ justifyContent: "end" }}>
-                                    <Grid item xs={2}>
-                                        <TextField
-                                            fullWidth
-                                            label="Pics Cost"
-                                            value={(input.total / (input.structure.sheetsQuantity || 1)) || 0}
-                                            size='small'
-                                            disabled
-                                        />
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <TextField
-                                            fullWidth
-                                            label="Total Cost"
-                                            name="total"
-                                            value={input.total}
-                                            onChange={handleChange}
-                                            size='small'
-                                        />
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Grid container spacing={2} sx={{ justifyContent: "end" }}>
-                                    <Grid item xs={2}>
-                                        <TextField
-                                            fullWidth
-                                            label="Pics Cost"
-                                            value={(costAfterProfit / (input.structure.sheetsQuantity || 1)) || 0}
-                                            size='small'
-                                        />
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <TextField
-                                            fullWidth
-                                            label="Profit"
-                                            name="profit"
-                                            value={input.profit}
-                                            onChange={handleChange}
-                                            size='small'
-                                        />
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <TextField
-                                            fullWidth
-                                            value={costAfterProfit}
-                                            onChange={handleChange}
-                                            disabled
-                                            label="Cost After Profit"
-                                            size='small'
-                                        />
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Grid container spacing={2} sx={{ justifyContent: "end" }}>
-                                    <Grid item xs={2}>
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <TextField
-                                            fullWidth
-                                            label="VAT"
-                                            name="vat"
-                                            value={input.vat}
-                                            onChange={handleChange}
-                                            size='small'
-                                        />
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <TextField
-                                            fullWidth
-                                            value={costAfterVat}
-                                            onChange={handleChange}
-                                            disabled
-                                            size='small'
-                                            label="Cost After VAT"
-                                        />
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Grid container spacing={2} sx={{ justifyContent: "end" }}>
-                                    <Grid item xs={4}>
-                                        <TextField
-                                            fullWidth
-                                            label="Discount"
-                                            name="discount"
-                                            value={input.discount}
-                                            onChange={handleChange}
-                                            size='small'
-                                        />
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Grid container spacing={2} sx={{ justifyContent: "end" }}>
-                                    <Grid item xs={2}>
-                                        <TextField
-                                            fullWidth
-                                            label="Pics Cost"
-                                            value={(input.totalCost / (input.structure.sheetsQuantity || 1)) || 0}
-                                            size='small'
-                                        />
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            fullWidth
-                                            label="Total"
-                                            name="total"
-                                            value={input.totalCost || 0}
-                                            onChange={handleChange}
-                                            size='small'
-                                        />
-                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>

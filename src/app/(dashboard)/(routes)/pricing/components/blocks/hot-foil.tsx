@@ -53,26 +53,7 @@ const HotFoilComponent = ({ hotFoil, input, handleChange, initialValues }: { hot
     return (
         <Grid item xs={12}>
             <Grid container spacing={2}>
-                <Grid item xs={8}>
-                    <FormControl fullWidth>
-                        <InputLabel id="selectPart">select a part</InputLabel>
-                        <Select
-                            size='small'
-                            labelId="selectPart"
-                            id="selectPart"
-                            value={hotFoil.peiceId ? hotFoil.peiceId : "all"}
-                            label="select a part"
-                            name={`structure.additional[${blockIndex}].peiceId`}
-                            onChange={(e: SelectChangeEvent) => handleChange(e)}
-                        >
-                            <MenuItem value="all" key="all">All</MenuItem>
-                            {input.structure.input.structure.peices.map((peice: any) => (
-                                <MenuItem value={peice.id} key={peice.id}>{peice.name}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={2}>
                     <Autocomplete
                         id="combo-for-paperSize"
                         options={printSizeOptions}
@@ -89,10 +70,7 @@ const HotFoilComponent = ({ hotFoil, input, handleChange, initialValues }: { hot
                         isOptionEqualToValue={(option, value) => option.id === value.id}
                     />
                 </Grid>
-                <Grid item xs={12}>
-                    <Divider />
-                </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={1.5}>
                     <TextField
                         fullWidth
                         label="Print Size"
@@ -102,7 +80,7 @@ const HotFoilComponent = ({ hotFoil, input, handleChange, initialValues }: { hot
                         size='small'
                     />
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={1.5}>
                     <TextField
                         fullWidth
                         label="Number of Color"
@@ -112,7 +90,7 @@ const HotFoilComponent = ({ hotFoil, input, handleChange, initialValues }: { hot
                         size='small'
                     />
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={1.5}>
                     <TextField
                         fullWidth
                         label="Print Quantity"
@@ -123,7 +101,7 @@ const HotFoilComponent = ({ hotFoil, input, handleChange, initialValues }: { hot
                         disabled
                     />
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={1.5}>
                     <TextField
                         fullWidth
                         label="Cost Print"
@@ -133,7 +111,7 @@ const HotFoilComponent = ({ hotFoil, input, handleChange, initialValues }: { hot
                         size='small'
                     />
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={1.5}>
                     <TextField
                         fullWidth
                         label="Cliche Cost"
@@ -142,9 +120,6 @@ const HotFoilComponent = ({ hotFoil, input, handleChange, initialValues }: { hot
                         onChange={handleChange}
                         size='small'
                     />
-                </Grid>
-                <Grid item xs={12}>
-                    <Divider />
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container spacing={2} sx={{ justifyContent: "end", alignItems: "end" }} direction="column">

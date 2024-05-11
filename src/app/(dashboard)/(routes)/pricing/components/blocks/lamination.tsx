@@ -61,174 +61,155 @@ const LaminationComponent = ({ lamination, input, handleChange, initialValues }:
     return (
         <Grid item xs={12}>
             <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <FormControl fullWidth>
-                        <InputLabel id="selectPart">select a part</InputLabel>
-                        <Select
-                            size='small'
-                            labelId="selectPart"
-                            id="selectPart"
-                            value={lamination.peiceId ? lamination.peiceId : "all"}
-                            label="select a part"
-                            name={`structure.additional[${blockIndex}].peiceId`}
-                            onChange={(e: SelectChangeEvent) => handleChange(e)}
-                        >
-                            <MenuItem value="all" key="all">All</MenuItem>
-                            {input.structure.input.structure.peices.map((peice: any) => (
-                                <MenuItem value={peice.id} key={peice.id}>{peice.name}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                    <Divider />
-                </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={3}>
                     <Checkbox checked={lamination.structure.faces[0].active} onChange={(e) => handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[0].active`, value: e.target.checked } })} />
                     {lamination.structure.faces[0].name}
                 </Grid>
-                <Grid item xs={2}>
-                    <Autocomplete
-                        id="combo-for-laminationType"
-                        options={["MATT", "GLOSSY", "Gold Metallic", "Server Metallic", "Velvet"]}
-                        getOptionLabel={(option) => option.toString()}
-                        renderOption={(props, option) => (
-                            <ListItem {...props} key={option}> <ListItemText primary={option} /> </ListItem>
-                        )}
-                        renderInput={(params) => <TextField {...params} label="Lamination Type" />}
-                        onChange={(event, value) => {
-                            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[0].laminationType`, value: value ? value : null } });
-                        }}
-                        size='small'
-                        value={lamination.structure.faces[0].laminationType || ""}
-                        disabled={!!!lamination.structure.faces[0].active}
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <Autocomplete
-                        id="combo-for-laminationSize"
-                        options={["100x70", "90x64", "50x70", "35x50"]}
-                        getOptionLabel={(option) => option.toString()}
-                        renderOption={(props, option) => (
-                            <ListItem {...props} key={option}> <ListItemText primary={option} /> </ListItem>
-                        )}
-                        renderInput={(params) => <TextField {...params} label="Lamination Size" />}
-                        onChange={(event, value) => {
-                            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[0].laminationSize`, value: value ? value : null } });
-                        }}
-                        size='small'
-                        value={lamination.structure.faces[0].laminationSize || ""}
-                        disabled={!!!lamination.structure.faces[0].active}
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        fullWidth
-                        label="Lamination Quantity"
-                        name={`structure.additional[${blockIndex}].structure.quantity`}
-                        value={offsetQuantity || 0}
-                        onChange={handleChange}
-                        size='small'
-                        disabled
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        fullWidth
-                        label="Lamination Cost"
-                        name={`structure.additional[${blockIndex}].structure.faces[0].laminationCost`}
-                        value={+lamination.structure.faces[0].laminationCost || 0}
-                        onChange={handleChange}
-                        size='small'
-                        disabled={!!!lamination.structure.faces[0].active}
-                    />
-                </Grid>
-                <Grid item xs={12} sx={{ display: "flex", justifyContent: "end" }}>
-                    <TextField
-                        sx={{ width: "250px" }}
-                        label="Cost"
-                        value={lamination.structure.faces[0].totalCost || 0}
-                        onChange={(e) => handleChange(e)}
-                        disabled
-                        size='small'
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <Divider />
-                </Grid>
-                <Grid item xs={2}>
+                {!!lamination.structure.faces[0].active && (
+                    <>
+                        <Grid item xs={1.5}>
+                            <Autocomplete
+                                id="combo-for-laminationType"
+                                options={["MATT", "GLOSSY", "Gold Metallic", "Server Metallic", "Velvet"]}
+                                getOptionLabel={(option) => option.toString()}
+                                renderOption={(props, option) => (
+                                    <ListItem {...props} key={option}> <ListItemText primary={option} /> </ListItem>
+                                )}
+                                renderInput={(params) => <TextField {...params} label="Lamination Type" />}
+                                onChange={(event, value) => {
+                                    handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[0].laminationType`, value: value ? value : null } });
+                                }}
+                                size='small'
+                                value={lamination.structure.faces[0].laminationType || ""}
+                                disabled={!!!lamination.structure.faces[0].active}
+                            />
+                        </Grid>
+                        <Grid item xs={1.5}>
+                            <Autocomplete
+                                id="combo-for-laminationSize"
+                                options={["100x70", "90x64", "50x70", "35x50"]}
+                                getOptionLabel={(option) => option.toString()}
+                                renderOption={(props, option) => (
+                                    <ListItem {...props} key={option}> <ListItemText primary={option} /> </ListItem>
+                                )}
+                                renderInput={(params) => <TextField {...params} label="Lamination Size" />}
+                                onChange={(event, value) => {
+                                    handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[0].laminationSize`, value: value ? value : null } });
+                                }}
+                                size='small'
+                                value={lamination.structure.faces[0].laminationSize || ""}
+                                disabled={!!!lamination.structure.faces[0].active}
+                            />
+                        </Grid>
+                        <Grid item xs={1.5}>
+                            <TextField
+                                fullWidth
+                                label="Lamination Quantity"
+                                name={`structure.additional[${blockIndex}].structure.quantity`}
+                                value={offsetQuantity || 0}
+                                onChange={handleChange}
+                                size='small'
+                                disabled
+                            />
+                        </Grid>
+                        <Grid item xs={1.5}>
+                            <TextField
+                                fullWidth
+                                label="Lamination Cost"
+                                name={`structure.additional[${blockIndex}].structure.faces[0].laminationCost`}
+                                value={+lamination.structure.faces[0].laminationCost || 0}
+                                onChange={handleChange}
+                                size='small'
+                                disabled={!!!lamination.structure.faces[0].active}
+                            />
+                        </Grid>
+                        <Grid item xs={1.5}>
+                            <TextField
+                                fullWidth
+                                label="Cost"
+                                value={lamination.structure.faces[0].totalCost || 0}
+                                onChange={(e) => handleChange(e)}
+                                disabled
+                                size='small'
+                            />
+                        </Grid>
+                    </>
+                )}
+                <Grid item xs={12} sx={{ padding: "0px!important" }} />
+                <Grid item xs={3}>
                     <Checkbox checked={lamination.structure.faces[1].active} onChange={(e) => handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[1].active`, value: e.target.checked } })} />
                     {lamination.structure.faces[1].name}
-                </Grid>
-                <Grid item xs={2}>
-                    <Autocomplete
-                        id="combo-for-laminationType"
-                        options={["MATT", "GLOSSY", "Gold Metallic", "Server Metallic", "Velvet"]}
-                        getOptionLabel={(option) => option.toString()}
-                        renderOption={(props, option) => (
-                            <ListItem {...props} key={option}> <ListItemText primary={option} /> </ListItem>
-                        )}
-                        renderInput={(params) => <TextField {...params} label="Lamination Type" />}
-                        onChange={(event, value) => {
-                            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[1].laminationType`, value: value ? value : null } });
-                        }}
-                        size='small'
-                        value={lamination.structure.faces[1].laminationType || ""}
-                        disabled={!!!lamination.structure.faces[1].active}
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <Autocomplete
-                        id="combo-for-laminationSize"
-                        options={["100x70", "90x64", "50x70", "35x50"]}
-                        getOptionLabel={(option) => option.toString()}
-                        renderOption={(props, option) => (
-                            <ListItem {...props} key={option}> <ListItemText primary={option} /> </ListItem>
-                        )}
-                        renderInput={(params) => <TextField {...params} label="Lamination Size" />}
-                        onChange={(event, value) => {
-                            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[1].laminationSize`, value: value ? value : null } });
-                        }}
-                        size='small'
-                        value={lamination.structure.faces[1].laminationSize || ""}
-                        disabled={!!!lamination.structure.faces[1].active}
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        fullWidth
-                        label="Lamination Quantity"
-                        name={`structure.additional[${blockIndex}].structure.quantity`}
-                        value={offsetQuantity || 0}
-                        onChange={handleChange}
-                        size='small'
-                        disabled
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        fullWidth
-                        label="Varnish Cost"
-                        name={`structure.additional[${blockIndex}].structure.faces[1].laminationCost`}
-                        value={+lamination.structure.faces[1].laminationCost || 0}
-                        onChange={handleChange}
-                        size='small'
-                        disabled={!!!lamination.structure.faces[1].active}
-                    />
-                </Grid>
-                <Grid item xs={12} sx={{ display: "flex", justifyContent: "end" }}>
-                    <TextField
-                        sx={{ width: "250px" }}
-                        label="Cost"
-                        value={lamination.structure.faces[1].totalCost || 0}
-                        onChange={(e) => handleChange(e)}
-                        disabled
-                        size='small'
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <Divider />
-                </Grid>
+                Grid</Grid>
+                {!!lamination.structure.faces[1].active && (
+                    <>
+                        <Grid item xs={1.5}>
+                            <Autocomplete
+                                id="combo-for-laminationType"
+                                options={["MATT", "GLOSSY", "Gold Metallic", "Server Metallic", "Velvet"]}
+                                getOptionLabel={(option) => option.toString()}
+                                renderOption={(props, option) => (
+                                    <ListItem {...props} key={option}> <ListItemText primary={option} /> </ListItem>
+                                )}
+                                renderInput={(params) => <TextField {...params} label="Lamination Type" />}
+                                onChange={(event, value) => {
+                                    handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[1].laminationType`, value: value ? value : null } });
+                                }}
+                                size='small'
+                                value={lamination.structure.faces[1].laminationType || ""}
+                                disabled={!!!lamination.structure.faces[1].active}
+                            />
+                        </Grid>
+                        <Grid item xs={1.5}>
+                            <Autocomplete
+                                id="combo-for-laminationSize"
+                                options={["100x70", "90x64", "50x70", "35x50"]}
+                                getOptionLabel={(option) => option.toString()}
+                                renderOption={(props, option) => (
+                                    <ListItem {...props} key={option}> <ListItemText primary={option} /> </ListItem>
+                                )}
+                                renderInput={(params) => <TextField {...params} label="Lamination Size" />}
+                                onChange={(event, value) => {
+                                    handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[1].laminationSize`, value: value ? value : null } });
+                                }}
+                                size='small'
+                                value={lamination.structure.faces[1].laminationSize || ""}
+                                disabled={!!!lamination.structure.faces[1].active}
+                            />
+                        </Grid>
+                        <Grid item xs={1.5}>
+                            <TextField
+                                fullWidth
+                                label="Lamination Quantity"
+                                name={`structure.additional[${blockIndex}].structure.quantity`}
+                                value={offsetQuantity || 0}
+                                onChange={handleChange}
+                                size='small'
+                                disabled
+                            />
+                        </Grid>
+                        <Grid item xs={1.5}>
+                            <TextField
+                                fullWidth
+                                label="Varnish Cost"
+                                name={`structure.additional[${blockIndex}].structure.faces[1].laminationCost`}
+                                value={+lamination.structure.faces[1].laminationCost || 0}
+                                onChange={handleChange}
+                                size='small'
+                                disabled={!!!lamination.structure.faces[1].active}
+                            />
+                        </Grid>
+                        <Grid item xs={1.5}>
+                            <TextField
+                                fullWidth
+                                label="Cost"
+                                value={lamination.structure.faces[1].totalCost || 0}
+                                onChange={(e) => handleChange(e)}
+                                disabled
+                                size='small'
+                            />
+                        </Grid>
+                    </>
+                )}
                 <Grid item xs={12}>
                     <Grid container spacing={2} sx={{ justifyContent: "end", alignItems: "end" }} direction="column">
                         <Grid item xs={2}>
