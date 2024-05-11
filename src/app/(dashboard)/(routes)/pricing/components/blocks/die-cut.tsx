@@ -28,7 +28,7 @@ const DieCutFormComponent = ({ dieCut, input, handleChange, initialValues }: { d
         function calculateQuantity() {
             if (currentPeice) {
                 const quantity = sheetsQuantity * (printSizeOptions.find((size: any) => size.id === dieCut.structure.dieCutSize)?.value || 0);
-                handleChange({ target: { name: `structure.additional[${blockIndex}].structure.quantity`, value: quantity } }, true);
+                handleChange({ target: { name: `structure.additional[${blockIndex}].structure.quantity`, value: quantity < 1000 ? 1000 : quantity } }, true);
             }
         }
 

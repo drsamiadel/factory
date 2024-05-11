@@ -28,7 +28,7 @@ const VarnishComponent = ({ varnish, input, handleChange, initialValues }: { var
     React.useEffect(() => {
         function calculateCostFront() {
             const varnishCost = varnish.structure.faces[0].varnishCost || 0;
-            const quantity = offsetQuantity;
+            const quantity = sheetsQuantity;
             const thousand = +(quantity / 1000).toFixed(2);
             const totalCost = +varnishCost * +thousand;
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[0].totalCost`, value: totalCost } }, true);
@@ -36,7 +36,7 @@ const VarnishComponent = ({ varnish, input, handleChange, initialValues }: { var
 
         function calculateCostBack() {
             const varnishCost = varnish.structure.faces[1].varnishCost || 0;
-            const quantity = offsetQuantity;
+            const quantity = sheetsQuantity;
             const thousand = +(quantity / 1000).toFixed(2);
             const totalCost = +varnishCost * +thousand;
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[1].totalCost`, value: totalCost } }, true);
@@ -56,18 +56,18 @@ const VarnishComponent = ({ varnish, input, handleChange, initialValues }: { var
         calculateTotalCost();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [offsetQuantity, varnish.structure.faces[0].varnishCost, varnish.structure.faces[1].varnishCost, varnish.structure.faces[0].active, varnish.structure.faces[1].active]);
+    }, [sheetsQuantity, varnish.structure.faces[0].varnishCost, varnish.structure.faces[1].varnishCost, varnish.structure.faces[0].active, varnish.structure.faces[1].active]);
 
     return (
         <Grid item xs={12}>
             <Grid container spacing={2}>
-                <Grid item xs={6}>
+                <Grid item xs={5.5}>
                     <Checkbox checked={varnish.structure.faces[0].active} onChange={(e) => handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[0].active`, value: e.target.checked } })} />
                     {varnish.structure.faces[0].name}
                 </Grid>
                 {!!varnish.structure.faces[0].active && (
                     <>
-                        <Grid item xs={1.5}>
+                        <Grid item xs={2}>
                             <Autocomplete
                                 id="combo-for-varnishType"
                                 options={["MATT", "GLOSSY", "UV", "UV Spot"]}
@@ -89,7 +89,7 @@ const VarnishComponent = ({ varnish, input, handleChange, initialValues }: { var
                                 fullWidth
                                 label="Varnish Quantity"
                                 name={`structure.additional[${blockIndex}].structure.quantity`}
-                                value={offsetQuantity || 0}
+                                value={sheetsQuantity || 0}
                                 onChange={handleChange}
                                 size='small'
                                 disabled
@@ -119,13 +119,13 @@ const VarnishComponent = ({ varnish, input, handleChange, initialValues }: { var
                     </>
                 )}
                 <Grid item xs={!!varnish.structure.faces[0].active || !!varnish.structure.faces[1].active ? 12 : 0} />
-                <Grid item xs={6}>
+                <Grid item xs={5.5}>
                     <Checkbox checked={varnish.structure.faces[1].active} onChange={(e) => handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[1].active`, value: e.target.checked } })} />
                     {varnish.structure.faces[1].name}
                 </Grid>
                 {!!varnish.structure.faces[1].active && (
                     <>
-                        <Grid item xs={1.5}>
+                        <Grid item xs={2}>
                             <Autocomplete
                                 id="combo-for-varnishType"
                                 options={["MATT", "GLOSSY", "UV", "UV Spot"]}
@@ -147,7 +147,7 @@ const VarnishComponent = ({ varnish, input, handleChange, initialValues }: { var
                                 fullWidth
                                 label="Varnish Quantity"
                                 name={`structure.additional[${blockIndex}].structure.quantity`}
-                                value={offsetQuantity || 0}
+                                value={sheetsQuantity || 0}
                                 onChange={handleChange}
                                 size='small'
                                 disabled

@@ -30,7 +30,7 @@ const OffsetComponent = ({ offset, input, handleChange, initialValues }: { offse
         function calculateQuantity() {
             if (currentPeice) {
                 const quantity = sheetsQuantity * (printSizeOptions.find((size: any) => size.id === offset.structure.printSize)?.value || 0);
-                handleChange({ target: { name: `structure.additional[${blockIndex}].structure.quantity`, value: quantity } }, true);
+                handleChange({ target: { name: `structure.additional[${blockIndex}].structure.quantity`, value: quantity < 1000 ? 1000 : quantity } }, true);
             }
         }
 
@@ -102,13 +102,13 @@ const OffsetComponent = ({ offset, input, handleChange, initialValues }: { offse
                     />
                 </Grid>
                 <Grid item xs={!!offset.structure.faces[0].active || !!offset.structure.faces[1].active ? 12 : 0} />
-                <Grid item xs={3}>
+                <Grid item xs={2.5}>
                     <Checkbox checked={offset.structure.faces[0].active} onChange={(e) => handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[0].active`, value: e.target.checked } })} />
                     {offset.structure.faces[0].name}
                 </Grid>
                 {!!offset.structure.faces[0].active && (
                     <>
-                        <Grid item xs={1.5}>
+                        <Grid item xs={2}>
                             <Autocomplete
                                 id="combo-for-colorType"
                                 options={["CMYK", "PANTON"]}
@@ -183,13 +183,13 @@ const OffsetComponent = ({ offset, input, handleChange, initialValues }: { offse
                 )}
                 <Grid item xs={!!offset.structure.faces[0].active || !!offset.structure.faces[1].active ? 12 : 0}>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2.5}>
                     <Checkbox checked={offset.structure.faces[1].active} onChange={(e) => handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[1].active`, value: e.target.checked } })} />
                     {offset.structure.faces[1].name}
                 </Grid>
                 {!!offset.structure.faces[1].active && (
                     <>
-                        <Grid item xs={1.5}>
+                        <Grid item xs={2}>
                             <Autocomplete
                                 id="combo-for-colorType"
                                 options={["CMYK", "PANTON"]}

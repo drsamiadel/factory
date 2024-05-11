@@ -197,7 +197,7 @@ export default function Form({
                 faces: [
                     {
                         id: 1,
-                        active: false,
+                        active: true,
                         name: "Face Side",
                         colorType: "",
                         numberOfColor: "",
@@ -276,7 +276,7 @@ export default function Form({
                 faces: [
                     {
                         id: 1,
-                        active: false,
+                        active: true,
                         name: "Face Side",
                         laminationType: "",
                         laminationCost: 0,

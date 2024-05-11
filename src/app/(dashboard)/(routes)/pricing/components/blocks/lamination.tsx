@@ -28,7 +28,7 @@ const LaminationComponent = ({ lamination, input, handleChange, initialValues }:
     React.useEffect(() => {
         function calculateCostFront() {
             const laminationCost = lamination.structure.faces[0].laminationCost || 0;
-            const quantity = offsetQuantity;
+            const quantity = sheetsQuantity;
             const thousand = +(quantity / 1000).toFixed(2);
             const totalCost = +laminationCost * +thousand;
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[0].totalCost`, value: totalCost } }, true);
@@ -36,7 +36,7 @@ const LaminationComponent = ({ lamination, input, handleChange, initialValues }:
 
         function calculateCostBack() {
             const laminationCost = lamination.structure.faces[1].laminationCost || 0;
-            const quantity = offsetQuantity;
+            const quantity = sheetsQuantity;
             const thousand = +(quantity / 1000).toFixed(2);
             const totalCost = +laminationCost * +thousand;
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[1].totalCost`, value: totalCost } }, true);
@@ -56,7 +56,7 @@ const LaminationComponent = ({ lamination, input, handleChange, initialValues }:
         calculateTotalCost();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [offsetQuantity, lamination.structure.faces[0].laminationCost, lamination.structure.faces[1].laminationCost, lamination.structure.faces[0].active, lamination.structure.faces[1].active]);
+    }, [sheetsQuantity, lamination.structure.faces[0].laminationCost, lamination.structure.faces[1].laminationCost, lamination.structure.faces[0].active, lamination.structure.faces[1].active]);
 
     return (
         <Grid item xs={12}>
@@ -67,7 +67,7 @@ const LaminationComponent = ({ lamination, input, handleChange, initialValues }:
                 </Grid>
                 {!!lamination.structure.faces[0].active && (
                     <>
-                        <Grid item xs={1.5}>
+                        <Grid item xs={2.5}>
                             <Autocomplete
                                 id="combo-for-laminationType"
                                 options={["MATT", "GLOSSY", "Gold Metallic", "Server Metallic", "Velvet"]}
@@ -84,7 +84,7 @@ const LaminationComponent = ({ lamination, input, handleChange, initialValues }:
                                 disabled={!!!lamination.structure.faces[0].active}
                             />
                         </Grid>
-                        <Grid item xs={1.5}>
+                        <Grid item xs={2}>
                             <Autocomplete
                                 id="combo-for-laminationSize"
                                 options={["100x70", "90x64", "50x70", "35x50"]}
@@ -106,7 +106,7 @@ const LaminationComponent = ({ lamination, input, handleChange, initialValues }:
                                 fullWidth
                                 label="Lamination Quantity"
                                 name={`structure.additional[${blockIndex}].structure.quantity`}
-                                value={offsetQuantity || 0}
+                                value={sheetsQuantity || 0}
                                 onChange={handleChange}
                                 size='small'
                                 disabled
@@ -139,10 +139,10 @@ const LaminationComponent = ({ lamination, input, handleChange, initialValues }:
                 <Grid item xs={3}>
                     <Checkbox checked={lamination.structure.faces[1].active} onChange={(e) => handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[1].active`, value: e.target.checked } })} />
                     {lamination.structure.faces[1].name}
-                Grid</Grid>
+                </Grid>
                 {!!lamination.structure.faces[1].active && (
                     <>
-                        <Grid item xs={1.5}>
+                        <Grid item xs={2.5}>
                             <Autocomplete
                                 id="combo-for-laminationType"
                                 options={["MATT", "GLOSSY", "Gold Metallic", "Server Metallic", "Velvet"]}
@@ -159,7 +159,7 @@ const LaminationComponent = ({ lamination, input, handleChange, initialValues }:
                                 disabled={!!!lamination.structure.faces[1].active}
                             />
                         </Grid>
-                        <Grid item xs={1.5}>
+                        <Grid item xs={2}>
                             <Autocomplete
                                 id="combo-for-laminationSize"
                                 options={["100x70", "90x64", "50x70", "35x50"]}
@@ -181,7 +181,7 @@ const LaminationComponent = ({ lamination, input, handleChange, initialValues }:
                                 fullWidth
                                 label="Lamination Quantity"
                                 name={`structure.additional[${blockIndex}].structure.quantity`}
-                                value={offsetQuantity || 0}
+                                value={sheetsQuantity || 0}
                                 onChange={handleChange}
                                 size='small'
                                 disabled
