@@ -22,7 +22,7 @@ const DieCutFormComponent = ({ dieCut, input, handleChange, initialValues }: { d
     const currentPeice = dieCut.peiceId;
     const currentPage = input.structure.additional.find((page: any) => page.peiceId === currentPeice && page.code === 1);
     const allPage = input.structure.additional.find((page: any) => page.peiceId === "all" && page.code === 1);
-    const sheetsQuantity = currentPage ? currentPage.structure.sheetsQuantity : allPage ? allPage.structure.sheetsQuantity : 0;
+    const sheetsQuantity = input.strcutre.sheetsQuantity || 0;
 
     React.useEffect(() => {
         function calculateQuantity() {
