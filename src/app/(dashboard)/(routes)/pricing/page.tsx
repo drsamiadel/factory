@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
@@ -24,6 +24,7 @@ import Skeleton from '@mui/material/Skeleton';
 
 import { useDebounce } from "@/lib/use-debounce";
 import DeleteBTN from './components/delete';
+import { useReactToPrint } from 'react-to-print';
 
 
 interface PricingWithUserAndCustomer extends Partial<Pricing> {
@@ -93,7 +94,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const headCells: readonly HeadCell[] = [
     { id: 'code', label: 'Code' },
     { id: 'customer', label: 'Customer' },
-    { id: 'input', label: 'Input'},
+    { id: 'input', label: 'Input' },
     { id: 'total', label: 'Total' },
     { id: 'createdAt', label: 'Date' },
     { id: 'actions', label: '' },
@@ -234,6 +235,109 @@ export default function CustomizedTables() {
         return new File([u8arr], filename, { type: mime });
     }
 
+    const PrintBtn = ({ input }: { input: PricingWithUserAndCustomer }) => {
+        const contentToPrint = React.useRef(null);
+        const handlePrint = useReactToPrint({
+            content: () => contentToPrint.current,
+        });
+
+        const unitPrice = ((input.total || 0) / ((input.structure as any)?.sheetsQuantity || 1)).toFixed(2);
+
+        return (
+            <>
+                <Button variant="contained" onClick={handlePrint}>
+                    Print
+                </Button>
+                <div style={{ display: "none" }}>
+                    <div ref={contentToPrint}>
+                        {input && (
+                            <div style={{ padding: "15px", display: "flex", flexDirection: "column", gap: "10px", fontSize: "16px" }}>
+                                <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                                    <div style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
+                                        <h1 style={{ fontWeight: 600 }}>AL-ESTEQAMA PRINTING PRESS</h1>
+                                        <p>AL-NAKHEEL SHARAH MALIK SAUD</p>
+                                        <p>SHARAH MALIK SAUD - AL-DAMMAM</p>
+                                        <p>0551971699 / 0138285068</p>
+                                        <p>311165637900003</p>
+                                        <p>CR: 2050102120</p>
+                                    </div>
+                                    <div style={{ display: "flex", flexDirection: "column", alignItems: "end" }}>
+                                        <h1 style={{ fontWeight: 600 }}>تسعيرة</h1>
+                                        <p style={{ fontWeight: 600 }}>{input.code} :رقم الفاتورة</p>
+                                        <p>{input.customer.companyName}</p>
+                                        <p>{input.customer.vatNumber} :الرقم الضريبي</p>
+                                        <p>{new Date(input.createdAt as Date).toLocaleDateString()} :التاريخ المقدر</p>
+                                    </div>
+                                </div>
+                                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                                    <thead>
+                                        <tr>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={6}>
+                                                <p>البيان</p>
+                                                <p>Description</p>
+                                            </th>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={4}>
+                                                <p>الكمية</p>
+                                                <p>Qty</p>
+                                            </th>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={4}>
+                                                <p>سعر الوحدة</p>
+                                                <p>Unit Price</p>
+                                            </th>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={4}>
+                                                <p>المبلغ بدون ضريبة</p>
+                                                <p>Amount Excluding VAT</p>
+                                            </th>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={4}>
+                                                <p>مبلغ الضريبة</p>
+                                                <p>Tax Amount</p>
+                                            </th>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={4}>
+                                                <p>المجموع شامل الضريبة</p>
+                                                <p>Total Including VAT</p>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style={{ backgroundColor: "#f3f4f6" }}>
+                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }} colSpan={6}>
+                                                <p style={{ fontWeight: 600 }}>{input.input.name}</p>
+                                                <p>{input.input.code}</p>
+                                                <p>with {(input?.structure as any)?.additional?.map((add: any) => add.name).join("& ")}</p>
+                                            </td>
+                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} colSpan={4}>
+                                                <p>{((input.structure) as any)?.sheetsQuantity}</p>
+                                            </td>
+                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} colSpan={4}>
+                                                <p>{unitPrice}</p>
+                                            </td>
+                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} colSpan={4}>
+                                                <p>{input.total}</p>
+                                            </td>
+                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} colSpan={4}>
+                                                <p>{((input.totalCost || 0) - (input.total || 0)).toFixed(2)}</p>
+                                            </td>
+                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} colSpan={4}>
+                                                <p>{input.totalCost}</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div style={{ display: "flex", flexDirection: "column", justifyContent: "end", alignItems: "end" }}>
+                                    <p style={{ fontWeight: 600 }}>المجموع بدون ضريبة: {input.totalCost}</p>
+                                    <p style={{ fontWeight: 600 }}>الضريبة ({input.vat}%): {((input.totalCost || 0) * 0.15).toFixed(2)}</p>
+                                    <p style={{ fontWeight: 600 }}>الخصم: {input.discount}</p>
+                                    <p style={{ fontWeight: 600 }}>الإجمالي شامل الضريبة: {input.totalCost}</p>
+
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </>
+        );
+    }
+
     return (
         <Box
             component="div"
@@ -339,6 +443,7 @@ export default function CustomizedTables() {
                                     </StyledTableCell>
                                     <StyledTableCell align="right">
                                         <Box sx={{ display: 'flex', gap: 1, flexDirection: "row", justifyContent: "end", alignItems: "center" }}>
+                                            <PrintBtn input={row} />
                                             <IconButton aria-label="edit" sx={{ color: "success.main", p: 0 }} onClick={() => handleEdit(row.id!)}>
                                                 <EditRoundedIcon sx={{ fontSize: 16 }} />
                                             </IconButton>
