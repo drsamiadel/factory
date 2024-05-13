@@ -276,7 +276,7 @@ export default function Form({
                         name: "Face Side",
                         laminationType: "",
                         laminationCost: 0,
-                        laminationSize: "100x70",
+                        laminationSize: 1,
                         totalCost: 0,
                     },
                     {
@@ -285,7 +285,7 @@ export default function Form({
                         name: "Back Side",
                         laminationType: "",
                         laminationCost: 0,
-                        laminationSize: "100x70",
+                        laminationSize: 1,
                         totalCost: 0,
                     }
                 ],

@@ -17,6 +17,7 @@ import Typography from '@mui/material/Typography';
 
 const LaminationComponent = ({ lamination, input, handleChange, initialValues }: { lamination: any, input: any, handleChange: any, initialValues?: any }) => {
     const blockIndex = input.structure.additional.findIndex((block: any) => block.id === lamination.id);
+    const printSizeOptions = [{ id: 1, name: "100x70", value: 1 }, { id: 2, name: "50x70", value: 2 }, { id: 3, name: "50x35", value: 4 }];
 
     const currentPeice = lamination.peiceId;
     const currentPage = input.structure.additional.find((page: any) => page.peiceId === currentPeice && page.code === 1);
@@ -28,7 +29,7 @@ const LaminationComponent = ({ lamination, input, handleChange, initialValues }:
     React.useEffect(() => {
         function calculateCostFront() {
             const laminationCost = lamination.structure.faces[0].laminationCost || 0;
-            const quantity = sheetsQuantity;
+            const quantity = sheetsQuantity * (printSizeOptions.find((size: any) => size.id === lamination.structure.faces[0].laminationSize)?.value || 0);
             const thousand = +(quantity / 1000).toFixed(2);
             const totalCost = +laminationCost * +thousand;
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[0].totalCost`, value: totalCost } }, true);
@@ -36,7 +37,7 @@ const LaminationComponent = ({ lamination, input, handleChange, initialValues }:
 
         function calculateCostBack() {
             const laminationCost = lamination.structure.faces[1].laminationCost || 0;
-            const quantity = sheetsQuantity;
+            const quantity = sheetsQuantity * (printSizeOptions.find((size: any) => size.id === lamination.structure.faces[1].laminationSize)?.value || 0);
             const thousand = +(quantity / 1000).toFixed(2);
             const totalCost = +laminationCost * +thousand;
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[1].totalCost`, value: totalCost } }, true);
@@ -56,7 +57,25 @@ const LaminationComponent = ({ lamination, input, handleChange, initialValues }:
         calculateTotalCost();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [sheetsQuantity, lamination.structure.faces[0].laminationCost, lamination.structure.faces[1].laminationCost, lamination.structure.faces[0].active, lamination.structure.faces[1].active]);
+    }, [sheetsQuantity, lamination.structure.faces[0].laminationCost, lamination.structure.faces[1].laminationCost, lamination.structure.faces[0].active, lamination.structure.faces[1].active, lamination.structure.faces[0].laminationSize, lamination.structure.faces[1].laminationSize]);
+
+    React.useEffect(() => {
+        function calculateQuantityFace() {
+            const quantity = sheetsQuantity * (printSizeOptions.find((size: any) => size.id === lamination.structure.faces[0].laminationSize)?.value || 0);
+            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[0].quantity`, value: quantity } }, true);
+        }
+        calculateQuantityFace();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [sheetsQuantity, lamination.structure.faces[0].laminationSize]);
+
+    React.useEffect(() => {
+        function calculateQuantityBack() {
+            const quantity = sheetsQuantity * (printSizeOptions.find((size: any) => size.id === lamination.structure.faces[1].laminationSize)?.value || 0);
+            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[1].quantity`, value: quantity } }, true);
+        }
+        calculateQuantityBack();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [sheetsQuantity, lamination.structure.faces[1].laminationSize]);
 
     return (
         <Grid item xs={12}>
@@ -86,19 +105,19 @@ const LaminationComponent = ({ lamination, input, handleChange, initialValues }:
                         </Grid>
                         <Grid item xs={2}>
                             <Autocomplete
-                                id="combo-for-laminationSize"
-                                options={["100x70", "90x64", "50x70", "35x50"]}
-                                getOptionLabel={(option) => option.toString()}
+                                id="combo-for-printSize"
+                                options={printSizeOptions}
+                                getOptionLabel={(option) => option.name}
                                 renderOption={(props, option) => (
-                                    <ListItem {...props} key={option}> <ListItemText primary={option} /> </ListItem>
+                                    <ListItem {...props} key={option.id}> <ListItemText primary={option.name} /> </ListItem>
                                 )}
+                                value={printSizeOptions.find((size: any) => size.id === lamination.structure.faces[0].laminationSize) || printSizeOptions[0]}
                                 renderInput={(params) => <TextField {...params} label="Lamination Size" />}
                                 onChange={(event, value) => {
-                                    handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[0].laminationSize`, value: value ? value : null } });
+                                    handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[0].laminationSize`, value: value ? value.id : null } });
                                 }}
                                 size='small'
-                                value={lamination.structure.faces[0].laminationSize || ""}
-                                disabled={!!!lamination.structure.faces[0].active}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
                             />
                         </Grid>
                         <Grid item xs={1.5}>
@@ -106,7 +125,7 @@ const LaminationComponent = ({ lamination, input, handleChange, initialValues }:
                                 fullWidth
                                 label="Lamination Quantity"
                                 name={`structure.additional[${blockIndex}].structure.quantity`}
-                                value={sheetsQuantity || 0}
+                                value={lamination.structure.faces[0].quantity || 0}
                                 onChange={handleChange}
                                 size='small'
                                 disabled
@@ -161,19 +180,19 @@ const LaminationComponent = ({ lamination, input, handleChange, initialValues }:
                         </Grid>
                         <Grid item xs={2}>
                             <Autocomplete
-                                id="combo-for-laminationSize"
-                                options={["100x70", "90x64", "50x70", "35x50"]}
-                                getOptionLabel={(option) => option.toString()}
+                                id="combo-for-printSize"
+                                options={printSizeOptions}
+                                getOptionLabel={(option) => option.name}
                                 renderOption={(props, option) => (
-                                    <ListItem {...props} key={option}> <ListItemText primary={option} /> </ListItem>
+                                    <ListItem {...props} key={option.id}> <ListItemText primary={option.name} /> </ListItem>
                                 )}
+                                value={printSizeOptions.find((size: any) => size.id === lamination.structure.faces[1].laminationSize) || printSizeOptions[0]}
                                 renderInput={(params) => <TextField {...params} label="Lamination Size" />}
                                 onChange={(event, value) => {
-                                    handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[1].laminationSize`, value: value ? value : null } });
+                                    handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[1].laminationSize`, value: value ? value.id : null } });
                                 }}
                                 size='small'
-                                value={lamination.structure.faces[1].laminationSize || ""}
-                                disabled={!!!lamination.structure.faces[1].active}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
                             />
                         </Grid>
                         <Grid item xs={1.5}>
@@ -181,7 +200,7 @@ const LaminationComponent = ({ lamination, input, handleChange, initialValues }:
                                 fullWidth
                                 label="Lamination Quantity"
                                 name={`structure.additional[${blockIndex}].structure.quantity`}
-                                value={sheetsQuantity || 0}
+                                value={lamination.structure.faces[1].quantity || 0}
                                 onChange={handleChange}
                                 size='small'
                                 disabled
@@ -190,7 +209,7 @@ const LaminationComponent = ({ lamination, input, handleChange, initialValues }:
                         <Grid item xs={1.5}>
                             <TextField
                                 fullWidth
-                                label="Varnish Cost"
+                                label="Lamination Cost"
                                 name={`structure.additional[${blockIndex}].structure.faces[1].laminationCost`}
                                 value={+lamination.structure.faces[1].laminationCost || 0}
                                 onChange={handleChange}
