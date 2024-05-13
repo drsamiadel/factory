@@ -12,39 +12,18 @@ const UPDATE = async (
     try {
         const { id } = await getUserSession();
 
-        const schema = z.object({
-            category: z.string().optional(),
-            name: z.string().min(1),
-            type: z.string().min(1),
-            thickness: z.number().optional(),
-            size: z.string().optional(),
-            unit: z.string().optional(),
-            piecesInPackage: z.number().optional(),
-            packagePrice: z.number().optional(),
-            unitPrice: z.number().optional(),
-            description: z.string().optional(),
-            supplier: z.string()
-        });
-
-        const validatedData = schema.parse(material);
-
         const updatedMaterial = await prisma.material.update({
             where: {
                 id: material.id,
             },
             data: {
                 userId: id,
-                category: validatedData.category,
-                name: validatedData.name,
-                type: validatedData.type,
-                thickness: validatedData.thickness,
-                size: validatedData.size,
-                unit: validatedData.unit,
-                piecesInPackage: validatedData.piecesInPackage,
-                packagePrice: validatedData.packagePrice,
-                unitPrice: validatedData.unitPrice,
-                description: validatedData.description,
-                supplierId: validatedData.supplier,
+                category: material.category,
+                name: material.name,
+                type: material.type,
+                variants: material.variants as any,
+                description: material.description,
+                supplierId: material.supplierId,
             },
             include: {
                 supplier: true,

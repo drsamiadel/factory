@@ -199,12 +199,7 @@ model Material {
   category        String?
   name            String?
   type            String?
-  thickness       Int?
-  size            String?
-  unit            String?
-  piecesInPackage Int?
-  packagePrice    Float?
-  unitPrice       Float?
+  variants 	Json[]
   description     String?
   supplierId      String?   @db.ObjectId
   supplier        Supplier? @relation(fields: [supplierId], references: [id])

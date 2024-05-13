@@ -167,7 +167,13 @@ export default function Form({
                 upsInSheet: 1,
                 sheetsQuantity: 0,
                 destroyRate: 0,
-                material: "",
+                material: {
+                    id: "",
+                    thickness: 0,
+                    size: "",
+                    piecesInPackage: 0,
+                    unitPrice: 0,
+                },
                 paperTotal: 0,
                 totalCost: 0,
                 vat: {
@@ -403,7 +409,6 @@ export default function Form({
         }
     }, [initialValues]);
 
-    console.log(input)
     const handleChange = (event: React.ChangeEvent<HTMLInputElement> | { target: { name: string, value: any } }, number?: boolean) => {
         const { name, value } = event.target;
         const inputCopy = { ...input };

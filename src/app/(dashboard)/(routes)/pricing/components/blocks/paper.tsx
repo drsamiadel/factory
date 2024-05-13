@@ -41,8 +41,6 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
 
     const sheetsQuantity = (input.structure.sheetsQuantity / paper.structure.upsInSheet).toFixed(0);
 
-    console.log("paper", paper.structure.totalCost);
-
     React.useEffect(() => {
         function calculatePaperTotal() {
             const paperTotal = (+sheetsQuantity + +paper.structure.destroyRate || 0);
@@ -50,13 +48,14 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
         }
         calculatePaperTotal();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [sheetsQuantity, paper.structure.destroyRate, paper.structure.material]);
+    }, [sheetsQuantity, paper.structure.destroyRate, paper.structure.material.id]);
 
     React.useEffect(() => {
         function calculatePaperCost() {
             const paperTotal = +paper.structure.paperTotal || 0;
-            const material = materials?.find((material) => material.id === paper.structure.material);
-            const unitPrice = material?.unitPrice || 0;
+            const material = materials?.find((material) => material.id === paper.structure.material.id);
+            const selectedVariant = material?.variants?.find((variant: any) => variant.thickness === paper.structure.material.thickness && variant.size === paper.structure.material.size);
+            const unitPrice = (selectedVariant as any)?.unitPrice || 0;
             const totalCost = paperTotal * +unitPrice;
             const vat = paper.structure.vat.active ? +paper.structure.vat.value : 0;
             const totalCostWithVat = totalCost + (totalCost * vat / 100);
@@ -64,7 +63,7 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
         }
         calculatePaperCost();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [sheetsQuantity, paper.structure.destroyRate, paper.structure.material, paper.structure.vat.active, paper.structure.vat.value, materials, paper.structure.paperTotal]);
+    }, [sheetsQuantity, paper.structure.destroyRate, paper.structure.material.id, paper.structure.vat.active, paper.structure.vat.value, materials, paper.structure.paperTotal, paper.structure.material.thickness, paper.structure.material.size, paper.structure.piecesInPackage]);
 
     React.useEffect(() => {
         function calculateQuantity() {
@@ -83,6 +82,24 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
         calculateSheetsQuantity();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [paper.structure.quantity, paper.structure.upsInSheet]);
+
+    React.useEffect(() => {
+        function updatepiecesInPackage() {
+            const piecesInPackage = (materials?.find((material) => material.id === paper.structure.material.id)?.variants as any)?.find((variant: any) => variant.thickness === paper.structure.material.thickness && variant.size === paper.structure.material.size)?.piecesInPackage || 0;
+            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.material.piecesInPackage`, value: piecesInPackage } });
+        }
+        updatepiecesInPackage();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [paper.structure.material.thickness, paper.structure.material.size, materials]);
+
+    React.useEffect(() => {
+        function updateUnitPrice() {
+            const unitPrice = (materials?.find((material) => material.id === paper.structure.material.id && material.variants?.find((variant: any) => variant.thickness === paper.structure.thickness && variant.size === paper.structure.size)) as any)?.unitPrice || 0;
+            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.material.unitPrice`, value: unitPrice } });
+        }
+        updateUnitPrice();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [paper.structure.material.thickness, paper.structure.material.size, paper.structure.material.piecesInPackage, materials]);
 
     return (
         <Grid item xs={12}>
@@ -138,12 +155,12 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
                         options={materials ? materials : []}
                         getOptionLabel={(option) => option.name ? option.name : ""}
                         renderOption={(props, option) => (
-                            materialsLoading ? <ListItem key={uuidv4()}>Loading...</ListItem> : <ListItem {...props} key={option.id}> <ListItemText primary={`${option.name} [${option.type} - ${option.thickness} - ${option.size}]`} /> </ListItem>
+                            materialsLoading ? <ListItem key={uuidv4()}>Loading...</ListItem> : <ListItem {...props} key={option.id}> <ListItemText primary={`${option.name}`} /> </ListItem>
                         )}
-                        value={materials?.find((material) => material.id === paper.structure.material) || null}
+                        value={materials?.find((material) => material.id === paper.structure.material.id) || null}
                         renderInput={(params) => <TextField {...params} label="Material" />}
                         onChange={(event, value) => {
-                            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.material`, value: value ? value.id : null } });
+                            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.material.id`, value: value ? value.id : null } });
                         }
                         }
                         onInputChange={(event, value) => {
@@ -160,37 +177,53 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
                     <TextField
                         fullWidth
                         label="Type"
-                        value={materials?.find((material) => material.id === paper.structure.material)?.type || ""}
+                        value={materials?.find((material) => material.id === paper.structure.material.id)?.type || ""}
                         onChange={(e) => handleChange(e)}
                         disabled
                         size='small'
                     />
                 </Grid>
                 <Grid item xs={1.5}>
-                    <TextField
-                        fullWidth
-                        label="Thickness"
-                        value={materials?.find((material) => material.id === paper.structure.material)?.thickness || ""}
-                        onChange={(e) => handleChange(e)}
-                        disabled
-                        size='small'
-                    />
+                    <FormControl fullWidth size='small'>
+                        <InputLabel id="thickness">Thickness</InputLabel>
+                        <Select
+                            labelId="thickness"
+                            id="thickness"
+                            label="Thickness"
+                            size='small'
+                            name="thickness"
+                            value={paper.structure.material.thickness || ""}
+                            onChange={(e: SelectChangeEvent) => handleChange({ target: { name: `structure.additional[${blockIndex}].structure.material.thickness`, value: e.target.value } })}
+                        >
+                            {(materials?.find((material) => material.id === paper.structure.material.id)?.variants as any)?.map((variant: any) => variant.thickness).filter((value: any, index: any, self: any) => self.indexOf(value) === index).map((thickness: any) => (
+                                <MenuItem key={thickness} value={thickness}>{thickness}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid item xs={1.5}>
+                    <FormControl fullWidth size='small'>
+                        <InputLabel id="size">Size</InputLabel>
+                        <Select
+                            labelId="size"
+                            id="size"
+                            label="Size"
+                            size='small'
+                            name="size"
+                            value={paper.structure.material.size || ""}
+                            onChange={(e: SelectChangeEvent) => handleChange({ target: { name: `structure.additional[${blockIndex}].structure.material.size`, value: e.target.value } })}
+                        >
+                            {(materials?.find((material) => material.id === paper.structure.material.id)?.variants as any)?.filter((variant: any) => variant.thickness === paper.structure.material.thickness).map((variant: any) => variant.size).filter((value: any, index: any, self: any) => self.indexOf(value) === index).map((size: any) => (
+                                <MenuItem key={size} value={size}>{size}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                 </Grid>
                 <Grid item xs={1.5}>
                     <TextField
                         fullWidth
-                        label="Size"
-                        value={materials?.find((material) => material.id === paper.structure.material)?.size || ""}
-                        onChange={(e) => handleChange(e)}
-                        disabled
-                        size='small'
-                    />
-                </Grid>
-                <Grid item xs={1.5}>
-                    <TextField
-                        fullWidth
-                        label="Pieces in Package"
-                        value={materials?.find((material) => material.id === paper.structure.material)?.piecesInPackage || ""}
+                        label="Peices in Package"
+                        value={(materials?.find((material) => material.id === paper.structure.material.id)?.variants as any)?.find((variant: any) => variant.thickness === paper.structure.material.thickness && variant.size === paper.structure.material.size)?.piecesInPackage || 0}
                         onChange={(e) => handleChange(e)}
                         disabled
                         size='small'
@@ -200,7 +233,7 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
                     <TextField
                         fullWidth
                         label="Unit Price"
-                        value={materials?.find((material) => material.id === paper.structure.material)?.unitPrice || ""}
+                        value={(materials?.find((material) => material.id === paper.structure.material.id)?.variants as any)?.find((variant: any) => variant.thickness === paper.structure.material.thickness && variant.size === paper.structure.material.size)?.unitPrice || 0}
                         onChange={(e) => handleChange(e)}
                         disabled
                         size='small'

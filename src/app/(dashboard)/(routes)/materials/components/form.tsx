@@ -138,15 +138,45 @@ export default function Form({
         name: "",
         type: "",
         category: "",
-        thickness: 0,
-        size: "",
-        unit: "",
-        piecesInPackage: 0,
-        packagePrice: 0,
-        unitPrice: 0,
+        variants: [
+            {
+                id: uuidv4(),
+                thickness: 0,
+                size: "",
+                unit: "",
+                piecesInPackage: 0,
+                packagePrice: 0,
+                unitPrice: 0,
+            }
+        ],
         description: "",
-        supplier: "",
+        supplierId: "",
     });
+
+    const addVariant = () => {
+        setInput((prev) => ({
+            ...prev,
+            variants: [
+                ...prev.variants,
+                {
+                    id: uuidv4(),
+                    thickness: 0,
+                    size: "",
+                    unit: "",
+                    piecesInPackage: 0,
+                    packagePrice: 0,
+                    unitPrice: 0,
+                }
+            ]
+        }));
+    }
+
+    const removeVariant = (id: string) => {
+        setInput((prev) => ({
+            ...prev,
+            variants: prev.variants.filter((variant: any) => variant.id !== id)
+        }));
+    }
 
     const [loading, setLoading] = React.useState(false);
     const [errors, setErrors] = React.useState([]);
@@ -163,10 +193,12 @@ export default function Form({
         }
     }, [initialValues]);
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>, number = false) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement> | { target: { name: string, value: any } }, number?: boolean) => {
         const { name, value } = event.target;
         const inputCopy = { ...input };
-        set(inputCopy, name, number ? parseFloat(value) : value);
+        set(inputCopy, name, number ? parseFloat(
+            (value === "" || value === null || value === undefined || isNaN(value)) ? 0 : value
+        ) : value);
         setInput(inputCopy);
     };
 
@@ -176,14 +208,19 @@ export default function Form({
             name: "",
             type: "",
             category: "",
-            thickness: 0,
-            size: "",
-            unit: "",
-            piecesInPackage: 0,
-            packagePrice: 0,
-            unitPrice: 0,
+            variants: [
+                {
+                    id: uuidv4(),
+                    thickness: 0,
+                    size: "",
+                    unit: "",
+                    piecesInPackage: 0,
+                    packagePrice: 0,
+                    unitPrice: 0,
+                }
+            ],
             description: "",
-            supplier: "",
+            supplierId: "",
         });
         setErrors([]);
     };
@@ -194,13 +231,17 @@ export default function Form({
     };
 
     React.useEffect(() => {
-        if (input.piecesInPackage && input.packagePrice) {
-            setInput((prev) => ({
-                ...prev,
-                unitPrice: (prev.packagePrice / prev.piecesInPackage),
-            }));
+        for (const variant of input.variants) {
+            const packagePrice = variant.packagePrice;
+            const piecesInPackage = variant.piecesInPackage;
+            const unitPrice = packagePrice / piecesInPackage;
+            variant.unitPrice = isNaN(unitPrice) ? 0 : +(unitPrice.toFixed(2));
         }
-    }, [input.piecesInPackage, input.packagePrice]);
+
+        setInput((prev) => ({ ...prev, variants: input.variants }));
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [JSON.stringify(input.variants)]);
 
     React.useEffect(() => {
         const fetchSuppliers = async () => {
@@ -379,140 +420,155 @@ export default function Form({
                             )}
                         />
                     </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Thickness"
-                            name="thickness"
-                            value={input.thickness}
-                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event, true)}
-                            size='small'
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Autocomplete
-                            fullWidth
-                            value={input.size}
-                            onChange={(event, newValue) => {
-                                if (typeof newValue === 'string') {
-                                    setInput((prev) => ({ ...prev, size: newValue }));
-                                } else if (newValue && newValue.inputValue) {
-                                    setInput((prev) => ({ ...prev, size: newValue.inputValue! }));
-                                } else {
-                                    setInput((prev) => ({ ...prev, size: newValue ? newValue.title : '' }));
-                                }
-                            }}
-                            filterOptions={(options, params) => {
-                                const filtered = sizeFilter(options, params);
+                    {input.variants.map((variant: any) => {
+                        const variantIndex = input.variants.findIndex((v: any) => v.id === variant.id);
+                        return (
+                            <Grid key={variant.id} item xs={12} sx={{ backgroundColor: theme.palette.grey[100], padding: 2, borderRadius: 1, marginY: 1, marginLeft: 3 }}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            label="Thickness"
+                                            name={`variants[${variantIndex}].thickness`}
+                                            value={variant.thickness}
+                                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event, true)}
+                                            size='small'
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Autocomplete
+                                            fullWidth
+                                            value={variant.size}
+                                            onChange={(event, newValue) => {
+                                                if (typeof newValue === 'string') {
+                                                    setInput((prev) => ({ ...prev, variants: prev.variants.map((v: any) => v.id === variant.id ? { ...v, size: newValue } : v) }));
+                                                } else if (newValue && newValue.inputValue) {
+                                                    setInput((prev) => ({ ...prev, variants: prev.variants.map((v: any) => v.id === variant.id ? { ...v, size: newValue.inputValue! } : v) }));
+                                                } else {
+                                                    setInput((prev) => ({ ...prev, variants: prev.variants.map((v: any) => v.id === variant.id ? { ...v, size: newValue ? newValue.title : '' } : v) }));
+                                                }
+                                            }}
+                                            filterOptions={(options, params) => {
+                                                const filtered = sizeFilter(options, params);
 
-                                const { inputValue } = params;
-                                const isExisting = options.some((option) => inputValue === option.title);
-                                if (inputValue !== '' && !isExisting) {
-                                    filtered.push({
-                                        inputValue,
-                                        title: `Add "${inputValue}"`,
-                                    });
-                                }
+                                                const { inputValue } = params;
+                                                const isExisting = options.some((option) => inputValue === option.title);
+                                                if (inputValue !== '' && !isExisting) {
+                                                    filtered.push({
+                                                        inputValue,
+                                                        title: `Add "${inputValue}"`,
+                                                    });
+                                                }
 
-                                return filtered;
-                            }}
-                            selectOnFocus
-                            clearOnBlur
-                            handleHomeEndKeys
-                            id="sizes"
-                            options={sizes}
-                            getOptionLabel={(option) => {
-                                if (typeof option === 'string') {
-                                    return option;
-                                }
-                                if (option.inputValue) {
-                                    return option.inputValue;
-                                }
-                                return option.title;
-                            }}
-                            renderOption={(props, option) => <li {...props} key={option.title || option.inputValue}>{option.title}</li>}
-                            freeSolo
-                            renderInput={(params) => (
-                                <TextField {...params} label="Size" fullWidth size='small' />
-                            )}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Autocomplete
-                            fullWidth
-                            value={input.unit}
-                            onChange={(event, newValue) => {
-                                if (typeof newValue === 'string') {
-                                    setInput((prev) => ({ ...prev, unit: newValue }));
-                                } else if (newValue && newValue.inputValue) {
-                                    setInput((prev) => ({ ...prev, unit: newValue.inputValue! }));
-                                } else {
-                                    setInput((prev) => ({ ...prev, unit: newValue ? newValue.title : '' }));
-                                }
-                            }}
-                            filterOptions={(options, params) => {
-                                const filtered = unitFilter(options, params);
+                                                return filtered;
+                                            }}
+                                            selectOnFocus
+                                            clearOnBlur
+                                            handleHomeEndKeys
+                                            id="sizes"
+                                            options={sizes}
+                                            getOptionLabel={(option) => {
+                                                if (typeof option === 'string') {
+                                                    return option;
+                                                }
+                                                if (option.inputValue) {
+                                                    return option.inputValue;
+                                                }
+                                                return option.title;
+                                            }}
+                                            renderOption={(props, option) => <li {...props} key={option.title || option.inputValue}>{option.title}</li>}
+                                            freeSolo
+                                            renderInput={(params) => (
+                                                <TextField {...params} label="Size" fullWidth size='small' />
+                                            )}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Autocomplete
+                                            fullWidth
+                                            value={variant.unit}
+                                            onChange={(event, newValue) => {
+                                                if (typeof newValue === 'string') {
+                                                    setInput((prev) => ({ ...prev, variants: prev.variants.map((v: any) => v.id === variant.id ? { ...v, unit: newValue } : v) }));
+                                                } else if (newValue && newValue.inputValue) {
+                                                    setInput((prev) => ({ ...prev, variants: prev.variants.map((v: any) => v.id === variant.id ? { ...v, unit: newValue.inputValue! } : v) }));
+                                                } else {
+                                                    setInput((prev) => ({ ...prev, variants: prev.variants.map((v: any) => v.id === variant.id ? { ...v, unit: newValue ? newValue.title : '' } : v) }));
+                                                }
+                                            }}
+                                            filterOptions={(options, params) => {
+                                                const filtered = unitFilter(options, params);
 
-                                const { inputValue } = params;
-                                const isExisting = options.some((option) => inputValue === option.title);
-                                if (inputValue !== '' && !isExisting) {
-                                    filtered.push({
-                                        inputValue,
-                                        title: `Add "${inputValue}"`,
-                                    });
-                                }
+                                                const { inputValue } = params;
+                                                const isExisting = options.some((option) => inputValue === option.title);
+                                                if (inputValue !== '' && !isExisting) {
+                                                    filtered.push({
+                                                        inputValue,
+                                                        title: `Add "${inputValue}"`,
+                                                    });
+                                                }
 
-                                return filtered;
-                            }}
-                            selectOnFocus
-                            clearOnBlur
-                            handleHomeEndKeys
-                            id="units"
-                            options={units}
-                            getOptionLabel={(option) => {
-                                if (typeof option === 'string') {
-                                    return option;
-                                }
-                                if (option.inputValue) {
-                                    return option.inputValue;
-                                }
-                                return option.title;
-                            }}
-                            renderOption={(props, option) => <li {...props} key={option.title || option.inputValue}>{option.title}</li>}
-                            freeSolo
-                            renderInput={(params) => (
-                                <TextField {...params} label="Unit" fullWidth size='small' />
-                            )}
-                        />
-                    </Grid>
+                                                return filtered;
+                                            }}
+                                            selectOnFocus
+                                            clearOnBlur
+                                            handleHomeEndKeys
+                                            id="units"
+                                            options={units}
+                                            getOptionLabel={(option) => {
+                                                if (typeof option === 'string') {
+                                                    return option;
+                                                }
+                                                if (option.inputValue) {
+                                                    return option.inputValue;
+                                                }
+                                                return option.title;
+                                            }}
+                                            renderOption={(props, option) => <li {...props} key={option.title || option.inputValue}>{option.title}</li>}
+                                            freeSolo
+                                            renderInput={(params) => (
+                                                <TextField {...params} label="Unit" fullWidth size='small' />
+                                            )}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            label="Pieces in Package"
+                                            name={`variants[${variantIndex}].piecesInPackage`}
+                                            value={variant.piecesInPackage}
+                                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event, true)}
+                                            size='small'
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            label="Package Price"
+                                            name={`variants[${variantIndex}].packagePrice`}
+                                            value={variant.packagePrice}
+                                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event, true)}
+                                            size='small'
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            label="Unit Price"
+                                            name={`variants[${variantIndex}].unitPrice`}
+                                            value={variant.unitPrice}
+                                            size='small'
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Button onClick={() => removeVariant(variant.id)} variant="contained" color="secondary">Remove</Button>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        )
+                    })}
                     <Grid item xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Pieces in Package"
-                            name="piecesInPackage"
-                            value={input.piecesInPackage}
-                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event, true)}
-                            size='small'
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Package Price"
-                            name="packagePrice"
-                            value={input.packagePrice}
-                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event, true)}
-                            size='small'
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Unit Price"
-                            name="unitPrice"
-                            value={input.unitPrice}
-                            size='small'
-                        />
+                        <Button onClick={addVariant} variant="contained" color="primary">Add Variant</Button>
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
@@ -530,11 +586,11 @@ export default function Form({
                             <Select
                                 labelId="supplier"
                                 id="supplier"
-                                value={initialValues ? initialValues.supplier.id : input.supplier}
+                                value={input.supplierId}
                                 label="Supplier"
                                 size='small'
                                 onChange={(event: SelectChangeEvent) => {
-                                    setInput((prev) => ({ ...prev, supplier: event.target.value }));
+                                    setInput((prev) => ({ ...prev, supplierId: event.target.value }));
                                 }}
                                 name="supplier"
                             >

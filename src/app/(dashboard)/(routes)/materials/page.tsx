@@ -43,12 +43,7 @@ const headCells: readonly HeadCell[] = [
     { id: 'name', label: 'Name' },
     { id: 'category', label: 'Category' },
     { id: 'type', label: 'Type' },
-    { id: 'thickness', label: 'Thickness' },
-    { id: 'size', label: 'Size' },
-    { id: 'unit', label: 'Unit' },
-    { id: 'piecesInPackage', label: 'Pieces in Package' },
-    { id: 'packagePrice', label: 'Package Price' },
-    { id: 'unitPrice', label: 'Unit Price' },
+    { id: 'variants', label: 'Variants' },
     { id: 'description', label: 'Description' },
     { id: 'supplier', label: 'Supplier' },
     { id: 'actions', label: '' },
@@ -273,21 +268,6 @@ export default function CustomizedTables() {
                                 <StyledTableCell>
                                     <Skeleton variant="text" height={35} />
                                 </StyledTableCell>
-                                <StyledTableCell>
-                                    <Skeleton variant="text" height={35} />
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                    <Skeleton variant="text" height={35} />
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                    <Skeleton variant="text" height={35} />
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                    <Skeleton variant="text" height={35} />
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                    <Skeleton variant="text" height={35} />
-                                </StyledTableCell>
                                 <StyledTableCell sx={{ display: 'flex', gap: 2, flexDirection: "row", justifyContent: "end", alignItems: "center" }}>
                                     <Skeleton variant="circular" width={35} height={35} />
                                     <Skeleton variant="circular" width={35} height={35} />
@@ -305,12 +285,7 @@ export default function CustomizedTables() {
                                     </StyledTableCell>
                                     <StyledTableCell>{row.category}</StyledTableCell>
                                     <StyledTableCell>{row.type}</StyledTableCell>
-                                    <StyledTableCell>{row.thickness}</StyledTableCell>
-                                    <StyledTableCell>{row.size}</StyledTableCell>
-                                    <StyledTableCell>{row.unit}</StyledTableCell>
-                                    <StyledTableCell>{row.piecesInPackage}</StyledTableCell>
-                                    <StyledTableCell>{row.packagePrice}</StyledTableCell>
-                                    <StyledTableCell>{row.unitPrice}</StyledTableCell>
+                                    <StyledTableCell>{row.variants?.length}</StyledTableCell>
                                     <StyledTableCell>{row.description}</StyledTableCell>
                                     <StyledTableCell>{row.supplier.companyName} - {row.supplier.managerName}</StyledTableCell>
                                     <StyledTableCell align="right">
