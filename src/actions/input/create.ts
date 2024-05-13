@@ -5,6 +5,7 @@ import * as z from "zod";
 import { prisma } from "@/lib/db/prisma";
 import { getUserSession } from "@/hooks/get-user-session";
 import { getErrorMessage } from "@/lib/get-error-message";
+import generateCode from "../../lib/generate-code";
 
 const CREATE = async (
     input: Partial<Input>
@@ -38,6 +39,7 @@ const CREATE = async (
         const createdInput = await prisma.input.create({
             data: {
                 ...validatedData,
+                code: generateCode("INP"),
                 userId: id,
             },
             include: {

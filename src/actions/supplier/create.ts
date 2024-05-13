@@ -5,6 +5,7 @@ import * as z from "zod";
 import { prisma } from "@/lib/db/prisma";
 import { getUserSession } from "@/hooks/get-user-session";
 import { getErrorMessage } from "@/lib/get-error-message";
+import generateCode from "@/lib/generate-code";
 
 const CREATE = async (
     supplier: Partial<Supplier>
@@ -30,6 +31,7 @@ const CREATE = async (
         const createdSupplier = await prisma.supplier.create({
             data: {
                 ...validatedData,
+                code: generateCode("SUP"),
                 userId: id,
             },
         });

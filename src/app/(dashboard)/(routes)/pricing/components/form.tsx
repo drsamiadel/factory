@@ -21,17 +21,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Grid from '@mui/material/Grid';
-import Checkbox from '@mui/material/Checkbox';
-
-import Box from '@mui/material/Box';
-import Stepper from '@mui/material/Stepper';
-import StepLabel from '@mui/material/StepLabel';
-import Step from '@mui/material/Step';
-
-import Image from 'next/image';
-
 import { set } from 'lodash';
-
 import { v4 as uuidv4 } from 'uuid';
 import convertTextToEquation from '@/lib/convert-text-to-equation';
 import { Customer, Input, Material } from '@prisma/client';
@@ -409,10 +399,11 @@ export default function Form({
 
     React.useEffect(() => {
         if (initialValues) {
-            setInput(initialValues);
+            setInput(JSON.parse(JSON.stringify(initialValues)));
         }
     }, [initialValues]);
 
+    console.log(input)
     const handleChange = (event: React.ChangeEvent<HTMLInputElement> | { target: { name: string, value: any } }, number?: boolean) => {
         const { name, value } = event.target;
         const inputCopy = { ...input };
@@ -437,6 +428,8 @@ export default function Form({
         });
 
         setErrors([]);
+        setCustomerSearch("");
+        setInputSearch("");
     };
 
     const getTotals = () => {
@@ -509,7 +502,7 @@ export default function Form({
                                             fullWidth
                                             placeholder="Code"
                                             name="customerId"
-                                            value={input.customerId ? customers?.find((customer) => customer.id === input.customerId)?.id : ""}
+                                            value={input.customerId ? customers?.find((customer) => customer.id === input.customerId)?.code : ""}
                                             disabled
                                             size='small'
                                         />
@@ -530,7 +523,7 @@ export default function Form({
                                             label="Quantity"
                                             name="structure.sheetsQuantity"
                                             value={input.structure.sheetsQuantity}
-                                            onChange={handleChange}
+                                            onChange={(e) => handleChange(e, true)}
                                             size='small'
                                         />
                                     </Grid>
@@ -563,7 +556,7 @@ export default function Form({
                                                     renderOption={(props, option) => (
                                                         customerLoading ? <ListItem key={uuidv4()}>Loading...</ListItem> : <ListItem {...props} key={option.id}> <ListItemText primary={option.name} /> </ListItem>
                                                     )}
-                                                    defaultValue={initialValues ? inputs?.find((customer) => customer.id === initialValues.customerId) : null}
+                                                    value={inputs?.find((inputDb) => inputDb.id === input.structure.input.id)}
                                                     renderInput={(params) => <TextField {...params} label="Select a box" />}
                                                     onChange={(event, value) => {
                                                         handleChange({ target: { name: "structure.input.id", value: value ? value.id as string : "" } });
@@ -575,7 +568,7 @@ export default function Form({
                                                     onInputChange={(event, value) => {
                                                         setInputSearch(value);
                                                     }}
-                                                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                                                    isOptionEqualToValue={(option, value) => option.id === value?.id}
                                                     selectOnFocus
                                                     clearOnBlur
                                                     handleHomeEndKeys

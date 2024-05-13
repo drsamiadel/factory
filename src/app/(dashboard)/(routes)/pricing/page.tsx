@@ -18,34 +18,18 @@ import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import Form from './components/form';
 
 import Button from '@mui/material/Button';
-import Image from 'next/image';
-import { CREATE, DELETE, UPDATE } from '@/actions/input';
-import { Image as ImageType, Input, User } from '@prisma/client';
+import { CREATE, DELETE, UPDATE } from '@/actions/pricing';
+import { Customer, Image as ImageType, Input, Pricing, User } from '@prisma/client';
 import Skeleton from '@mui/material/Skeleton';
 
 import { useDebounce } from "@/lib/use-debounce";
 import DeleteBTN from './components/delete';
 
 
-interface InputWithUserAndImages extends Partial<Input> {
-    structure: {
-        peices: {
-            id: string;
-            name: string;
-            fields: {
-                id: string;
-                name: string;
-                key: string;
-                value: number;
-            }[];
-            equation: {
-                width: string;
-                height: string;
-            };
-        }[];
-    };
-    images: string[];
+interface PricingWithUserAndCustomer extends Partial<Pricing> {
     user: Partial<User>;
+    customer: Partial<Customer>;
+    input: Partial<Input>;
 }
 
 interface HeadCell {
@@ -107,9 +91,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const headCells: readonly HeadCell[] = [
-    { id: 'name', label: 'Name' },
     { id: 'code', label: 'Code' },
-    { id: 'peices', label: 'Peices' },
+    { id: 'customer', label: 'Customer' },
+    { id: 'input', label: 'Input'},
+    { id: 'total', label: 'Total' },
     { id: 'createdAt', label: 'Date' },
     { id: 'actions', label: '' },
 ];
@@ -130,16 +115,16 @@ export default function CustomizedTables() {
     const [page, setPage] = React.useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = React.useState<number>(10);
     const [search, setSearch] = React.useState<string>("");
-    const [rows, setRows] = React.useState<InputWithUserAndImages[] | []>([]);
+    const [rows, setRows] = React.useState<PricingWithUserAndCustomer[] | []>([]);
     const [open, setOpen] = React.useState(false);
     const [selectedId, setSelectedId] = React.useState<string>("");
     const [loading, setLoading] = React.useState<boolean>(true);
     const [order, setOrder] = React.useState<Order>('desc');
-    const [orderBy, setOrderBy] = React.useState<keyof InputWithUserAndImages>('createdAt');
+    const [orderBy, setOrderBy] = React.useState<keyof PricingWithUserAndCustomer>('createdAt');
 
     const handleRequestSort = (
         event: React.MouseEvent<unknown>,
-        property: keyof InputWithUserAndImages,
+        property: keyof PricingWithUserAndCustomer,
     ) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -170,20 +155,19 @@ export default function CustomizedTables() {
     const debouncedSearch = useDebounce(search, 500);
 
     React.useEffect(() => {
-        const fetchInputs = async () => {
+        const fetchPricing = async () => {
             setLoading(true);
-
-            const response = await fetch(`/api/data/input?filterByName=${debouncedSearch}&page=${page + 1}&limit=${rowsPerPage}&sorting=${orderBy}&order=${order}`);
+            const response = await fetch(`/api/data/pricing?filterByName=${debouncedSearch}&page=${page + 1}&limit=${rowsPerPage}&sorting=${orderBy}&order=${order}`);
 
             if (response.ok) {
                 const data = await response.json();
-                setRows(data.inputs);
+                setRows(data.pricings);
             }
 
             setLoading(false);
         }
 
-        fetchInputs();
+        fetchPricing();
     }, [debouncedSearch, page, rowsPerPage, orderBy, order]);
 
 
@@ -203,81 +187,29 @@ export default function CustomizedTables() {
     const handleDelete = async (id: string) => {
         await DELETE(id).then((res) => {
             const updatedRows = rows.filter((row) => row.id !== res);
-            setRows(updatedRows as InputWithUserAndImages[]);
+            setRows(updatedRows as PricingWithUserAndCustomer[]);
         }).catch((err) => {
             console.log(err);
         });
     };
 
     const handleCreate = async (data: any) => {
-        const images = data.images;
-        const files = images.map((image: any, i: number) => dataURLtoFile(image, `${data.name + i}.png`));
-        const formData = new FormData();
-        files.forEach((file: any) => {
-            formData.append('files', file);
-        });
-
-        const response = await fetch('/api/upload', {
-            method: 'POST',
-            body: formData,
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to upload images');
-        }
-
-        const uploadedImages = await response.json();
-
-        const updatedImages = images.map((image: any, i: number) => {
-            return uploadedImages[i].data.url
-        }) as String[];
-
-        data.images = updatedImages;
-
         const result = await CREATE(data);
         if ('error' in result) {
             throw new Error(result.error.message);
         } else {
-            setRows((prev) => [...prev, result as InputWithUserAndImages]);
+            setRows((prev) => [...prev, result as PricingWithUserAndCustomer]);
         }
     };
 
     const handleUpdate = async (data: any) => {
-        const images = data.images as String[];
-
-        const newImages = images.filter((image: any) => image.startsWith('data:image'));
-
-        const files = newImages.map((image: any, i: number) => dataURLtoFile(image, `${data.name + i}.png`));
-
-        const formData = new FormData();
-        files.forEach((file: any) => {
-            formData.append('files', file);
-        });
-
-        const response = await fetch('/api/upload', {
-            method: 'POST',
-            body: formData,
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to upload images');
-        }
-
-        const uploadedImages = await response.json();
-
-        const updatedImages = newImages.map((image: any, i: number) => {
-            return uploadedImages[i].data.url
-        }) as String[];
-
-        data.images = updatedImages;
-
         const result = await UPDATE(data);
         if ('error' in result) {
             throw new Error(result.error.message);
         } else {
             const updatedRows = rows.map((row) => {
                 if (row.id === result.id) {
-                    return result as InputWithUserAndImages;
+                    return result as PricingWithUserAndCustomer;
                 }
                 return row;
             });
@@ -352,7 +284,7 @@ export default function CustomizedTables() {
                                             sx={{ "&.MuiTableSortLabel-root": { color: "white" }, "&.MuiTableSortLabel-active": { color: "white" }, "&.MuiTableSortLabel-icon": { color: "white" } }}
                                             active={orderBy === headCell.id}
                                             direction={orderBy === headCell.id ? order : 'asc'}
-                                            onClick={(event) => handleRequestSort(event, headCell.id as keyof InputWithUserAndImages)}
+                                            onClick={(event) => handleRequestSort(event, headCell.id as keyof PricingWithUserAndCustomer)}
                                             disabled={loading}
                                         >
                                             {headCell.label}
@@ -379,6 +311,9 @@ export default function CustomizedTables() {
                                 <StyledTableCell>
                                     <Skeleton variant="text" height={35} />
                                 </StyledTableCell>
+                                <StyledTableCell>
+                                    <Skeleton variant="text" height={35} />
+                                </StyledTableCell>
                                 <StyledTableCell sx={{ display: 'flex', gap: 2, flexDirection: "row", justifyContent: "end", alignItems: "center" }}>
                                     <Skeleton variant="circular" width={35} height={35} />
                                     <Skeleton variant="circular" width={35} height={35} />
@@ -390,15 +325,15 @@ export default function CustomizedTables() {
                             </StyledTableRow>
                             :
                             rows.map((row) => (
-                                <StyledTableRow key={row.name}>
+                                <StyledTableRow key={row.id}>
                                     <StyledTableCell component="th" scope="row">
                                         <Box sx={{ display: 'flex', gap: 2, flexDirection: "row", justifyContent: "start", alignItems: "center" }}>
-                                            {row.images.length !== 0 && <Image src={row.images[0]!} alt={row.name as string} width={50} height={50} priority style={{ borderRadius: 6, height: "1.75rem", width: "1.75rem", overflow: "hidden" }} />}
-                                            {row.name}
+                                            {row.code}
                                         </Box>
                                     </StyledTableCell>
-                                    <StyledTableCell>{row.code}</StyledTableCell>
-                                    <StyledTableCell align="right">{row?.structure?.peices.length}</StyledTableCell>
+                                    <StyledTableCell>{row.customer.companyName}</StyledTableCell>
+                                    <StyledTableCell>{row.input.name}</StyledTableCell>
+                                    <StyledTableCell>{row.totalCost}</StyledTableCell>
                                     <StyledTableCell align="right">
                                         {new Date(row.createdAt as Date).toLocaleString()}
                                     </StyledTableCell>

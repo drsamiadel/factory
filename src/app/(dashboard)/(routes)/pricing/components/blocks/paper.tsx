@@ -41,6 +41,8 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
 
     const sheetsQuantity = (input.structure.sheetsQuantity / paper.structure.upsInSheet).toFixed(0);
 
+    console.log("paper", paper.structure.totalCost);
+
     React.useEffect(() => {
         function calculatePaperTotal() {
             const paperTotal = (+sheetsQuantity + +paper.structure.destroyRate || 0);
@@ -52,12 +54,17 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
 
     React.useEffect(() => {
         function calculatePaperCost() {
-            const paperCost = (+sheetsQuantity + +paper.structure.destroyRate || 0) * (materials?.find((material) => material.id === paper.structure.material)?.unitPrice || 0) * (1 + (paper.structure.vat.active ? paper.structure.vat.value / 100 : 0));
-            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.totalCost`, value: paperCost } });
+            const paperTotal = +paper.structure.paperTotal || 0;
+            const material = materials?.find((material) => material.id === paper.structure.material);
+            const unitPrice = material?.unitPrice || 0;
+            const totalCost = paperTotal * +unitPrice;
+            const vat = paper.structure.vat.active ? +paper.structure.vat.value : 0;
+            const totalCostWithVat = totalCost + (totalCost * vat / 100);
+            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.totalCost`, value: totalCostWithVat } });
         }
         calculatePaperCost();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [sheetsQuantity, paper.structure.destroyRate, paper.structure.material, paper.structure.vat.active, paper.structure.vat.value]);
+    }, [sheetsQuantity, paper.structure.destroyRate, paper.structure.material, paper.structure.vat.active, paper.structure.vat.value, materials, paper.structure.paperTotal]);
 
     React.useEffect(() => {
         function calculateQuantity() {
@@ -133,7 +140,7 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
                         renderOption={(props, option) => (
                             materialsLoading ? <ListItem key={uuidv4()}>Loading...</ListItem> : <ListItem {...props} key={option.id}> <ListItemText primary={`${option.name} [${option.type} - ${option.thickness} - ${option.size}]`} /> </ListItem>
                         )}
-                        defaultValue={initialValues ? materials?.find((customer) => customer.id === initialValues.customerId) : null}
+                        value={materials?.find((material) => material.id === paper.structure.material) || null}
                         renderInput={(params) => <TextField {...params} label="Material" />}
                         onChange={(event, value) => {
                             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.material`, value: value ? value.id : null } });

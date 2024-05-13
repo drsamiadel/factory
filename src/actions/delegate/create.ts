@@ -5,6 +5,7 @@ import * as z from "zod";
 import { prisma } from "@/lib/db/prisma";
 import { getUserSession } from "@/hooks/get-user-session";
 import { getErrorMessage } from "@/lib/get-error-message";
+import generateCode from "@/lib/generate-code";
 
 const CREATE = async (
     delegate: Partial<Delegate>
@@ -27,6 +28,7 @@ const CREATE = async (
         const createdDelegate = await prisma.delegate.create({
             data: {
                 ...validatedData,
+                code: generateCode("DEL"),
                 userId: id,
             },
         });

@@ -47,7 +47,7 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
 
     React.useEffect(() => {
         function updatePlasticWindow() {
-            const totalCost = (+finishing.structure.plasticWindow.quantity || 0) * (+finishing.structure.plasticWindow.cost || 0);
+            const totalCost = ((+finishing.structure.plasticWindow.quantity || 0) / 1000) * (+finishing.structure.plasticWindow.cost || 0);
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.plasticWindow.totalCost`, value: totalCost } }, true);
         }
 
@@ -58,7 +58,7 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
 
     React.useEffect(() => {
         function updateGum() {
-            const totalCost = (+finishing.structure.gum.quantity || 0) * (+finishing.structure.gum.point || 0) * (+finishing.structure.gum.pointCost || 0);
+            const totalCost = ((+finishing.structure.gum.quantity || 0) / 1000) * (+finishing.structure.gum.point || 0) * (+finishing.structure.gum.pointCost || 0);
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.gum.totalCost`, value: totalCost } }, true);
         }
 
@@ -69,7 +69,7 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
 
     React.useEffect(() => {
         function updatePasting() {
-            const totalCost = (+finishing.structure.pasting.quantity || 0) * (+finishing.structure.pasting.cost || 0);
+            const totalCost = ((+finishing.structure.pasting.quantity || 0) / 1000) * (+finishing.structure.pasting.cost || 0);
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.pasting.totalCost`, value: totalCost } }, true);
         }
 
@@ -80,7 +80,7 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
 
     React.useEffect(() => {
         function updateCut() {
-            const totalCost = (+finishing.structure.cut.quantity || 0) * (+finishing.structure.cut.cost || 0);
+            const totalCost = ((+finishing.structure.cut.quantity || 0) / 1000) * (+finishing.structure.cut.cost || 0);
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.cut.totalCost`, value: totalCost } }, true);
         }
 
@@ -91,7 +91,7 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
 
     React.useEffect(() => {
         function updateBinding() {
-            const totalCost = (+finishing.structure.binding.quantity || 0) * (+finishing.structure.binding.cost || 0);
+            const totalCost = ((+finishing.structure.binding.quantity || 0) / 1000) * (+finishing.structure.binding.cost || 0);
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.binding.totalCost`, value: totalCost } }, true);
         }
 
@@ -102,7 +102,7 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
 
     React.useEffect(() => {
         function updatePacking() {
-            const totalCost = (+finishing.structure.packing.quantity || 0) * (+finishing.structure.packing.cost || 0);
+            const totalCost = ((+finishing.structure.packing.quantity || 0) / 1000) * (+finishing.structure.packing.cost || 0);
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.packing.totalCost`, value: totalCost } }, true);
         }
 
