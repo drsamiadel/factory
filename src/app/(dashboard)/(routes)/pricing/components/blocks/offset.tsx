@@ -24,7 +24,7 @@ const OffsetComponent = ({ offset, input, handleChange, initialValues }: { offse
     const currentPeice = offset.peiceId;
     const currentPage = input.structure.additional.find((page: any) => page.peiceId === currentPeice && page.code === 1);
     const allPage = input.structure.additional.find((page: any) => page.peiceId === "all" && page.code === 1);
-    const sheetsQuantity = input.strcutre.sheetsQuantity || 0;
+    const sheetsQuantity = input.structure.sheetsQuantity || 0;
 
     React.useEffect(() => {
         function calculateQuantity() {
