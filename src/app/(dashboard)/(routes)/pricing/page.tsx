@@ -353,7 +353,7 @@ export default function CustomizedTables() {
 
         const totalCost = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.totalCost || 0), 0);
         const total = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.total || 0), 0);
-        const totalTaxAmount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + ((row.totalCost - row.total) || 0), 0);
+        const totalTaxAmount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (((row.totalCost as number) - (row.total as number)) || 0), 0);
         const totalDiscount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.discount || 0), 0);
 
         return (
