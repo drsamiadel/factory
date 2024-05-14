@@ -17,7 +17,7 @@ const CREATE = async (
         const createdPricing = await prisma.pricing.create({
             data: {
                 ...(pricing as any),
-                code: generateCode("QUT"),
+                code: !(pricing.code === null || pricing.code === undefined || pricing.code === "") ? pricing.code : generateCode("QUT"),
                 inputId,
                 userId: id,
             },
@@ -31,6 +31,8 @@ const CREATE = async (
                 customer: {
                     select: {
                         id: true,
+                        companyName: true,
+                        managerName: true,
                     },
                 },
                 input: {

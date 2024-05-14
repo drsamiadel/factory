@@ -56,7 +56,7 @@ export default function Form({
 }: {
     open: boolean;
     onClose: () => void;
-    onSubmit: (values: any) => Promise<void>;
+    onSubmit: (values: any) => Promise<any>;
     initialValues?: any;
 }) {
     const theme = useTheme();
@@ -421,7 +421,8 @@ export default function Form({
     const clear = () => {
         setInput({
             code: "",
-            customerId: "",
+            description: "",
+            customerId: null,
             structure: {
                 input: {
                     id: '',
@@ -429,7 +430,12 @@ export default function Form({
                 },
                 sheetsQuantity: 0,
                 additional: []
-            }
+            },
+            total: 0,
+            profit: 25,
+            vat: 15,
+            discount: 0,
+            totalCost: 0,
         });
 
         setErrors([]);
@@ -867,6 +873,38 @@ export default function Form({
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={clear}>Clear</Button>
+                <Button
+                onClick={async () => {
+                        setLoading(true);
+                        await onSubmit(input).then((res: any) => {
+                            console.log(res);
+                            setLoading(false);
+                            setInput({
+                                code: res.code,
+                                customerId: res.customerId,
+                                structure: {
+                                    input: {
+                                        id: '',
+                                        structure: {}
+                                    },
+                                    sheetsQuantity: 0,
+                                    additional: []
+                                },
+                                total: 0,
+                                profit: 25,
+                                vat: 15,
+                                discount: 0,
+                                totalCost: 0,
+                            });
+                        }).catch((e: any) => {
+                            setLoading(false);
+                            setErrors(JSON.parse(e.message));
+                        });
+                    }}
+                    disabled={loading}
+                    variant="contained" color="primary"
+                >Save and Add New</Button>
                 <Button onClick={
                     async () => {
                         setLoading(true);
@@ -877,7 +915,8 @@ export default function Form({
                             setLoading(false);
                             setErrors(JSON.parse(e.message));
                         })
-                    }} disabled={loading}
+                    }}
+                    disabled={loading}
                     variant="contained" color="primary">
                     {initialValues ? "Save" : "Create"}
                 </Button>

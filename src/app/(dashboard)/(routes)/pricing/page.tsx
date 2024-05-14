@@ -25,6 +25,7 @@ import Skeleton from '@mui/material/Skeleton';
 import { useDebounce } from "@/lib/use-debounce";
 import DeleteBTN from './components/delete';
 import { useReactToPrint } from 'react-to-print';
+import { PanoramaFishEyeRounded, Preview, VisibilityRounded } from '@mui/icons-material';
 
 
 interface PricingWithUserAndCustomer extends Partial<Pricing> {
@@ -201,6 +202,7 @@ export default function CustomizedTables() {
         } else {
             setRows((prev) => [...prev, result as PricingWithUserAndCustomer]);
         }
+        return result;
     };
 
     const handleUpdate = async (data: any) => {
@@ -235,7 +237,7 @@ export default function CustomizedTables() {
         return new File([u8arr], filename, { type: mime });
     }
 
-    const PrintBtn = ({ input }: { input: PricingWithUserAndCustomer }) => {
+    const PreviewBtn = ({ input }: { input: PricingWithUserAndCustomer }) => {
         const contentToPrint = React.useRef(null);
         const handlePrint = useReactToPrint({
             content: () => contentToPrint.current,
@@ -245,8 +247,8 @@ export default function CustomizedTables() {
 
         return (
             <>
-                <Button variant="contained" onClick={handlePrint}>
-                    Print
+                <Button variant="outlined" onClick={handlePrint} sx={{ padding: 0, minWidth: 0, minHeight: 0, border: "none", backgroundColor: "transparent" }}>
+                    <VisibilityRounded />
                 </Button>
                 <div style={{ display: "none" }}>
                     <div ref={contentToPrint}>
@@ -263,7 +265,7 @@ export default function CustomizedTables() {
                                     </div>
                                     <div style={{ display: "flex", flexDirection: "column", alignItems: "end" }}>
                                         <h1 style={{ fontWeight: 600 }}>تسعيرة</h1>
-                                        <p style={{ fontWeight: 600 }}>{input.code} :رقم الفاتورة</p>
+                                        <p style={{ fontWeight: 600 }}>{input.code} :رقم التسعير</p>
                                         <p>{input.customer.companyName}</p>
                                         <p>{input.customer.vatNumber} :الرقم الضريبي</p>
                                         <p>{new Date(input.createdAt as Date).toLocaleDateString()} :التاريخ المقدر</p>
@@ -272,6 +274,9 @@ export default function CustomizedTables() {
                                 <table style={{ width: "100%", borderCollapse: "collapse" }}>
                                     <thead>
                                         <tr>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={6}>
+                                                <p>#</p>
+                                            </th>
                                             <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={6}>
                                                 <p>البيان</p>
                                                 <p>Description</p>
@@ -301,6 +306,9 @@ export default function CustomizedTables() {
                                     <tbody>
                                         <tr style={{ backgroundColor: "#f3f4f6" }}>
                                             <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }} colSpan={6}>
+                                                <p>1</p>
+                                            </td>
+                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }} colSpan={6}>
                                                 <p style={{ fontWeight: 600 }}>{input.input.name}</p>
                                                 <p>{input.input.code}</p>
                                                 <p>with {(input?.structure as any)?.additional?.map((add: any) => add.name).join("& ")}</p>
@@ -325,9 +333,125 @@ export default function CustomizedTables() {
                                 </table>
                                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "end", alignItems: "end" }}>
                                     <p style={{ fontWeight: 600 }}>المجموع بدون ضريبة: {input.totalCost}</p>
-                                    <p style={{ fontWeight: 600 }}>الضريبة ({input.vat}%): {((input.totalCost || 0) * 0.15).toFixed(2)}</p>
+                                    <p style={{ fontWeight: 600 }}>الضريبة ({input.vat}%): {((input.totalCost || 0) * (input.vat || 0) / 100).toFixed(2)}</p>
                                     <p style={{ fontWeight: 600 }}>الخصم: {input.discount}</p>
                                     <p style={{ fontWeight: 600 }}>الإجمالي شامل الضريبة: {input.totalCost}</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </>
+        );
+    }
+
+    const PrintBtn = ({ rows, code }: { rows: PricingWithUserAndCustomer[], code: string }) => {
+        const contentToPrint = React.useRef(null);
+        const handlePrint = useReactToPrint({
+            content: () => contentToPrint.current,
+        });
+
+        const totalCost = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.totalCost || 0), 0);
+        const total = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.total || 0), 0);
+        const totalTaxAmount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + ((row.totalCost - row.total) || 0), 0);
+        const totalDiscount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.discount || 0), 0);
+
+        return (
+            <>
+                <Button variant="contained" onClick={handlePrint}>
+                    Print
+                </Button>
+                <div style={{ display: "none" }}>
+                    <div ref={contentToPrint}>
+                        {rows.length > 0 && (
+                            <div style={{ padding: "15px", display: "flex", flexDirection: "column", gap: "10px", fontSize: "16px" }}>
+                                <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                                    <div style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
+                                        <h1 style={{ fontWeight: 600 }}>AL-ESTEQAMA PRINTING PRESS</h1>
+                                        <p>AL-NAKHEEL SHARAH MALIK SAUD</p>
+                                        <p>SHARAH MALIK SAUD - AL-DAMMAM</p>
+                                        <p>0551971699 / 0138285068</p>
+                                        <p>311165637900003</p>
+                                        <p>CR: 2050102120</p>
+                                    </div>
+                                    <div style={{ display: "flex", flexDirection: "column", alignItems: "end" }}>
+                                        <h1 style={{ fontWeight: 600 }}>تسعيرة</h1>
+                                        <p style={{ fontWeight: 600 }}>{rows[0].code} :رقم التسعير</p>
+                                        <p>{rows[0].customer.companyName}</p>
+                                        <p>{rows[0].customer.vatNumber} :الرقم الضريبي</p>
+                                        <p>{new Date(rows[0].createdAt as Date).toLocaleDateString()} :التاريخ المقدر</p>
+                                    </div>
+                                </div>
+                                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                                    <thead>
+                                        <tr>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={6}>
+                                                <p>#</p>
+                                            </th>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={6}>
+                                                <p>البيان</p>
+                                                <p>Description</p>
+                                            </th>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={4}>
+                                                <p>الكمية</p>
+                                                <p>Qty</p>
+                                            </th>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={4}>
+                                                <p>سعر الوحدة</p>
+                                                <p>Unit Price</p>
+                                            </th>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={4}>
+                                                <p>المبلغ بدون ضريبة</p>
+                                                <p>Amount Excluding VAT</p>
+                                            </th>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={4}>
+                                                <p>مبلغ الضريبة</p>
+                                                <p>Tax Amount</p>
+                                            </th>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={4}>
+                                                <p>المجموع شامل الضريبة</p>
+                                                <p>Total Including VAT</p>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {rows.filter((row) => row.code === code).map((input, index) => {
+                                            const unitPrice = ((input.total || 0) / ((input.structure as any)?.sheetsQuantity || 1)).toFixed(2);
+                                            return (
+                                                <tr style={{ backgroundColor: "#f3f4f6" }} key={input.id}>
+                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }} colSpan={6}>
+                                                        <p>{index + 1}</p>
+                                                    </td>
+                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }} colSpan={6}>
+                                                        <p style={{ fontWeight: 600 }}>{input.input.name}</p>
+                                                        <p>{input.input.code}</p>
+                                                        <p>with {(input?.structure as any)?.additional?.map((add: any) => add.name).join("& ")}</p>
+                                                    </td>
+                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} colSpan={4}>
+                                                        <p>{((input.structure) as any)?.sheetsQuantity}</p>
+                                                    </td>
+                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} colSpan={4}>
+                                                        <p>{unitPrice}</p>
+                                                    </td>
+                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} colSpan={4}>
+                                                        <p>{input.total}</p>
+                                                    </td>
+                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} colSpan={4}>
+                                                    <p>{((input.totalCost || 0) - (input.total || 0)).toFixed(2)}</p>
+                                                    </td>
+                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} colSpan={4}>
+                                                        <p>{input.totalCost}</p>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })}
+                                    </tbody>
+                                </table>
+                                <div style={{ display: "flex", flexDirection: "column", justifyContent: "end", alignItems: "end" }}>
+                                    <p style={{ fontWeight: 600 }}>المجموع بدون ضريبة: {total}</p>
+                                    <p style={{ fontWeight: 600 }}>الضريبة: {totalTaxAmount}</p>
+                                    <p style={{ fontWeight: 600 }}>الخصم: {totalDiscount}</p>
+                                    <p style={{ fontWeight: 600 }}>الإجمالي شامل الضريبة: {totalCost}</p>
 
                                 </div>
                             </div>
@@ -433,6 +557,7 @@ export default function CustomizedTables() {
                                     <StyledTableCell component="th" scope="row">
                                         <Box sx={{ display: 'flex', gap: 2, flexDirection: "row", justifyContent: "start", alignItems: "center" }}>
                                             {row.code}
+                                            <PreviewBtn input={row} />
                                         </Box>
                                     </StyledTableCell>
                                     <StyledTableCell>{row.customer.companyName}</StyledTableCell>
@@ -443,7 +568,7 @@ export default function CustomizedTables() {
                                     </StyledTableCell>
                                     <StyledTableCell align="right">
                                         <Box sx={{ display: 'flex', gap: 1, flexDirection: "row", justifyContent: "end", alignItems: "center" }}>
-                                            <PrintBtn input={row} />
+                                            <PrintBtn rows={rows} code={row.code as string} />
                                             <IconButton aria-label="edit" sx={{ color: "success.main", p: 0 }} onClick={() => handleEdit(row.id!)}>
                                                 <EditRoundedIcon sx={{ fontSize: 16 }} />
                                             </IconButton>

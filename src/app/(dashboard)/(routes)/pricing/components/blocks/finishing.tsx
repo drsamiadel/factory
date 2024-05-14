@@ -47,7 +47,7 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
 
     React.useEffect(() => {
         function updatePlasticWindow() {
-            const totalCost = ((+finishing.structure.plasticWindow.quantity || 0) / 1000) * (+finishing.structure.plasticWindow.cost || 0);
+            const totalCost = (+finishing.structure.plasticWindow.quantity || 0) * (+finishing.structure.plasticWindow.cost || 0);
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.plasticWindow.totalCost`, value: totalCost } }, true);
         }
 
