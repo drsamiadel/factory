@@ -356,6 +356,8 @@ export default function CustomizedTables() {
         const totalTaxAmount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (((row.totalCost as number) - (row.total as number)) || 0), 0);
         const totalDiscount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.discount || 0), 0);
 
+        const currentRow = rows.find((row) => row.code === code);
+
         return (
             <>
                 <Button variant="contained" onClick={handlePrint}>
@@ -376,10 +378,10 @@ export default function CustomizedTables() {
                                     </div>
                                     <div style={{ display: "flex", flexDirection: "column", alignItems: "end" }}>
                                         <h1 style={{ fontWeight: 600 }}>تسعيرة</h1>
-                                        <p style={{ fontWeight: 600 }}>{rows[0].code} :رقم التسعير</p>
-                                        <p>{rows[0].customer.companyName}</p>
-                                        <p>{rows[0].customer.vatNumber} :الرقم الضريبي</p>
-                                        <p>{new Date(rows[0].createdAt as Date).toLocaleDateString()} :التاريخ المقدر</p>
+                                        <p style={{ fontWeight: 600 }}>{currentRow?.code} :رقم التسعير</p>
+                                        <p>{currentRow?.customer.companyName}</p>
+                                        <p>{currentRow?.customer.vatNumber} :الرقم الضريبي</p>
+                                        <p>{new Date(currentRow?.createdAt as Date).toLocaleDateString()} :التاريخ المقدر</p>
                                     </div>
                                 </div>
                                 <table style={{ width: "100%", borderCollapse: "collapse" }}>
