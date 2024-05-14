@@ -26,6 +26,7 @@ import { useDebounce } from "@/lib/use-debounce";
 import DeleteBTN from './components/delete';
 import { useReactToPrint } from 'react-to-print';
 import { PanoramaFishEyeRounded, Preview, VisibilityRounded } from '@mui/icons-material';
+import convertTextToEquation from '../../../../lib/convert-text-to-equation';
 
 
 interface PricingWithUserAndCustomer extends Partial<Pricing> {
@@ -274,30 +275,30 @@ export default function CustomizedTables() {
                                 <table style={{ width: "100%", borderCollapse: "collapse" }}>
                                     <thead>
                                         <tr>
-                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={6}>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }}>
                                                 <p>#</p>
                                             </th>
-                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={6}>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }}>
                                                 <p>البيان</p>
                                                 <p>Description</p>
                                             </th>
-                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={4}>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} >
                                                 <p>الكمية</p>
                                                 <p>Qty</p>
                                             </th>
-                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={4}>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} >
                                                 <p>سعر الوحدة</p>
                                                 <p>Unit Price</p>
                                             </th>
-                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={4}>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} >
                                                 <p>المبلغ بدون ضريبة</p>
                                                 <p>Amount Excluding VAT</p>
                                             </th>
-                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={4}>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} >
                                                 <p>مبلغ الضريبة</p>
                                                 <p>Tax Amount</p>
                                             </th>
-                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={4}>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} >
                                                 <p>المجموع شامل الضريبة</p>
                                                 <p>Total Including VAT</p>
                                             </th>
@@ -305,30 +306,83 @@ export default function CustomizedTables() {
                                     </thead>
                                     <tbody>
                                         <tr style={{ backgroundColor: "#f3f4f6" }}>
-                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }} colSpan={6}>
+                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }}>
                                                 <p>1</p>
                                             </td>
-                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }} colSpan={6}>
+                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }}>
                                                 <p style={{ fontWeight: 600 }}>{input.input.name}</p>
                                                 <p>{input.input.code}</p>
                                                 <p>with {(input?.structure as any)?.additional?.map((add: any) => add.name).join("& ")}</p>
                                             </td>
-                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} colSpan={4}>
+                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} >
                                                 <p>{((input.structure) as any)?.sheetsQuantity}</p>
                                             </td>
-                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} colSpan={4}>
+                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} >
                                                 <p>{unitPrice}</p>
                                             </td>
-                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} colSpan={4}>
+                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} >
                                                 <p>{input.total}</p>
                                             </td>
-                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} colSpan={4}>
+                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} >
                                                 <p>{((input.totalCost || 0) - (input.total || 0)).toFixed(2)}</p>
                                             </td>
-                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} colSpan={4}>
+                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} >
                                                 <p>{input.totalCost}</p>
                                             </td>
                                         </tr>
+                                        <tr style={{ backgroundColor: "#1f2937", color: "white" }}>
+                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }} colSpan={7}>
+                                                Box Size
+                                            </td>
+                                        </tr>
+                                        {(input?.structure as any)?.input?.structure?.peices.map((add: any) => {
+                                            const width = convertTextToEquation(add.equation.width, (input?.structure as any)?.input, add.id);
+                                            const height = convertTextToEquation(add.equation.height, (input?.structure as any)?.input, add.id);
+                                            return (
+                                                <>
+                                                    <tr style={{ backgroundColor: "#f3f4f6" }} key={add.id}>
+                                                        <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }} colSpan={5}>
+                                                            <p>{add.name}</p>
+                                                        </td>
+                                                        <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} colSpan={1}>
+                                                            width<p style={{ padding: 2, fontWeight: 500 }}>{add.equation.width}</p>
+                                                        </td>
+                                                        <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} colSpan={1}>
+                                                            height<p style={{ padding: 2, fontWeight: 500 }}>{add.equation.height}</p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr style={{ backgroundColor: "#f3f4f6" }} key={add.id}>
+                                                        <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }} colSpan={7}>
+                                                            {add?.fields?.map((add: any) => (
+                                                                <span key={add.id}>
+                                                                    {add.name} [{add.key}]{"  "}<span style={{ padding: 2, fontWeight: 600 }}>{add.value}</span> |{"  "}
+                                                                </span>
+                                                            ))}
+                                                        </td>
+                                                    </tr>
+                                                    <tr style={{ backgroundColor: "#e5e5e5" }} key={add.id}>
+                                                        <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }} colSpan={4}>
+                                                            Width: {width} mm
+                                                        </td>
+                                                        <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }} colSpan={3}>
+                                                            Height: {height} mm
+                                                        </td>
+                                                    </tr>
+                                                </>
+                                            )
+                                        })}
+                                        <tr style={{ backgroundColor: "#1f2937", color: "white" }}>
+                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }} colSpan={7}>
+                                                Additonal Details
+                                            </td>
+                                        </tr>
+                                        {(input?.structure as any)?.additional?.map((add: any) => (
+                                            <tr style={{ backgroundColor: "#d7d7d7" }} key={add.id}>
+                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }} colSpan={7}>
+                                                    <p>{add.name}</p>
+                                                </td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "end", alignItems: "end" }}>
@@ -394,23 +448,23 @@ export default function CustomizedTables() {
                                                 <p>البيان</p>
                                                 <p>Description</p>
                                             </th>
-                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={4}>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} >
                                                 <p>الكمية</p>
                                                 <p>Qty</p>
                                             </th>
-                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={4}>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} >
                                                 <p>سعر الوحدة</p>
                                                 <p>Unit Price</p>
                                             </th>
-                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={4}>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} >
                                                 <p>المبلغ بدون ضريبة</p>
                                                 <p>Amount Excluding VAT</p>
                                             </th>
-                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={4}>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} >
                                                 <p>مبلغ الضريبة</p>
                                                 <p>Tax Amount</p>
                                             </th>
-                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={4}>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} >
                                                 <p>المجموع شامل الضريبة</p>
                                                 <p>Total Including VAT</p>
                                             </th>
@@ -429,19 +483,19 @@ export default function CustomizedTables() {
                                                         <p>{input.input.code}</p>
                                                         <p>with {(input?.structure as any)?.additional?.map((add: any) => add.name).join("& ")}</p>
                                                     </td>
-                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} colSpan={4}>
+                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} >
                                                         <p>{((input.structure) as any)?.sheetsQuantity}</p>
                                                     </td>
-                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} colSpan={4}>
+                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} >
                                                         <p>{unitPrice}</p>
                                                     </td>
-                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} colSpan={4}>
+                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} >
                                                         <p>{input.total}</p>
                                                     </td>
-                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} colSpan={4}>
-                                                    <p>{((input.totalCost || 0) - (input.total || 0)).toFixed(2)}</p>
+                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} >
+                                                        <p>{((input.totalCost || 0) - (input.total || 0)).toFixed(2)}</p>
                                                     </td>
-                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} colSpan={4}>
+                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} >
                                                         <p>{input.totalCost}</p>
                                                     </td>
                                                 </tr>
