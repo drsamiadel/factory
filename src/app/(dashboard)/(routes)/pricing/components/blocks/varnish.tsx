@@ -58,6 +58,15 @@ const VarnishComponent = ({ varnish, input, handleChange, initialValues }: { var
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sheetsQuantity, varnish.structure.faces[0].varnishCost, varnish.structure.faces[1].varnishCost, varnish.structure.faces[0].active, varnish.structure.faces[1].active]);
 
+    React.useEffect(() => {
+        function calculateQuantityBack() {
+            const quantity = sheetsQuantity;
+            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[0].quantity`, value: quantity } }, true);
+            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.faces[1].quantity`, value: quantity } }, true);
+        }
+        calculateQuantityBack();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [sheetsQuantity]);
     return (
         <Grid item xs={12}>
             <Grid container spacing={2}>
@@ -166,12 +175,12 @@ const VarnishComponent = ({ varnish, input, handleChange, initialValues }: { var
                         </Grid>
                         <Grid item xs={1.5}>
                             <TextField
-                            fullWidth
-                            label="Cost"
-                            value={varnish.structure.faces[1].totalCost || 0}
-                            onChange={(e) => handleChange(e)}
-                            disabled
-                            size='small'
+                                fullWidth
+                                label="Cost"
+                                value={varnish.structure.faces[1].totalCost || 0}
+                                onChange={(e) => handleChange(e)}
+                                disabled
+                                size='small'
                             />
                         </Grid>
                     </>

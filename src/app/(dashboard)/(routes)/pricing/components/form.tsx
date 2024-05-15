@@ -173,6 +173,8 @@ export default function Form({
                     size: "",
                     piecesInPackage: 0,
                     unitPrice: 0,
+                    materialCategory: "",
+                    materialType: "",
                 },
                 paperTotal: 0,
                 totalCost: 0,
@@ -875,7 +877,7 @@ export default function Form({
                 <Button onClick={handleClose}>Cancel</Button>
                 <Button onClick={clear}>Clear</Button>
                 <Button
-                onClick={async () => {
+                    onClick={async () => {
                         setLoading(true);
                         await onSubmit(input).then((res: any) => {
                             console.log(res);

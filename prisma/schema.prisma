@@ -74,7 +74,7 @@ model Supplier {
   id          String  @id @default(auto()) @map("_id") @db.ObjectId
   companyName String?
   managerName String?
-  code		String?
+  code        String?
   vatNumber   String?
   crNumber    String?
   phone1      String?
@@ -99,7 +99,7 @@ model Customer {
   id          String  @id @default(auto()) @map("_id") @db.ObjectId
   companyName String?
   managerName String?
-  code		String?
+  code        String?
   vatNumber   String?
   crNumber    String?
   phone1      String?
@@ -124,7 +124,7 @@ model Delegate {
   id          String  @id @default(auto()) @map("_id") @db.ObjectId
   name        String?
   type        String? @default("freelancer")
-  code		String?
+  code        String?
   phone1      String?
   phone2      String?
   email       String?
@@ -167,8 +167,8 @@ model Pricing {
   description String?
   code        String?
   structure   Json
-  inputId    String?  @db.ObjectId
-  input      Input?   @relation(fields: [inputId], references: [id])
+  inputId     String? @db.ObjectId
+  input       Input?  @relation(fields: [inputId], references: [id])
   total       Float?  @default(0)
   profit      Float?  @default(0)
   vat         Float?  @default(0)
@@ -195,14 +195,14 @@ model Image {
 }
 
 model Material {
-  id              String    @id @default(auto()) @map("_id") @db.ObjectId
-  category        String?
-  name            String?
-  type            String?
-  variants 	Json[]
-  description     String?
-  supplierId      String?   @db.ObjectId
-  supplier        Supplier? @relation(fields: [supplierId], references: [id])
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  category    String?
+  name        String?
+  type        String?
+  variants    Json[]
+  description String?
+  supplierId  String?   @db.ObjectId
+  supplier    Supplier? @relation(fields: [supplierId], references: [id])
 
   user   User   @relation(fields: [userId], references: [id])
   userId String @db.ObjectId
@@ -211,4 +211,23 @@ model Material {
   updatedAt DateTime @updatedAt
 
   @@map("materials")
+}
+
+model SiteInfo {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  companyName String?
+  logo        String?
+  phone1      String?
+  phone2      String?
+  fax         String?
+  CRNumber    String?
+  VATNumber   String?
+  email       String?
+  address     String?
+  location    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("siteinfos")
 }

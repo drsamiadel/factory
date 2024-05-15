@@ -161,6 +161,8 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
                         renderInput={(params) => <TextField {...params} label="Material" />}
                         onChange={(event, value) => {
                             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.material.id`, value: value ? value.id : null } });
+                            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.material.materialCategory`, value: value ? value.category : null } });
+                            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.material.materialType`, value: value ? value.type : null } });
                         }
                         }
                         onInputChange={(event, value) => {

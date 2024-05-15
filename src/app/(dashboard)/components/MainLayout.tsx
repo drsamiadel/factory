@@ -147,7 +147,7 @@ const routes = [
 
 const userRoutes = [
     {
-        path: "/",
+        path: "/settings",
         icon: <SettingsRoundedIcon />,
         text: 'Settings',
     },
@@ -276,6 +276,7 @@ export default function MainLayout({ children, user }: {
                                     px: 2.5,
                                     borderRadius: theme.shape.borderRadius,
                                 }}
+                                onClick={() => router.push(route.path)}
                             >
                                 <ListItemIcon
                                     sx={{
