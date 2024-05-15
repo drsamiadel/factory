@@ -232,7 +232,6 @@ export default function CustomizedTables() {
         });
 
         const unitPrice = ((input.total || 0) / ((input.structure as any)?.sheetsQuantity || 1)).toFixed(2);
-        console.log(input)
         return (
             <>
                 <Button variant="outlined" onClick={handlePrint} sx={{ padding: 0, minWidth: 0, minHeight: 0, border: "none", backgroundColor: "transparent" }}>
@@ -241,7 +240,7 @@ export default function CustomizedTables() {
                 <div style={{ display: "none" }}>
                     <div ref={contentToPrint}>
                         {input && (
-                            <div style={{ padding: "15px", display: "flex", flexDirection: "column", gap: "10px", fontSize: "16px" }}>
+                            <div style={{ padding: "15px", display: "flex", flexDirection: "column", gap: "10px", fontSize: "11px" }}>
                                 <div style={{ display: "flex", flexDirection: "row", justifyContent: "end" }}>
                                     <div style={{ display: "flex", flexDirection: "column", alignItems: "end" }}>
                                         <h1 style={{ fontWeight: 600 }}>تسعيرة</h1>
@@ -254,79 +253,79 @@ export default function CustomizedTables() {
                                 <table style={{ width: "100%", borderCollapse: "collapse", backgroundColor: "#f3f4f6" }}>
                                     <tbody>
                                         <tr style={{ backgroundColor: "#1f2937", color: "white" }}>
-                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }} colSpan={4}>
+                                            <td style={{ border: "1px solid white", textAlign: "left" }} colSpan={4}>
                                                 اسم العميل
                                             </td>
-                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                            <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                 الكمية
                                             </td>
-                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                            <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                 كود العميل
                                             </td>
-                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }} colSpan={3}>
+                                            <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={3}>
                                                 رقم التواصل
                                             </td>
                                         </tr>
                                         <tr style={{ backgroundColor: "#f3f4f6" }}>
-                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }} colSpan={4}>
+                                            <td style={{ border: "1px solid white", textAlign: "left" }} colSpan={4}>
                                                 {input.customer.companyName}
                                             </td>
-                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                            <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                 {(input.structure as any)?.sheetsQuantity}
                                             </td>
-                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                            <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                 {input.customer.code}
                                             </td>
-                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }} colSpan={3}>
+                                            <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={3}>
                                                 {input.customer.phone1}
                                             </td>
                                         </tr>
                                         <tr style={{ backgroundColor: "#f3f4f6" }}>
-                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }} colSpan={9}>
-                                                {(input.structure as any)?.description}
+                                            <td style={{ border: "1px solid white", textAlign: "left" }} colSpan={9}>
+                                                {input.description}
                                             </td>
                                         </tr>
                                         <tr style={{ color: "white", backgroundColor: "#f3f4f6" }}>
-                                            <td style={{ backgroundColor: "#1f2937", border: "1px solid white", padding: "5px", textAlign: "left" }} colSpan={1}>
+                                            <td style={{ backgroundColor: "#1f2937", border: "1px solid white", textAlign: "left" }} colSpan={1}>
                                                 Job Description
                                             </td>
                                         </tr>
                                         <tr style={{ backgroundColor: "#686868", color: "white" }}>
-                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }}>
+                                            <td style={{ border: "1px solid white", textAlign: "left" }}>
                                                 Name
                                             </td>
-                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                            <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                 Width
                                             </td>
-                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                            <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                 Height
                                             </td>
-                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                            <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                 Length
                                             </td>
-                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                            <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                 Total Size
                                             </td>
-                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }} colSpan={4} />
+                                            <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                         </tr>
                                         {(input?.structure as any)?.input?.structure?.peices.map((add: any) => {
                                             const width = convertTextToEquation(add.equation.width, (input?.structure as any)?.input, add.id);
                                             const height = convertTextToEquation(add.equation.height, (input?.structure as any)?.input, add.id);
                                             return (
                                                 <tr style={{ backgroundColor: "#f3f4f6" }} key={add.id}>
-                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }}>
+                                                    <td style={{ border: "1px solid white", textAlign: "left" }}>
                                                         <p>{add.name}</p>
                                                     </td>
-                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                    <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                         {add?.fields?.find((add: any) => add.name.toLowerCase() === "width")?.value}
                                                     </td>
-                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                    <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                         {add?.fields?.find((add: any) => add.name.toLowerCase() === "height")?.value}
                                                     </td>
-                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                    <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                         {add?.fields?.find((add: any) => add.name.toLowerCase() === "length")?.value}
                                                     </td>
-                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                    <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                         {`${width} x ${height} mm`}
                                                     </td>
                                                 </tr>
@@ -338,67 +337,67 @@ export default function CustomizedTables() {
                                             return (
                                                 <>
                                                     <tr style={{ backgroundColor: "#1f2937", color: "white" }} key={add.id}>
-                                                        <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }}>
+                                                        <td style={{ border: "1px solid white", textAlign: "left" }}>
                                                             <p>{add.name}</p>
                                                         </td>
                                                     </tr>
                                                     {add?.code === 1 && (
                                                         <>
                                                             <tr style={{ backgroundColor: "#686868", color: "white" }}>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>QUANTITY</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>UPS</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>SHEET</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>DESTROY</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>MATERIAL</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>TYPE</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>THICKNESS</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>SIZE</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>TOTAL</p>
                                                                 </td>
                                                             </tr>
                                                             <tr>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.quantity}</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.upsInSheet}</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.sheetsQuantity}</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.destroyRate}</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.material?.materialCategory}</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.material?.materialType}</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.material?.thickness}</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.material?.size}</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.totalCost}</p>
                                                                 </td>
                                                             </tr>
@@ -407,39 +406,39 @@ export default function CustomizedTables() {
                                                     {add?.code === 2 && (
                                                         <>
                                                             <tr style={{ backgroundColor: "#686868", color: "white" }}>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>SIDE</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>COLOR TYPE</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>PRINT QU</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>SIZE</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>TOTAL</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }} colSpan={4} />
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                             </tr>
                                                             {add?.structure?.faces?.filter((face: any) => face.active).map((face: any) => {
                                                                 return (
                                                                     <tr key={face.id}>
-                                                                        <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                        <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                             <p>{face.name}</p>
                                                                         </td>
-                                                                        <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                        <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                             <p>{face.colorType}</p>
                                                                         </td>
-                                                                        <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                        <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                             <p>{add?.structure?.quantity}</p>
                                                                         </td>
-                                                                        <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                        <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                             <p>{printSizeOptions.find((size) => size.id === add?.structure?.printSize)?.name}</p>
                                                                         </td>
-                                                                        <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                        <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                             <p>{face.totalCost}</p>
                                                                         </td>
                                                                     </tr>
@@ -450,37 +449,37 @@ export default function CustomizedTables() {
                                                     {add?.code === 3 && (
                                                         <>
                                                             <tr style={{ backgroundColor: "#686868", color: "white" }}>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>SIZE</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>PRINT SIZE</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>COLOR</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>QUANTITY</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>TOTAL</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }} colSpan={4} />
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                             </tr>
                                                             <tr>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{printSizeOptions.find((size) => size.id === add?.structure?.paperSize)?.name}</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.printSize}</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.numberOfColor}</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.quantity}</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.totalCost}</p>
                                                                 </td>
                                                             </tr>
@@ -489,37 +488,37 @@ export default function CustomizedTables() {
                                                     {add?.code === 4 && (
                                                         <>
                                                             <tr style={{ backgroundColor: "#686868", color: "white" }}>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>SIZE</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>PRINT SIZE</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>COLOR</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>QUANTITY</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>TOTAL</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }} colSpan={4} />
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                             </tr>
                                                             <tr>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{printSizeOptions.find((size) => size.id === add?.structure?.paperSize)?.name}</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.embossingSize}</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.numberOfColor}</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.quantity}</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.totalCost}</p>
                                                                 </td>
                                                             </tr>
@@ -528,25 +527,25 @@ export default function CustomizedTables() {
                                                     {add?.code === 5 && (
                                                         <>
                                                             <tr style={{ backgroundColor: "#686868", color: "white" }}>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>SIZE</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>QUANTITY</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>TOTAL</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }} colSpan={6} />
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={6} />
                                                             </tr>
                                                             <tr>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{printSizeOptions.find((size) => size.id === add?.structure?.dieCutSize)?.name}</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.quantity}</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.totalCost}</p>
                                                                 </td>
                                                             </tr>
@@ -555,39 +554,39 @@ export default function CustomizedTables() {
                                                     {add?.code === 6 && (
                                                         <>
                                                             <tr style={{ backgroundColor: "#686868", color: "white" }}>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>SIDE</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>QUANTITY</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>TYPE</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>SIZE</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>TOTAL</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }} colSpan={4} />
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                             </tr>
                                                             {add?.structure?.faces?.filter((face: any) => face.active).map((face: any) => {
                                                                 return (
                                                                     <tr key={face.id}>
-                                                                        <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                        <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                             <p>{face.name}</p>
                                                                         </td>
-                                                                        <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                        <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                             <p>{face.quantity}</p>
                                                                         </td>
-                                                                        <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                        <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                             <p>{face.laminationType}</p>
                                                                         </td>
-                                                                        <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                        <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                             <p>{printSizeOptions.find((size) => size.id === face.laminationSize)?.name}</p>
                                                                         </td>
-                                                                        <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                        <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                             <p>{face.totalCost}</p>
                                                                         </td>
                                                                     </tr>
@@ -598,39 +597,39 @@ export default function CustomizedTables() {
                                                     {add?.code === 7 && (
                                                         <>
                                                             <tr style={{ backgroundColor: "#686868", color: "white" }}>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>SIDE</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>QUANTITY</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>TYPE</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>SIZE</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>TOTAL</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }} colSpan={4} />
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                             </tr>
                                                             {add?.structure?.faces?.filter((face: any) => face.active).map((face: any) => {
                                                                 return (
                                                                     <tr key={face.id}>
-                                                                        <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                        <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                             <p>{face.name}</p>
                                                                         </td>
-                                                                        <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                        <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                             <p>{face.quantity}</p>
                                                                         </td>
-                                                                        <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                        <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                             <p>{face.varnishType}</p>
                                                                         </td>
-                                                                        <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                        <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                             <p>{printSizeOptions.find((size) => size.id === face.laminationSize)?.name}</p>
                                                                         </td>
-                                                                        <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                        <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                             <p>{face.totalCost}</p>
                                                                         </td>
                                                                     </tr>
@@ -641,28 +640,28 @@ export default function CustomizedTables() {
                                                     {add?.code === 8 && (
                                                         <>
                                                             <tr style={{ backgroundColor: "#686868", color: "white" }}>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>TYPE</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>QUANTITY</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>TOTAL</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }} colSpan={6} />
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={6} />
                                                             </tr>
                                                             {Object.keys(add?.structure).map((key: any) => {
                                                                 if (add?.structure[key].active) {
                                                                     return (
                                                                         <tr key={key}>
-                                                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                            <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                                 <p>{key}</p>
                                                                             </td>
-                                                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                            <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                                 <p>{add?.structure[key].quantity}</p>
                                                                             </td>
-                                                                            <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                            <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                                 <p>{add?.structure[key].totalCost}</p>
                                                                             </td>
                                                                         </tr>
@@ -676,37 +675,37 @@ export default function CustomizedTables() {
                                                     {add?.code === 9 && (
                                                         <>
                                                             <tr style={{ backgroundColor: "#686868", color: "white" }}>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>SIZE</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>PRINT SIZE</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>COLOR</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>QUANTITY</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>TOTAL</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }} colSpan={4} />
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                             </tr>
                                                             <tr>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{printSizeOptions.find((size) => size.id === add?.structure?.paperSize)?.name}</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.printSize}</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.numberOfColor}</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.quantity}</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", padding: "5px", textAlign: "center" }}>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.totalCost}</p>
                                                                 </td>
                                                             </tr>
@@ -754,7 +753,7 @@ export default function CustomizedTables() {
                 <div style={{ display: "none" }}>
                     <div ref={contentToPrint}>
                         {rows.length > 0 && (
-                            <div style={{ padding: "15px", display: "flex", flexDirection: "column", gap: "10px", fontSize: "16px" }}>
+                            <div style={{ padding: "15px", display: "flex", flexDirection: "column", gap: "10px", fontSize: "11px" }}>
                                 <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                                     <div style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
                                         <h1 style={{ fontWeight: 600 }}>AL-ESTEQAMA PRINTING PRESS</h1>
@@ -813,9 +812,7 @@ export default function CustomizedTables() {
                                                         <p>{index + 1}</p>
                                                     </td>
                                                     <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }} colSpan={6}>
-                                                        <p style={{ fontWeight: 600 }}>{input.input.name}</p>
-                                                        <p>{input.input.code}</p>
-                                                        <p>with {(input?.structure as any)?.additional?.map((add: any) => add.name).join("& ")}</p>
+                                                        <p style={{ fontWeight: 600 }}>{input.description}</p>
                                                     </td>
                                                     <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} >
                                                         <p>{((input.structure) as any)?.sheetsQuantity}</p>
