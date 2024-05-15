@@ -254,16 +254,16 @@ export default function CustomizedTables() {
                                     <tbody>
                                         <tr style={{ backgroundColor: "#1f2937", color: "white" }}>
                                             <td style={{ border: "1px solid white", textAlign: "left" }} colSpan={4}>
-                                                اسم العميل
+                                                Customer Name
                                             </td>
                                             <td style={{ border: "1px solid white", textAlign: "center" }}>
-                                                الكمية
+                                                Quantity
                                             </td>
                                             <td style={{ border: "1px solid white", textAlign: "center" }}>
-                                                كود العميل
+                                                CODE
                                             </td>
                                             <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={3}>
-                                                رقم التواصل
+                                                Phone
                                             </td>
                                         </tr>
                                         <tr style={{ backgroundColor: "#f3f4f6" }}>
