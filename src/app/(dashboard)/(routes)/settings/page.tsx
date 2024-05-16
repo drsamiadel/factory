@@ -85,8 +85,9 @@ export default function Page() {
                             size="small"
                             onChange={handleChange}
                         />
-                        <Button variant="contained" color="primary">Upload</Button>
-                        <Button variant="contained" color="secondary">Remove</Button>
+
+                        {/* <Button variant="contained" color="primary">Upload</Button>
+                        <Button variant="contained" color="secondary">Remove</Button> */}
                     </Grid>
                     <Grid item xs={12}>
                         <TextField

@@ -27,6 +27,8 @@ import DeleteBTN from './components/delete';
 import { useReactToPrint } from 'react-to-print';
 import { PanoramaFishEyeRounded, Preview, VisibilityRounded } from '@mui/icons-material';
 import convertTextToEquation from '../../../../lib/convert-text-to-equation';
+import { AppContextProps, SiteContext } from '@/hooks/site-context';
+import Image from 'next/image';
 
 
 interface PricingWithUserAndCustomer extends Partial<Pricing> {
@@ -285,7 +287,7 @@ export default function CustomizedTables() {
                                                 {input.description}
                                             </td>
                                         </tr>
-                                        <tr style={{ color: "white", backgroundColor: "#f3f4f6" }}>
+                                        <tr style={{ color: "white", backgroundColor: "#f3f4f6", fontWeight: 600 }}>
                                             <td style={{ backgroundColor: "#1f2937", border: "1px solid white", textAlign: "left" }} colSpan={1}>
                                                 Job Description
                                             </td>
@@ -303,10 +305,10 @@ export default function CustomizedTables() {
                                             <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                 Length
                                             </td>
+                                            <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                             <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                 Total Size
                                             </td>
-                                            <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                         </tr>
                                         {(input?.structure as any)?.input?.structure?.peices.map((add: any) => {
                                             const width = convertTextToEquation(add.equation.width, (input?.structure as any)?.input, add.id);
@@ -325,6 +327,7 @@ export default function CustomizedTables() {
                                                     <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                         {add?.fields?.find((add: any) => add.name.toLowerCase() === "length")?.value}
                                                     </td>
+                                                    <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                     <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                         {`${width} x ${height} mm`}
                                                     </td>
@@ -337,7 +340,7 @@ export default function CustomizedTables() {
                                             return (
                                                 <>
                                                     <tr style={{ backgroundColor: "#1f2937", color: "white" }} key={add.id}>
-                                                        <td style={{ border: "1px solid white", textAlign: "left" }}>
+                                                        <td style={{ border: "1px solid white", textAlign: "left", fontWeight: 600 }}>
                                                             <p>{add.name}</p>
                                                         </td>
                                                     </tr>
@@ -418,10 +421,10 @@ export default function CustomizedTables() {
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>SIZE</p>
                                                                 </td>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>TOTAL</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                             </tr>
                                                             {add?.structure?.faces?.filter((face: any) => face.active).map((face: any) => {
                                                                 return (
@@ -438,6 +441,7 @@ export default function CustomizedTables() {
                                                                         <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                             <p>{printSizeOptions.find((size) => size.id === add?.structure?.printSize)?.name}</p>
                                                                         </td>
+                                                                        <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                                         <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                             <p>{face.totalCost}</p>
                                                                         </td>
@@ -461,10 +465,10 @@ export default function CustomizedTables() {
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>QUANTITY</p>
                                                                 </td>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>TOTAL</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                             </tr>
                                                             <tr>
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
@@ -479,6 +483,7 @@ export default function CustomizedTables() {
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.quantity}</p>
                                                                 </td>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.totalCost}</p>
                                                                 </td>
@@ -500,10 +505,10 @@ export default function CustomizedTables() {
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>QUANTITY</p>
                                                                 </td>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>TOTAL</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                             </tr>
                                                             <tr>
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
@@ -518,6 +523,7 @@ export default function CustomizedTables() {
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.quantity}</p>
                                                                 </td>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.totalCost}</p>
                                                                 </td>
@@ -533,10 +539,10 @@ export default function CustomizedTables() {
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>QUANTITY</p>
                                                                 </td>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={6} />
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>TOTAL</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={6} />
                                                             </tr>
                                                             <tr>
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
@@ -545,6 +551,7 @@ export default function CustomizedTables() {
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.quantity}</p>
                                                                 </td>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={6} />
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.totalCost}</p>
                                                                 </td>
@@ -566,10 +573,10 @@ export default function CustomizedTables() {
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>SIZE</p>
                                                                 </td>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>TOTAL</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                             </tr>
                                                             {add?.structure?.faces?.filter((face: any) => face.active).map((face: any) => {
                                                                 return (
@@ -586,6 +593,7 @@ export default function CustomizedTables() {
                                                                         <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                             <p>{printSizeOptions.find((size) => size.id === face.laminationSize)?.name}</p>
                                                                         </td>
+                                                                        <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                                         <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                             <p>{face.totalCost}</p>
                                                                         </td>
@@ -609,10 +617,10 @@ export default function CustomizedTables() {
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>SIZE</p>
                                                                 </td>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>TOTAL</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                             </tr>
                                                             {add?.structure?.faces?.filter((face: any) => face.active).map((face: any) => {
                                                                 return (
@@ -629,6 +637,7 @@ export default function CustomizedTables() {
                                                                         <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                             <p>{printSizeOptions.find((size) => size.id === face.laminationSize)?.name}</p>
                                                                         </td>
+                                                                        <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                                         <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                             <p>{face.totalCost}</p>
                                                                         </td>
@@ -646,10 +655,10 @@ export default function CustomizedTables() {
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>QUANTITY</p>
                                                                 </td>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={6} />
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>TOTAL</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={6} />
                                                             </tr>
                                                             {Object.keys(add?.structure).map((key: any) => {
                                                                 if (add?.structure[key].active) {
@@ -661,6 +670,7 @@ export default function CustomizedTables() {
                                                                             <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                                 <p>{add?.structure[key].quantity}</p>
                                                                             </td>
+                                                                            <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={6} />
                                                                             <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                                 <p>{add?.structure[key].totalCost}</p>
                                                                             </td>
@@ -687,10 +697,10 @@ export default function CustomizedTables() {
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>QUANTITY</p>
                                                                 </td>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>TOTAL</p>
                                                                 </td>
-                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                             </tr>
                                                             <tr>
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
@@ -705,6 +715,7 @@ export default function CustomizedTables() {
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.quantity}</p>
                                                                 </td>
+                                                                <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={4} />
                                                                 <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                                     <p>{add?.structure?.totalCost}</p>
                                                                 </td>
@@ -738,6 +749,8 @@ export default function CustomizedTables() {
             content: () => contentToPrint.current,
         });
 
+        const { site } = React.useContext(SiteContext) as AppContextProps;
+
         const totalCost = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.totalCost || 0), 0);
         const total = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.total || 0), 0);
         const totalTaxAmount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (((row.totalCost as number) - (row.total as number)) || 0), 0);
@@ -756,12 +769,12 @@ export default function CustomizedTables() {
                             <div style={{ padding: "15px", display: "flex", flexDirection: "column", gap: "10px", fontSize: "11px" }}>
                                 <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                                     <div style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
-                                        <h1 style={{ fontWeight: 600 }}>AL-ESTEQAMA PRINTING PRESS</h1>
-                                        <p>AL-NAKHEEL SHARAH MALIK SAUD</p>
-                                        <p>SHARAH MALIK SAUD - AL-DAMMAM</p>
-                                        <p>0551971699 / 0138285068</p>
-                                        <p>311165637900003</p>
-                                        <p>CR: 2050102120</p>
+                                        {site.logo && (<Image src={site.logo} alt="logo" width={50} height={50} style={{ objectFit: "contain" }} />)}
+                                        <h1 style={{ fontWeight: 600, fontSize: "14px" }}>{site.companyName}</h1>
+                                        <p>{site.address}</p>
+                                        <p>{site.phone1} {site.phone2 && ` - ${site.phone2}`}</p>
+                                        <p>{site.VATNumber}</p>
+                                        <p>CR: {site.CRNumber}</p>
                                     </div>
                                     <div style={{ display: "flex", flexDirection: "column", alignItems: "end" }}>
                                         <h1 style={{ fontWeight: 600 }}>تسعيرة</h1>

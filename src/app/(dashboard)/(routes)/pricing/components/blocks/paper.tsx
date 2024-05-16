@@ -10,12 +10,12 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Grid from '@mui/material/Grid';
 import Checkbox from '@mui/material/Checkbox';
 import { v4 as uuidv4 } from 'uuid';
-import { Material } from '@prisma/client';
+import { Material, Supplier } from '@prisma/client';
 import { useDebounce } from '../../../../../../lib/use-debounce';
 import Divider from '@mui/material/Divider';
 
 const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: any, input: any, handleChange: any, initialValues?: any }) => {
-    const [materials, setMaterials] = React.useState<Partial<Material>[] | null>(null);
+    const [materials, setMaterials] = React.useState<Partial<Material & { supplier: Partial<Supplier> }>[]>([]);
     const [materialsLoading, setMaterialsLoading] = React.useState<boolean>(false);
     const [materialSearch, setMaterialSearch] = React.useState<string>("");
     const debouncedMaterialSearch = useDebounce(materialSearch, 500);
@@ -155,7 +155,7 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
                         options={materials ? materials : []}
                         getOptionLabel={(option) => option.name ? option.name : ""}
                         renderOption={(props, option) => (
-                            materialsLoading ? <ListItem key={uuidv4()}>Loading...</ListItem> : <ListItem {...props} key={option.id}> <ListItemText primary={`${option.name}`} /> </ListItem>
+                            materialsLoading ? <ListItem key={uuidv4()}>Loading...</ListItem> : <ListItem {...props} key={option.id}> <ListItemText primary={`${option.name} - ${option?.supplier?.companyName}`} /> </ListItem>
                         )}
                         value={materials?.find((material) => material.id === paper.structure.material.id) || null}
                         renderInput={(params) => <TextField {...params} label="Material" />}
