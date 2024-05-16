@@ -727,14 +727,56 @@ export default function CustomizedTables() {
                                         })}
                                     </tbody>
                                 </table>
-                                <div style={{ display: "flex", flexDirection: "column", justifyContent: "end", alignItems: "end" }}>
-                                    <p>المجموع: <span style={{ fontWeight: 600 }}>{input.total}</span></p>
-                                    <p>هامش الربح: <span style={{ fontWeight: 600 }}>{((input.total as number) * (input.profit as number) || 0) / 100}</span></p>
-                                    <p>المجموع بدون ضريبة: <span style={{ fontWeight: 600 }}>{(input.total as number) + ((input.total as number) * (input.profit as number) || 0) / 100}</span></p>
-                                    <p>الضريبة ({input.vat}%): <span style={{ fontWeight: 600 }}>{((input.totalCost || 0) * (input.vat || 0) / 100).toFixed(2)}</span></p>
-                                    <p>الخصم: <span style={{ fontWeight: 600 }}>{input.discount}</span></p>
-                                    <p>الإجمالي شامل الضريبة: <span style={{ fontWeight: 600 }}>{input.totalCost}</span></p>
-                                </div>
+                                <table style={{ width: "30%", borderCollapse: "collapse", marginRight: "auto", direction: "rtl" }}>
+                                    <tr>
+                                        <td style={{ border: "1px solid black", textAlign: "center" }}>
+                                            <p>المجموع</p>
+                                        </td>
+                                        <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
+                                            <p>{input.total?.toFixed(2)}</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ border: "1px solid black", textAlign: "center" }}>
+                                            <p>هامش الربح</p>
+                                        </td>
+                                        <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
+                                            <p>{((input.total as number) * (input.profit as number) || 0) / 100}</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ border: "1px solid black", textAlign: "center" }}>
+                                            <p>المجموع بدون ضريبة</p>
+                                        </td>
+                                        <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
+                                            <p>{(input.total as number) + ((input.total as number) * (input.profit as number) || 0) / 100}</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ border: "1px solid black", textAlign: "center" }}>
+                                            <p>الضريبة ({input.vat}%)</p>
+                                        </td>
+                                        <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
+                                            <p>{((input.totalCost || 0) * (input.vat || 0) / 100).toFixed(2)}</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ border: "1px solid black", textAlign: "center" }}>
+                                            <p>الخصم</p>
+                                        </td>
+                                        <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
+                                            <p>{input.discount}</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ border: "1px solid black", textAlign: "center" }}>
+                                            <p>الإجمالي شامل الضريبة</p>
+                                        </td>
+                                        <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
+                                            <p>{input.totalCost}</p>
+                                        </td>
+                                    </tr>
+                                </table>
                             </div>
                         )}
                     </div>
@@ -751,10 +793,10 @@ export default function CustomizedTables() {
 
         const { site } = React.useContext(SiteContext) as AppContextProps;
 
-        const totalCost = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.totalCost || 0), 0);
-        const total = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.total || 0), 0);
-        const totalTaxAmount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (((row.totalCost as number) - (row.total as number)) || 0), 0);
-        const totalDiscount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.discount || 0), 0);
+        const totalCost = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.totalCost || 0), 0).toFixed(2);
+        const total = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.total || 0), 0).toFixed(2);
+        const totalTaxAmount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (((row.totalCost as number) - (row.total as number)) || 0), 0).toFixed(2);
+        const totalDiscount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.discount || 0), 0).toFixed(2);
 
         const currentRow = rows.find((row) => row.code === code);
 
@@ -790,7 +832,7 @@ export default function CustomizedTables() {
                                             <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={6}>
                                                 <p>#</p>
                                             </th>
-                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left" }} colSpan={6}>
+                                            <th style={{ fontWeight: 400, border: "1px solid white", padding: "5px", backgroundColor: "#1f2937", color: "white", textAlign: "left", minWidth: "200px" }} colSpan={8}>
                                                 <p>البيان</p>
                                                 <p>Description</p>
                                             </th>
@@ -824,7 +866,7 @@ export default function CustomizedTables() {
                                                     <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }} colSpan={6}>
                                                         <p>{index + 1}</p>
                                                     </td>
-                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }} colSpan={6}>
+                                                    <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }} colSpan={8}>
                                                         <p style={{ fontWeight: 600 }}>{input.description}</p>
                                                     </td>
                                                     <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} >
@@ -847,13 +889,40 @@ export default function CustomizedTables() {
                                         })}
                                     </tbody>
                                 </table>
-                                <div style={{ display: "flex", flexDirection: "column", justifyContent: "end", alignItems: "end" }}>
-                                    <p style={{ fontWeight: 600 }}>المجموع بدون ضريبة: {total}</p>
-                                    <p style={{ fontWeight: 600 }}>الضريبة: {totalTaxAmount}</p>
-                                    <p style={{ fontWeight: 600 }}>الخصم: {totalDiscount}</p>
-                                    <p style={{ fontWeight: 600 }}>الإجمالي شامل الضريبة: {totalCost}</p>
-
-                                </div>
+                                <table style={{ width: "30%", borderCollapse: "collapse", marginRight: "auto", direction: "rtl" }}>
+                                    <tr>
+                                        <td style={{ border: "1px solid black", textAlign: "center" }}>
+                                            <p>المجموع بدون ضريبة:</p>
+                                        </td>
+                                        <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
+                                            <p>{total}</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ border: "1px solid black", textAlign: "center" }}>
+                                            <p>الضريبة:</p>
+                                        </td>
+                                        <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
+                                            <p>{totalTaxAmount}</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ border: "1px solid black", textAlign: "center" }}>
+                                            <p>الخصم:</p>
+                                        </td>
+                                        <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
+                                            <p>{totalDiscount}</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ border: "1px solid black", textAlign: "center" }}>
+                                            <p>الإجمالي شامل الضريبة:</p>
+                                        </td>
+                                        <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
+                                            <p>{totalCost}</p>
+                                        </td>
+                                    </tr>
+                                </table>
                             </div>
                         )}
                     </div>
