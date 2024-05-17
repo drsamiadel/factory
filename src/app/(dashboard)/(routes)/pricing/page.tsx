@@ -757,7 +757,7 @@ export default function CustomizedTables() {
                                             <p>الضريبة ({input.vat}%)</p>
                                         </td>
                                         <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
-                                            <p>{((input.totalCost || 0) * (input.vat || 0) / 100).toFixed(2)}</p>
+                                            <p>{(((input.total as number) + ((input.total as number) * (input.profit as number) || 0) / 100) * (input.vat || 0) / 100).toFixed(2)}</p>
                                         </td>
                                     </tr>
                                     <tr>
