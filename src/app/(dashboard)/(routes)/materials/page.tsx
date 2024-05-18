@@ -16,6 +16,7 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import Form from './components/form';
+import Collapse from '@mui/material/Collapse';
 
 import Button from '@mui/material/Button';
 import { CREATE, DELETE, UPDATE } from '@/actions/material';
@@ -24,6 +25,7 @@ import Skeleton from '@mui/material/Skeleton';
 
 import { useDebounce } from "@/lib/use-debounce";
 import DeleteBTN from './components/delete';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 interface MaterialWithUserAndSupplier extends Partial<Material> {
     user: Partial<User>;
@@ -78,6 +80,77 @@ const StyledTableSortLabel = styled(TableSortLabel)(({ theme }) => ({
         color: 'white',
     },
 }));
+
+function Row({
+    row,
+    selectedId,
+    handleEdit,
+    handleDelete,
+}: { row: MaterialWithUserAndSupplier, selectedId: string, handleEdit: (id: string) => any, handleDelete: (id: string) => any }) {
+    const [open, setOpen] = React.useState(false);
+    return (
+        <>
+            <StyledTableRow key={row.id}>
+                <StyledTableCell component="th" scope="row">
+                    {row.name}
+                </StyledTableCell>
+                <StyledTableCell>{row.category}</StyledTableCell>
+                <StyledTableCell>{row.type}</StyledTableCell>
+                <StyledTableCell>{row.variants?.length}
+                    <Button onClick={() => setOpen(!open)}
+                        sx={{ p: 0, minWidth: 0, minHeight: 0, height: 30, width: 30, borderRadius: 15, color: "primary.main" }}
+                    >{open ?
+                        <VisibilityOff sx={{ fontSize: 16 }} />
+                        :
+                        <Visibility sx={{ fontSize: 16 }} />
+                        }</Button>
+                </StyledTableCell>
+                <StyledTableCell>{row.description}</StyledTableCell>
+                <StyledTableCell>{row.supplier.companyName} - {row.supplier.managerName}</StyledTableCell>
+                <StyledTableCell align="right">
+                    <Box sx={{ display: 'flex', gap: 1, flexDirection: "row", justifyContent: "end", alignItems: "center" }}>
+                        <IconButton aria-label="edit" sx={{ color: "success.main", p: 0 }} onClick={() => handleEdit(row.id!)}>
+                            <EditRoundedIcon sx={{ fontSize: 16 }} />
+                        </IconButton>
+                        <DeleteBTN onAgree={() => handleDelete(row.id!)} />
+                    </Box>
+                </StyledTableCell>
+            </StyledTableRow>
+            {open && (
+                <StyledTableRow sx={{ padding: 0 }}>
+                    <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
+                        <Collapse in={open} timeout="auto" unmountOnExit>
+                            <table style={{ width: '100%' }}>
+                                <thead>
+                                    <tr>
+                                        <th>Thickness</th>
+                                        <th>Size</th>
+                                        <th>Unit</th>
+                                        <th>Pieces in Package</th>
+                                        <th>Package Price</th>
+                                        <th>Unit Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {row.variants?.map((variant: any) => (
+                                        <tr key={variant.id}>
+                                            <td>{variant.thickness}</td>
+                                            <td>{variant.size}</td>
+                                            <td>{variant.unit}</td>
+                                            <td>{variant.piecesInPackage}</td>
+                                            <td>{variant.packagePrice}</td>
+                                            <td>{variant.unitPrice}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </Collapse>
+                    </StyledTableCell>
+                </StyledTableRow>
+            )}
+        </>
+    )
+}
 
 export default function CustomizedTables() {
     const [page, setPage] = React.useState<number>(0);
@@ -279,24 +352,7 @@ export default function CustomizedTables() {
                             </StyledTableRow>
                             :
                             rows.map((row) => (
-                                <StyledTableRow key={row.id}>
-                                    <StyledTableCell component="th" scope="row">
-                                        {row.name}
-                                    </StyledTableCell>
-                                    <StyledTableCell>{row.category}</StyledTableCell>
-                                    <StyledTableCell>{row.type}</StyledTableCell>
-                                    <StyledTableCell>{row.variants?.length}</StyledTableCell>
-                                    <StyledTableCell>{row.description}</StyledTableCell>
-                                    <StyledTableCell>{row.supplier.companyName} - {row.supplier.managerName}</StyledTableCell>
-                                    <StyledTableCell align="right">
-                                        <Box sx={{ display: 'flex', gap: 1, flexDirection: "row", justifyContent: "end", alignItems: "center" }}>
-                                            <IconButton aria-label="edit" sx={{ color: "success.main", p: 0 }} onClick={() => handleEdit(row.id!)}>
-                                                <EditRoundedIcon sx={{ fontSize: 16 }} />
-                                            </IconButton>
-                                            <DeleteBTN onAgree={() => handleDelete(row.id!)} />
-                                        </Box>
-                                    </StyledTableCell>
-                                </StyledTableRow>
+                                <Row key={row.id} row={row} selectedId={selectedId} handleEdit={handleEdit} handleDelete={handleDelete} />
                             )))
                         }
                     </TableBody>

@@ -24,7 +24,7 @@ import Grid from '@mui/material/Grid';
 import { set } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import convertTextToEquation from '@/lib/convert-text-to-equation';
-import { Customer, Input, Material } from '@prisma/client';
+import { Customer, Delegate, Input, Material } from '@prisma/client';
 import { useDebounce } from '../../../../../lib/use-debounce';
 import Divider from '@mui/material/Divider';
 import { custom } from 'zod';
@@ -64,6 +64,7 @@ export default function Form({
         code: "",
         description: "",
         customerId: null,
+        delegateId: null,
         structure: {
             input: {
                 id: '',
@@ -135,6 +136,27 @@ export default function Form({
         fetchCustomers();
     }, [debouncedCustomerSearch]);
 
+    const [delegates, setDelegate] = React.useState<Partial<Delegate>[] | null>(null);
+    const [delegateLoading, setDelegateLoading] = React.useState<boolean>(false);
+    const [delegateSearch, setDelegateSearch] = React.useState<string>("");
+    const debouncedDelegateSearch = useDebounce(delegateSearch, 500);
+
+    React.useEffect(() => {
+        const fetchCustomers = async () => {
+            setDelegateLoading(true);
+
+            const response = await fetch(`/api/data/delegate?filterByName=${debouncedDelegateSearch}`);
+
+            if (response.ok) {
+                const data = await response.json();
+                setDelegate(data.delegates);
+            }
+
+            setDelegateLoading(false);
+        }
+        fetchCustomers();
+    }, [debouncedDelegateSearch]);
+
     const [inputs, setInputs] = React.useState<Partial<Input>[] | null>(null);
     const [inputsLoading, setInputsLoading] = React.useState<boolean>(false);
     const [inputSearch, setInputSearch] = React.useState<string>("");
@@ -173,6 +195,7 @@ export default function Form({
                     size: "",
                     piecesInPackage: 0,
                     unitPrice: 0,
+                    suppluierId: null,
                     materialCategory: "",
                     materialType: "",
                 },
@@ -388,18 +411,6 @@ export default function Form({
         }
     ];
 
-    const componentMap = {
-        1: PaperComponent,
-        2: OffsetComponent,
-        3: HotFoilComponent,
-        4: EmbossingComponent,
-        5: DieCutFormComponent,
-        6: LaminationComponent,
-        7: VarnishComponent,
-        8: FinishingComponent,
-        9: SilkScreenComponent
-    };
-
     const [selectedBlock, setSelectedBlock] = React.useState<any>(additionalFields[0].code);
 
     const [loading, setLoading] = React.useState(false);
@@ -425,6 +436,7 @@ export default function Form({
             code: "",
             description: "",
             customerId: null,
+            delegateId: null,
             structure: {
                 input: {
                     id: '',
@@ -526,6 +538,49 @@ export default function Form({
                                             placeholder="Phone"
                                             name="customerPhone"
                                             value={input.customerId ? customers?.find((customer) => customer.id === input.customerId)?.phone1 : ""}
+                                            disabled
+                                            size='small'
+                                        />
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <Autocomplete
+                                            fullWidth
+                                            options={delegates ? delegates : []}
+                                            getOptionLabel={(option) => option.name ? option.name : ""}
+                                            renderOption={(props, option) => (
+                                                delegateLoading ? <ListItem key={uuidv4()}>Loading...</ListItem> : <ListItem {...props} key={option.id}> <ListItemText primary={option.name} /> </ListItem>
+                                            )}
+                                            defaultValue={initialValues ? delegates?.find((delegate) => delegate.id === initialValues.delegateId) : null}
+                                            renderInput={(params) => <TextField {...params} label="Delegate" />}
+                                            onChange={(event, value) => {
+                                                setInput({ ...input, delegateId: value ? value.id : null });
+                                            }}
+                                            onInputChange={(event, value) => {
+                                                setDelegateSearch(value);
+                                            }}
+                                            isOptionEqualToValue={(option, value) => option.id === value.id}
+                                            selectOnFocus
+                                            clearOnBlur
+                                            handleHomeEndKeys
+                                            size='small'
+                                        />
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <TextField
+                                            fullWidth
+                                            placeholder="Code"
+                                            name="delegateId"
+                                            value={input.delegateId ? delegates?.find((delegate) => delegate.id === input.delegateId)?.code : ""}
+                                            disabled
+                                            size='small'
+                                        />
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <TextField
+                                            fullWidth
+                                            placeholder="Phone"
+                                            name="delegatePhone"
+                                            value={input.delegateId ? delegates?.find((delegate) => delegate.id === input.delegateId)?.phone1 : ""}
                                             disabled
                                             size='small'
                                         />

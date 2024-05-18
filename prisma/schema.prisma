@@ -132,6 +132,8 @@ model Delegate {
   location    String?
   dealingType String  @default("cash")
 
+  pricing Pricing[]
+
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @db.ObjectId
 
@@ -163,6 +165,9 @@ model Pricing {
   id         String    @id @default(auto()) @map("_id") @db.ObjectId
   customerId String?   @db.ObjectId
   customer   Customer? @relation(fields: [customerId], references: [id])
+
+  delegateId String?   @db.ObjectId
+  delegate   Delegate? @relation(fields: [delegateId], references: [id])
 
   description String?
   code        String?

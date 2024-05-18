@@ -12,7 +12,6 @@ import Checkbox from '@mui/material/Checkbox';
 import { v4 as uuidv4 } from 'uuid';
 import { Material, Supplier } from '@prisma/client';
 import { useDebounce } from '../../../../../../lib/use-debounce';
-import Divider from '@mui/material/Divider';
 
 const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: any, input: any, handleChange: any, initialValues?: any }) => {
     const [materials, setMaterials] = React.useState<Partial<Material & { supplier: Partial<Supplier> }>[]>([]);
@@ -101,6 +100,14 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [paper.structure.material.thickness, paper.structure.material.size, paper.structure.material.piecesInPackage, materials]);
 
+    React.useEffect(() => {
+        function updateMaterialId() {
+            const material = materials?.find((material) => material.name === paper.structure.material.name && material.supplierId === paper.structure.material.supplierId);
+            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.material.id`, value: material?.id } });
+        }
+        updateMaterialId();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [paper.structure.material.name, paper.structure.material.supplierId, materials]);
     return (
         <Grid item xs={12}>
             <Grid container spacing={2}>
@@ -152,28 +159,48 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
                 <Grid item xs={3}>
                     <Autocomplete
                         fullWidth
-                        options={materials ? materials : []}
-                        getOptionLabel={(option) => option.name ? option.name : ""}
+                        options={materials ? materials.map((material) => material.name).filter((value, index, self) => self.indexOf(value) === index) : []}
+                        getOptionLabel={(option) => option ? option : ""}
                         renderOption={(props, option) => (
-                            materialsLoading ? <ListItem key={uuidv4()}>Loading...</ListItem> : <ListItem {...props} key={option.id}> <ListItemText primary={`${option.name} - ${option?.supplier?.companyName}`} /> </ListItem>
+                            materialsLoading ? <ListItem key={uuidv4()}>Loading...</ListItem> : <ListItem {...props} key={option}> <ListItemText primary={`${option}`} /> </ListItem>
                         )}
-                        value={materials?.find((material) => material.id === paper.structure.material.id) || null}
+                        loading={materialsLoading}
+                        loadingText="Loading..."
+                        value={materials?.find((material) => material.id === paper.structure.material.id)?.name || ""}
                         renderInput={(params) => <TextField {...params} label="Material" />}
                         onChange={(event, value) => {
-                            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.material.id`, value: value ? value.id : null } });
-                            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.material.materialCategory`, value: value ? value.category : null } });
-                            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.material.materialType`, value: value ? value.type : null } });
+                            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.material.name`, value: value ? value : null } });
+                            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.material.materialCategory`, value: value ? value : null } });
+                            handleChange({ target: { name: `structure.additional[${blockIndex}].structure.material.materialType`, value: value ? value : null } });
                         }
                         }
                         onInputChange={(event, value) => {
                             setMaterialSearch(value);
                         }}
-                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                        isOptionEqualToValue={(option, value) => option === value}
                         selectOnFocus
                         clearOnBlur
                         handleHomeEndKeys
                         size='small'
                     />
+                </Grid>
+                <Grid item xs={1.5}>
+                    <FormControl fullWidth size='small'>
+                        <InputLabel id="supplierId">Supplier</InputLabel>
+                        <Select
+                            labelId="supplierId"
+                            id="supplierId"
+                            label="supplierId"
+                            size='small'
+                            name="supplierId"
+                            value={paper.structure.material.supplierId || ""}
+                            onChange={(e: SelectChangeEvent) => handleChange({ target: { name: `structure.additional[${blockIndex}].structure.material.supplierId`, value: e.target.value } })}
+                        >
+                            {materials?.filter((material) => material.name === paper.structure.material.name)?.map((material) => material.supplier)?.filter((value, index, self) => self.indexOf(value) === index)?.map((supplier) => (
+                                <MenuItem key={supplier?.id} value={supplier?.id}>{supplier?.companyName}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                 </Grid>
                 <Grid item xs={1.5}>
                     <TextField
