@@ -794,7 +794,7 @@ export default function CustomizedTables() {
         const { site } = React.useContext(SiteContext) as AppContextProps;
 
         const totalCost = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.totalCost || 0), 0).toFixed(2);
-        const total = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.total || 0), 0).toFixed(2);
+        const totalAmountIncludingProfit = rows.filter((row) => row.code === code).reduce((acc, row) => acc + ((row.total as number) + ((row.total as number) * (row.profit as number) || 0) / 100), 0).toFixed(2);
         const totalTaxAmount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (((row.totalCost as number) - (row.total as number)) || 0), 0).toFixed(2);
         const totalDiscount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.discount || 0), 0).toFixed(2);
 
@@ -860,7 +860,7 @@ export default function CustomizedTables() {
                                     </thead>
                                     <tbody>
                                         {rows.filter((row) => row.code === code).map((input, index) => {
-                                            const unitPrice = ((input.total || 0) / ((input.structure as any)?.sheetsQuantity || 1)).toFixed(2);
+                                            const unitPrice = (((input.total || 0) + ((input.total as number) * (input.profit as number) || 0) / 100) / ((input.structure as any)?.sheetsQuantity || 1)).toFixed(2);
                                             return (
                                                 <tr style={{ backgroundColor: "#f3f4f6" }} key={input.id}>
                                                     <td style={{ border: "1px solid white", padding: "5px", textAlign: "left" }} colSpan={6}>
@@ -876,7 +876,7 @@ export default function CustomizedTables() {
                                                         <p>{unitPrice}</p>
                                                     </td>
                                                     <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} >
-                                                        <p>{input.total}</p>
+                                                        <p>{(input.total || 0) + ((input.total as number) * (input.profit as number) || 0) / 100}</p>
                                                     </td>
                                                     <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} >
                                                         <p>{((input.totalCost || 0) - (input.total || 0)).toFixed(2)}</p>
@@ -895,7 +895,7 @@ export default function CustomizedTables() {
                                             <p>المجموع بدون ضريبة:</p>
                                         </td>
                                         <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
-                                            <p>{total}</p>
+                                            <p>{totalAmountIncludingProfit}</p>
                                         </td>
                                     </tr>
                                     <tr>
