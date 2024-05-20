@@ -729,7 +729,7 @@ export default function CustomizedTables() {
                                 </table>
                                 <table style={{ width: "30%", borderCollapse: "collapse", marginRight: "auto", direction: "rtl" }}>
                                     <tr>
-                                        <td style={{ border: "1px solid black", textAlign: "center" }}>
+                                        <td style={{ border: "1px solid black", textAlign: "center", backgroundColor: "#1f2937", color: "white" }}>
                                             <p>المجموع</p>
                                         </td>
                                         <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
@@ -737,7 +737,7 @@ export default function CustomizedTables() {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style={{ border: "1px solid black", textAlign: "center" }}>
+                                        <td style={{ border: "1px solid black", textAlign: "center", backgroundColor: "#1f2937", color: "white" }}>
                                             <p>هامش الربح</p>
                                         </td>
                                         <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
@@ -745,7 +745,7 @@ export default function CustomizedTables() {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style={{ border: "1px solid black", textAlign: "center" }}>
+                                        <td style={{ border: "1px solid black", textAlign: "center", backgroundColor: "#1f2937", color: "white" }}>
                                             <p>المجموع بدون ضريبة</p>
                                         </td>
                                         <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
@@ -753,7 +753,7 @@ export default function CustomizedTables() {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style={{ border: "1px solid black", textAlign: "center" }}>
+                                        <td style={{ border: "1px solid black", textAlign: "center", backgroundColor: "#1f2937", color: "white" }}>
                                             <p>الضريبة ({input.vat}%)</p>
                                         </td>
                                         <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
@@ -761,7 +761,7 @@ export default function CustomizedTables() {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style={{ border: "1px solid black", textAlign: "center" }}>
+                                        <td style={{ border: "1px solid black", textAlign: "center", backgroundColor: "#1f2937", color: "white" }}>
                                             <p>الخصم</p>
                                         </td>
                                         <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
@@ -769,7 +769,7 @@ export default function CustomizedTables() {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style={{ border: "1px solid black", textAlign: "center" }}>
+                                        <td style={{ border: "1px solid black", textAlign: "center", backgroundColor: "#1f2937", color: "white" }}>
                                             <p>الإجمالي شامل الضريبة</p>
                                         </td>
                                         <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
@@ -891,32 +891,32 @@ export default function CustomizedTables() {
                                 </table>
                                 <table style={{ width: "30%", borderCollapse: "collapse", marginRight: "auto", direction: "rtl" }}>
                                     <tr>
-                                        <td style={{ border: "1px solid black", textAlign: "center" }}>
-                                            <p>المجموع بدون ضريبة:</p>
+                                        <td style={{ border: "1px solid black", textAlign: "center", backgroundColor: "#1f2937", color: "white" }}>
+                                            <p>المجموع بدون ضريبة</p>
                                         </td>
                                         <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
                                             <p>{totalAmountIncludingProfit}</p>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style={{ border: "1px solid black", textAlign: "center" }}>
-                                            <p>الضريبة:</p>
+                                        <td style={{ border: "1px solid black", textAlign: "center", backgroundColor: "#1f2937", color: "white" }}>
+                                            <p>الضريبة</p>
                                         </td>
                                         <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
                                             <p>{totalTaxAmount}</p>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style={{ border: "1px solid black", textAlign: "center" }}>
-                                            <p>الخصم:</p>
+                                        <td style={{ border: "1px solid black", textAlign: "center", backgroundColor: "#1f2937", color: "white" }}>
+                                            <p>الخصم</p>
                                         </td>
                                         <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
                                             <p>{totalDiscount}</p>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style={{ border: "1px solid black", textAlign: "center" }}>
-                                            <p>الإجمالي شامل الضريبة:</p>
+                                        <td style={{ border: "1px solid black", textAlign: "center", backgroundColor: "#1f2937", color: "white" }}>
+                                            <p>الإجمالي شامل الضريبة</p>
                                         </td>
                                         <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
                                             <p>{totalCost}</p>
