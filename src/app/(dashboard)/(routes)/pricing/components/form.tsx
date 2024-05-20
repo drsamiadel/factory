@@ -37,6 +37,7 @@ import LaminationComponent from './blocks/lamination';
 import DieCutFormComponent from './blocks/die-cut';
 import SilkScreenComponent from './blocks/silk-screen';
 import FinishingComponent from './blocks/finishing';
+import Image from 'next/image';
 
 
 const Transition = React.forwardRef(function Transition(
@@ -622,7 +623,9 @@ export default function Form({
                                                     options={inputs ? inputs : []}
                                                     getOptionLabel={(option) => option.name ? option.name : ""}
                                                     renderOption={(props, option) => (
-                                                        customerLoading ? <ListItem key={uuidv4()}>Loading...</ListItem> : <ListItem {...props} key={option.id}> <ListItemText primary={option.name} /> </ListItem>
+                                                        customerLoading ? <ListItem key={uuidv4()}>Loading...</ListItem> : <ListItem {...props} key={option.id}> <ListItemText primary={option.name} />
+                                                            {option.images && option.images.length > 0 && <Image src={option.images[0]} alt={option.name || ""} style={{ width: "50px", height: "50px" }} width={50} height={50} />}
+                                                        </ListItem>
                                                     )}
                                                     value={inputs?.find((inputDb) => inputDb.id === input.structure.input.id)}
                                                     renderInput={(params) => <TextField {...params} label="Select a box" />}

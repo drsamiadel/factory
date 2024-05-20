@@ -30,6 +30,7 @@ import { set } from 'lodash';
 
 import { v4 as uuidv4 } from 'uuid';
 import convertTextToEquation from '@/lib/convert-text-to-equation';
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
 
 const steps = ['Input Details', 'Input Strucure', 'Preview'];
 
@@ -382,7 +383,45 @@ export default function Form({
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: "20%", borderLeft: "1px solid #ccc", padding: 2, [theme.breakpoints.down('sm')]: { borderLeft: "none", borderTop: "1px solid #ccc", width: '100%' } }}>
                         {input.images.length > 0 && input.images.map((image: string) => (
                             <div key={image}>
-                                {image && <Image key={image} src={image} width={200} height={200} alt="Image" className="aspect-square" />}
+                                {image &&
+                                    <div key={image}
+                                        style={{ position: "relative" }}
+                                    >
+                                        <Image src={image} width={200} height={200} alt="Image" className="aspect-square" />
+                                        <IconButton aria-label="delete" sx={{ position: "absolute", top: 0, right: 0, color: "error.main" }} onClick={() => {
+                                            const inputCopy = { ...input };
+                                            inputCopy.images = input.images.filter((img: string) => img !== image);
+                                            setInput(inputCopy);
+                                        }}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                        <IconButton aria-label='moveUp' sx={{ position: "absolute", top: 0, left: 0, color: "info.main" }} onClick={() => {
+                                            const inputCopy = { ...input };
+                                            const index = inputCopy.images.findIndex((img: string) => img === image);
+                                            if (index > 0) {
+                                                const temp = inputCopy.images[index - 1];
+                                                // @ts-ignore
+                                                inputCopy.images[index - 1] = image;
+                                                inputCopy.images[index] = temp;
+                                                setInput(inputCopy);
+                                            }
+                                        }}>
+                                            <ArrowUpward sx={{ color: "white" }} />
+                                        </IconButton>
+                                        <IconButton aria-label='moveDown' sx={{ position: "absolute", bottom: 0, left: 0, color: "info.main" }} onClick={() => {
+                                            const inputCopy = { ...input };
+                                            const index = inputCopy.images.findIndex((img: string) => img === image);
+                                            if (index < inputCopy.images.length - 1) {
+                                                const temp = inputCopy.images[index + 1];
+                                                // @ts-ignore
+                                                inputCopy.images[index + 1] = image;
+                                                inputCopy.images[index] = temp;
+                                                setInput(inputCopy);
+                                            }
+                                        }}>
+                                            <ArrowDownward sx={{ color: "white" }} />
+                                        </IconButton>
+                                    </div>}
                                 {!image && <Image key={image} src="/placeholder.svg" width={200} height={200} alt="Image" className="aspect-square" />}
                             </div>
                         ))}

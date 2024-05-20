@@ -21,7 +21,9 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
     const currentPeice = finishing.peiceId;
     const currentPage = input.structure.additional.find((page: any) => page.peiceId === currentPeice && page.code === 1);
     const allPages = input.structure.additional.find((page: any) => page.peiceId === "all" && page.code === 1);
-    const sheetsQuantity = currentPage ? currentPage.structure.sheetsQuantity : allPages ? allPages.structure.sheetsQuantity : 0;
+    const pageQuantity = currentPage ? currentPage.structure.sheetsQuantity : allPages ? allPages.structure.sheetsQuantity : 0;
+    const allSheetsQuantity = input.structure.sheetsQuantity || 0;
+    const sheetsQuantity = pageQuantity === 0 ? allSheetsQuantity : pageQuantity;
 
     React.useEffect(() => {
         function setAllQuantitiesAsSheetQuantity() {
@@ -58,7 +60,7 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
 
     React.useEffect(() => {
         function updateGum() {
-            const totalCost = ((+finishing.structure.gum.quantity || 0) / 1000) * (+finishing.structure.gum.point || 0) * (+finishing.structure.gum.pointCost || 0);
+            const totalCost = (+finishing.structure.gum.quantity || 0) * (+finishing.structure.gum.point || 0) * (+finishing.structure.gum.pointCost || 0);
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.gum.totalCost`, value: totalCost } }, true);
         }
 
