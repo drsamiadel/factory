@@ -49,11 +49,13 @@ export default function Form({
     onClose,
     onSubmit,
     initialValues,
+    step,
 }: {
     open: boolean;
     onClose: () => void;
     onSubmit: (values: any) => Promise<void>;
     initialValues?: any;
+    step?: number;
 }) {
 
     const theme = useTheme();
@@ -81,6 +83,12 @@ export default function Form({
     });
     const [loading, setLoading] = React.useState(false);
     const [errors, setErrors] = React.useState([]);
+
+    React.useEffect(() => {
+        if (step) {
+            setActiveStep(step);
+        }
+    }, [step]);
 
     React.useEffect(() => {
         if (initialValues) {

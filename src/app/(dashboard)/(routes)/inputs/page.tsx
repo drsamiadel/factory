@@ -25,6 +25,7 @@ import Skeleton from '@mui/material/Skeleton';
 
 import { useDebounce } from "@/lib/use-debounce";
 import DeleteBTN from './components/delete';
+import { Visibility, VisibilityOffRounded } from '@mui/icons-material';
 
 
 interface InputWithUserAndImages extends Partial<Input> {
@@ -136,6 +137,7 @@ export default function CustomizedTables() {
     const [loading, setLoading] = React.useState<boolean>(true);
     const [order, setOrder] = React.useState<Order>('desc');
     const [orderBy, setOrderBy] = React.useState<keyof InputWithUserAndImages>('createdAt');
+    const [step, setStep] = React.useState<number>(0);
 
     const handleRequestSort = (
         event: React.MouseEvent<unknown>,
@@ -153,6 +155,7 @@ export default function CustomizedTables() {
     const handleClose = () => {
         setOpen(false);
         setSelectedId("");
+        setStep(0);
     };
 
     React.useEffect(() => {
@@ -322,7 +325,7 @@ export default function CustomizedTables() {
                 gap: 3,
             }}
         >
-            <Form onClose={handleClose} open={open} onSubmit={selectedId ? handleUpdate : handleCreate} initialValues={selectedId ? rows.find((row) => row.id === selectedId) : null} />
+            <Form onClose={handleClose} open={open} onSubmit={selectedId ? handleUpdate : handleCreate} initialValues={selectedId ? rows.find((row) => row.id === selectedId) : null} step={step} />
             <Box
                 component="div"
                 sx={{
@@ -403,6 +406,13 @@ export default function CustomizedTables() {
                                         <Box sx={{ display: 'flex', gap: 2, flexDirection: "row", justifyContent: "start", alignItems: "center" }}>
                                             {row.images.length !== 0 && <Image src={row.images[0]!} alt={row.name as string} width={50} height={50} priority style={{ borderRadius: 6, height: "1.75rem", width: "1.75rem", overflow: "hidden" }} />}
                                             {row.name}
+                                            <IconButton onClick={() => {
+                                                setSelectedId(row.id!);
+                                                setStep(2);
+                                                handleClickOpen();
+                                            }}>
+                                                <Visibility />
+                                            </IconButton>
                                         </Box>
                                     </StyledTableCell>
                                     <StyledTableCell>{row.code}</StyledTableCell>
