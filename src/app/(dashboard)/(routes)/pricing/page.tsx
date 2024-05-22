@@ -232,6 +232,7 @@ export default function CustomizedTables() {
         const handlePrint = useReactToPrint({
             content: () => contentToPrint.current,
         });
+        console.log(input);
 
         const unitPrice = ((input.total || 0) / ((input.structure as any)?.sheetsQuantity || 1)).toFixed(2);
         return (

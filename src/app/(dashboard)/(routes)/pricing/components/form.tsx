@@ -114,6 +114,8 @@ export default function Form({
 
     const costAfterProfit = +(+input.total * +input.profit / 100).toFixed(2) + +input.total;
     const costAfterVat = +(+(+costAfterProfit * +input.vat / 100).toFixed(2) + +costAfterProfit).toFixed(2);
+    const vatAmount = +(costAfterProfit * +input.vat / 100).toFixed(2);
+    const profitAmount = +(costAfterProfit - input.total).toFixed(2);
 
 
     const [customers, setCustomers] = React.useState<Partial<Customer>[] | null>(null);
@@ -692,13 +694,6 @@ export default function Form({
                                             <Grid item xs={12}>
                                                 <Grid container spacing={2} sx={{ justifyContent: "end" }}>
                                                     <Grid item xs={3}>
-                                                        <TextField
-                                                            fullWidth
-                                                            label="Pics Cost"
-                                                            value={(input.total / (input.structure.sheetsQuantity || 1)) || 0}
-                                                            size='small'
-                                                            disabled
-                                                        />
                                                     </Grid>
                                                     <Grid item xs={2}>
                                                     </Grid>
@@ -707,7 +702,7 @@ export default function Form({
                                                             fullWidth
                                                             label="Total Cost"
                                                             name="total"
-                                                            value={input.total}
+                                                            value={input.total.toFixed(2)}
                                                             onChange={handleChange}
                                                             size='small'
                                                         />
@@ -716,14 +711,6 @@ export default function Form({
                                             </Grid>
                                             <Grid item xs={12}>
                                                 <Grid container spacing={2} sx={{ justifyContent: "end" }}>
-                                                    <Grid item xs={3}>
-                                                        <TextField
-                                                            fullWidth
-                                                            label="Pics Cost"
-                                                            value={(costAfterProfit / (input.structure.sheetsQuantity || 1)) || 0}
-                                                            size='small'
-                                                        />
-                                                    </Grid>
                                                     <Grid item xs={2}>
                                                         <TextField
                                                             fullWidth
@@ -731,6 +718,14 @@ export default function Form({
                                                             name="profit"
                                                             value={input.profit}
                                                             onChange={handleChange}
+                                                            size='small'
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={3}>
+                                                        <TextField
+                                                            fullWidth
+                                                            label="Profit Amount"
+                                                            value={profitAmount || 0}
                                                             size='small'
                                                         />
                                                     </Grid>
@@ -749,14 +744,20 @@ export default function Form({
                                             <Grid item xs={12}>
                                                 <Grid container spacing={2} sx={{ justifyContent: "end" }}>
                                                     <Grid item xs={2}>
-                                                    </Grid>
-                                                    <Grid item xs={2}>
                                                         <TextField
                                                             fullWidth
                                                             label="VAT"
                                                             name="vat"
                                                             value={input.vat}
                                                             onChange={handleChange}
+                                                            size='small'
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={3}>
+                                                        <TextField
+                                                            fullWidth
+                                                            label="VAT Amount"
+                                                            value={vatAmount || 0}
                                                             size='small'
                                                         />
                                                     </Grid>
@@ -780,7 +781,7 @@ export default function Form({
                                                             label="Discount"
                                                             name="discount"
                                                             value={input.discount}
-                                                            onChange={handleChange}
+                                                            onChange={(e) => handleChange(e, true)}
                                                             size='small'
                                                         />
                                                     </Grid>
@@ -792,7 +793,7 @@ export default function Form({
                                                         <TextField
                                                             fullWidth
                                                             label="Pics Cost"
-                                                            value={(input.totalCost / (input.structure.sheetsQuantity || 1)) || 0}
+                                                            value={(input.totalCost / (input.structure.sheetsQuantity || 1)).toFixed(2) || 0}
                                                             size='small'
                                                         />
                                                     </Grid>
