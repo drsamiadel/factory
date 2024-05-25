@@ -103,8 +103,7 @@ export default function Form({
             const costAfterProfit = +(+input.total * +input.profit / 100).toFixed(2) + +input.total;
             const costAfterVat = +(+(+costAfterProfit * +input.vat / 100).toFixed(2) + +costAfterProfit).toFixed(2);
             const costAfterDiscount = costAfterVat - +input.discount;
-            console.log(costAfterVat);
-            handleChange({ target: { name: "totalCost", value: costAfterDiscount } });
+            handleChange({ target: { name: "totalCost", value: +(costAfterDiscount.toFixed(2)) } });
         }
 
         updateTotalCost();
