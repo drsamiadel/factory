@@ -741,7 +741,7 @@ export default function CustomizedTables() {
                                             <p>هامش الربح</p>
                                         </td>
                                         <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
-                                            <p>{((input.total as number) * (input.profit as number) || 0) / 100}</p>
+                                            <p>{(((input.total as number) * (input.profit as number) || 0) / 100).toFixed(2)}</p>
                                         </td>
                                     </tr>
                                     <tr>
