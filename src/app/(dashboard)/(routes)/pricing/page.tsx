@@ -232,7 +232,6 @@ export default function CustomizedTables() {
         const handlePrint = useReactToPrint({
             content: () => contentToPrint.current,
         });
-        console.log(input);
 
         const unitPrice = ((input.total || 0) / ((input.structure as any)?.sheetsQuantity || 1)).toFixed(2);
         return (
@@ -750,7 +749,7 @@ export default function CustomizedTables() {
                                             <p>المجموع بدون ضريبة</p>
                                         </td>
                                         <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
-                                            <p>{(input.total as number) + ((input.total as number) * (input.profit as number) || 0) / 100}</p>
+                                            <p>{((input.total as number) + ((input.total as number) * (input.profit as number) || 0) / 100).toFixed(2)}</p>
                                         </td>
                                     </tr>
                                     <tr>
@@ -881,7 +880,7 @@ export default function CustomizedTables() {
                                                         <p>{unitPrice}</p>
                                                     </td>
                                                     <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} >
-                                                        <p>{(input.total || 0) + ((input.total as number) * (input.profit as number) || 0) / 100}</p>
+                                                        <p>{+((input.total || 0) + ((input.total as number) * (input.profit as number) || 0) / 100).toFixed(2)}</p>
                                                     </td>
                                                     <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} >
                                                         <p>{((input.totalCost || 0) - (input.total || 0)).toFixed(2)}</p>
