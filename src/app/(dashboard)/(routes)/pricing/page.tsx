@@ -794,6 +794,10 @@ export default function CustomizedTables() {
 
         const { site } = React.useContext(SiteContext) as AppContextProps;
 
+        if (!site) {
+            return null;
+        }
+
         const totalCost = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.totalCost || 0), 0).toFixed(2);
         const totalAmountIncludingProfit = rows.filter((row) => row.code === code).reduce((acc, row) => acc + ((row.total as number) + ((row.total as number) * (row.profit as number) || 0) / 100), 0).toFixed(2);
         const totalTaxAmount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (((row.totalCost as number) - (row.total as number)) || 0), 0).toFixed(2);
