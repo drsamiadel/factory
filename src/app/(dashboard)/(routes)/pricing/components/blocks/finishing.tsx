@@ -460,6 +460,7 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
                                         fullWidth
                                         label="Total"
                                         value={finishing.structure.delivery.totalCost || 0}
+                                        name={`structure.additional[${blockIndex}].structure.delivery.totalCost`}
                                         onChange={(e) => handleChange(e)}
                                         size='small'
                                         disabled={!!!finishing.structure.delivery.active}

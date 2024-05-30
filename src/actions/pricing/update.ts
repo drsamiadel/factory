@@ -13,7 +13,7 @@ const UPDATE = async (
   try {
     const { id } = await getUserSession();
     const inputId = (pricing.structure as any).input.id || null;
-
+    console.log("inputId", pricing);
     const updatedPricing = await prisma.pricing.update({
       where: {
         id: pricing.id,
@@ -23,6 +23,7 @@ const UPDATE = async (
         code: pricing.code === "" ? generateCode("QUT") : pricing.code,
         structure: pricing.structure || undefined,
         customerId: pricing.customerId,
+        delegateId: pricing.delegateId,
         total: pricing.total,
         totalCost: pricing.totalCost,
         discount: pricing.discount,
@@ -42,6 +43,15 @@ const UPDATE = async (
           select: {
             id: true,
             companyName: true,
+          },
+        },
+        delegate: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            code: true,
+            phone1: true,
           },
         },
         input: {

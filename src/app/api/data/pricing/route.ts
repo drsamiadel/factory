@@ -82,6 +82,15 @@ export async function GET(
             code: true,
           },
         },
+        delegate: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            code: true,
+            phone1: true,
+          },
+        },
         input: {
           select: {
             name: true,

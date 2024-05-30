@@ -111,7 +111,7 @@ export default function Form({
     }, [input.total, input.profit, input.vat, input.discount]);
 
 
-    const costAfterProfit = +(+input.total * +input.profit / 100).toFixed(2) + +input.total;
+    const costAfterProfit = +(+(+input.total * +input.profit / 100).toFixed(2) + +input.total).toFixed(2);
     const costAfterVat = +(+(+costAfterProfit * +input.vat / 100).toFixed(2) + +costAfterProfit).toFixed(2);
     const vatAmount = +(costAfterProfit * +input.vat / 100).toFixed(2);
     const profitAmount = +(costAfterProfit - input.total).toFixed(2);

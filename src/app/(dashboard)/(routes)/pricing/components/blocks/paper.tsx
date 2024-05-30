@@ -57,7 +57,7 @@ const PaperComponent = ({ paper, input, handleChange, initialValues }: { paper: 
             const unitPrice = (selectedVariant as any)?.unitPrice || 0;
             const totalCost = paperTotal * +unitPrice;
             const vat = paper.structure.vat.active ? +paper.structure.vat.value : 0;
-            const totalCostWithVat = totalCost + (totalCost * vat / 100);
+            const totalCostWithVat = +(totalCost + (totalCost * vat / 100)).toFixed(2);
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.totalCost`, value: totalCostWithVat } });
         }
         calculatePaperCost();
