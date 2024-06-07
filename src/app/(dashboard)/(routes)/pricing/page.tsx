@@ -19,7 +19,7 @@ import Form from './components/form';
 
 import Button from '@mui/material/Button';
 import { CREATE, DELETE, UPDATE } from '@/actions/pricing';
-import { Customer, Image as ImageType, Input, Pricing, User } from '@prisma/client';
+import { Customer, Delegate, Image as ImageType, Input, Pricing, User } from '@prisma/client';
 import Skeleton from '@mui/material/Skeleton';
 
 import { useDebounce } from "@/lib/use-debounce";
@@ -35,6 +35,7 @@ interface PricingWithUserAndCustomer extends Partial<Pricing> {
     user: Partial<User>;
     customer: Partial<Customer>;
     input: Partial<Input>;
+    delegate: Partial<Delegate>;
 }
 
 interface HeadCell {
@@ -98,7 +99,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const headCells: readonly HeadCell[] = [
     { id: 'code', label: 'Code' },
     { id: 'customer', label: 'Customer' },
-    { id: 'input', label: 'Input' },
+    { id: 'input', label: 'Delegate' },
     { id: 'total', label: 'Total' },
     { id: 'createdAt', label: 'Date' },
     { id: 'actions', label: '' },
@@ -1034,7 +1035,7 @@ export default function CustomizedTables() {
                                         </Box>
                                     </StyledTableCell>
                                     <StyledTableCell>{row.customer.companyName}</StyledTableCell>
-                                    <StyledTableCell>{row.input.name}</StyledTableCell>
+                                    <StyledTableCell>{row.delegate?.name || ""}</StyledTableCell>
                                     <StyledTableCell>{row.totalCost}</StyledTableCell>
                                     <StyledTableCell align="right">
                                         {new Date(row.createdAt as Date).toLocaleString()}
