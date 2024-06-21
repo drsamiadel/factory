@@ -1,18 +1,7 @@
 import * as React from 'react';
-import ListItemText from '@mui/material/ListItemText';
-import ListItem from '@mui/material/ListItem';
 import TextField from '@mui/material/TextField';
-import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Grid from '@mui/material/Grid';
 import Checkbox from '@mui/material/Checkbox';
-import { v4 as uuidv4 } from 'uuid';
-import { Material } from '@prisma/client';
-import { useDebounce } from '../../../../../../lib/use-debounce';
-import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 
 const FinishingComponent = ({ finishing, input, handleChange, initialValues }: { finishing: any, input: any, handleChange: any, initialValues?: any }) => {
@@ -71,7 +60,7 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
 
     React.useEffect(() => {
         function updatePasting() {
-            const totalCost = ((+finishing.structure.pasting.quantity || 0) / 1000) * (+finishing.structure.pasting.cost || 0);
+            const totalCost = ((+finishing.structure.pasting.quantity || 0)) * (+finishing.structure.pasting.cost || 0);
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.pasting.totalCost`, value: totalCost } }, true);
         }
 
@@ -104,7 +93,7 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
 
     React.useEffect(() => {
         function updatePacking() {
-            const totalCost = ((+finishing.structure.packing.quantity || 0) / 1000) * (+finishing.structure.packing.cost || 0);
+            const totalCost = ((+finishing.structure.packing.quantity || 0)) * (+finishing.structure.packing.cost || 0);
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.packing.totalCost`, value: totalCost } }, true);
         }
 
