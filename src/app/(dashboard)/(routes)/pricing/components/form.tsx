@@ -715,8 +715,8 @@ export default function Form({
                                                             fullWidth
                                                             label="Profit"
                                                             name="profit"
-                                                            value={input.profit}
-                                                            onChange={handleChange}
+                                                            value={+input.profit}
+                                                            onChange={(e) => handleChange(e, true)}
                                                             size='small'
                                                         />
                                                     </Grid>
@@ -747,8 +747,8 @@ export default function Form({
                                                             fullWidth
                                                             label="VAT"
                                                             name="vat"
-                                                            value={input.vat}
-                                                            onChange={handleChange}
+                                                            value={+input.vat}
+                                                            onChange={(e) => handleChange(e, true)}
                                                             size='small'
                                                         />
                                                     </Grid>
