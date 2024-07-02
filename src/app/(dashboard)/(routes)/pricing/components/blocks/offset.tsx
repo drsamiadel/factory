@@ -81,7 +81,7 @@ const OffsetComponent = ({ offset, input, handleChange, initialValues }: { offse
         calculateTotalCost();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [offset.structure.faces[0].costFirstThousand, offset.structure.faces[0].costNextThousand, offset.structure.faces[1].costFirstThousand, offset.structure.faces[1].costNextThousand, offset.structure.quantity]);
+    }, [offset.structure.faces[0].costFirstThousand, offset.structure.faces[0].costNextThousand, offset.structure.faces[1].costFirstThousand, offset.structure.faces[1].costNextThousand, offset.structure.quantity, offset.structure.faces[0].totalCost, offset.structure.faces[1].totalCost, offset.structure.faces[0].active, offset.structure.faces[1].active]);
 
 
     return (

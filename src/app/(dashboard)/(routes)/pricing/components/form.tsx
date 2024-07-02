@@ -3,7 +3,6 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import ListItemText from '@mui/material/ListItemText';
 import ListItem from '@mui/material/ListItem';
-import List from '@mui/material/List';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Slide from '@mui/material/Slide';
@@ -15,7 +14,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -26,7 +24,6 @@ import { v4 as uuidv4 } from 'uuid';
 import convertTextToEquation from '@/lib/convert-text-to-equation';
 import { Customer, Delegate, Input, Material } from '@prisma/client';
 import { useDebounce } from '../../../../../lib/use-debounce';
-import Divider from '@mui/material/Divider';
 import { custom } from 'zod';
 import PaperComponent from './blocks/paper';
 import OffsetComponent from './blocks/offset';
@@ -190,7 +187,7 @@ export default function Form({
                 quantity: 0,
                 upsInSheet: 1,
                 sheetsQuantity: 0,
-                destroyRate: 0,
+                destroyRate: 100,
                 material: {
                     id: "",
                     thickness: 0,

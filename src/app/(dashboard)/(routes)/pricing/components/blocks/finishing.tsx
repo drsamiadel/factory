@@ -17,12 +17,12 @@ const FinishingComponent = ({ finishing, input, handleChange, initialValues }: {
     React.useEffect(() => {
         function setAllQuantitiesAsSheetQuantity() {
             const blockCopy = { ...finishing };
-            blockCopy.structure.plasticWindow.quantity = sheetsQuantity;
-            blockCopy.structure.gum.quantity = sheetsQuantity;
-            blockCopy.structure.pasting.quantity = sheetsQuantity;
-            blockCopy.structure.cut.quantity = sheetsQuantity;
-            blockCopy.structure.binding.quantity = sheetsQuantity;
-            blockCopy.structure.packing.quantity = sheetsQuantity;
+            blockCopy.structure.plasticWindow.quantity = allSheetsQuantity;
+            blockCopy.structure.gum.quantity = allSheetsQuantity;
+            blockCopy.structure.pasting.quantity = allSheetsQuantity;
+            blockCopy.structure.cut.quantity = allSheetsQuantity;
+            blockCopy.structure.binding.quantity = allSheetsQuantity;
+            blockCopy.structure.packing.quantity = allSheetsQuantity;
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.plasticWindow.quantity`, value: blockCopy.structure.plasticWindow.quantity } }, true);
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.gum.quantity`, value: blockCopy.structure.gum.quantity } }, true);
             handleChange({ target: { name: `structure.additional[${blockIndex}].structure.pasting.quantity`, value: blockCopy.structure.pasting.quantity } }, true);
