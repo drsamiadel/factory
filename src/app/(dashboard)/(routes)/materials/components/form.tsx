@@ -431,7 +431,7 @@ export default function Form({
                                             label="Thickness"
                                             name={`variants[${variantIndex}].thickness`}
                                             value={variant.thickness}
-                                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event, true)}
+                                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event)}
                                             size='small'
                                         />
                                     </Grid>
