@@ -256,8 +256,8 @@ export default function CustomizedTables() {
                                     <div style={{ display: "flex", flexDirection: "column", alignItems: "end" }}>
                                         <h1 style={{ fontWeight: 600 }}>تسعيرة</h1>
                                         <p style={{ fontWeight: 600 }}>{currentRow.code} :رقم التسعير</p>
-                                        <p>{currentRow.customer.companyName}</p>
-                                        <p>{currentRow.customer.vatNumber} :الرقم الضريبي</p>
+                                        <p>{currentRow.customer?.companyName}</p>
+                                        <p>{currentRow.customer?.vatNumber} :الرقم الضريبي</p>
                                         <p>{new Date(currentRow.createdAt as Date).toLocaleDateString()} :التاريخ المقدر</p>
                                     </div>
                                 </div>
@@ -286,16 +286,16 @@ export default function CustomizedTables() {
                                                 </tr>
                                                 <tr style={{ backgroundColor: "#f3f4f6" }}>
                                                     <td style={{ border: "1px solid white", textAlign: "left" }} colSpan={4}>
-                                                        {input.customer.companyName}
+                                                        {input.customer?.companyName || ""}
                                                     </td>
                                                     <td style={{ border: "1px solid white", textAlign: "center" }}>
                                                         {(input.structure as any)?.sheetsQuantity}
                                                     </td>
                                                     <td style={{ border: "1px solid white", textAlign: "center" }}>
-                                                        {input.customer.code}
+                                                        {input.customer?.code}
                                                     </td>
                                                     <td style={{ border: "1px solid white", textAlign: "center" }} colSpan={3}>
-                                                        {input.customer.phone1}
+                                                        {input.customer?.phone1}
                                                     </td>
                                                 </tr>
                                                 <tr style={{ color: "white", backgroundColor: "#f3f4f6", fontWeight: 600 }}>
@@ -838,8 +838,8 @@ export default function CustomizedTables() {
                                     <div style={{ display: "flex", flexDirection: "column", alignItems: "end" }}>
                                         <h1 style={{ fontWeight: 600 }}>تسعيرة</h1>
                                         <p style={{ fontWeight: 600 }}>{currentRow?.code} :رقم التسعير</p>
-                                        <p>{currentRow?.customer.companyName}</p>
-                                        <p>{currentRow?.customer.vatNumber} :الرقم الضريبي</p>
+                                        <p>{currentRow?.customer?.companyName || ""}</p>
+                                        <p>{currentRow?.customer?.vatNumber || ""} :الرقم الضريبي</p>
                                         <p>{new Date(currentRow?.createdAt as Date).toLocaleDateString()} :التاريخ المقدر</p>
                                     </div>
                                 </div>
