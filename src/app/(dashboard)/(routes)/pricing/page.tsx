@@ -1046,7 +1046,7 @@ export default function CustomizedTables() {
                                             <PreviewBtn rows={rows} code={row.code as string} />
                                         </Box>
                                     </StyledTableCell>
-                                    <StyledTableCell>{row.customer.companyName}</StyledTableCell>
+                                    <StyledTableCell>{row.customer?.companyName || ""}</StyledTableCell>
                                     <StyledTableCell>{row.delegate?.name || ""}</StyledTableCell>
                                     <StyledTableCell>{row.totalCost}</StyledTableCell>
                                     <StyledTableCell align="right">
