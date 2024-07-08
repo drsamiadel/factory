@@ -13,6 +13,7 @@ import { useTheme } from '@mui/material/styles';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import Autocomplete from '@mui/material/Autocomplete';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
@@ -57,13 +58,13 @@ export default function Form({
     initialValues?: any;
     step?: number;
 }) {
-
     const theme = useTheme();
     const [activeStep, setActiveStep] = React.useState(0);
     const [input, setInput] = React.useState({
         code: "",
         name: "",
         images: [],
+        category: "",
         structure: {
             peices: [{
                 id: uuidv4(),
@@ -83,6 +84,18 @@ export default function Form({
     });
     const [loading, setLoading] = React.useState(false);
     const [errors, setErrors] = React.useState([]);
+    const [categiries, setCategories] = React.useState<{
+        loading: boolean;
+        data: string[];
+    }>();
+
+    React.useEffect(() => {
+        fetch("/api/data/input/categories")
+            .then((res) => res.json())
+            .then((data) => {
+                setCategories({ loading: false, data });
+            });
+    }, []);
 
     React.useEffect(() => {
         if (step) {
@@ -178,6 +191,7 @@ export default function Form({
             code: "",
             name: "",
             images: [],
+            category: "",
             structure: {
                 peices: [{
                     id: uuidv4(),
@@ -252,11 +266,40 @@ export default function Form({
                             <React.Fragment>
                                 {activeStep === 0 && (
                                     <List sx={{ width: "100%", display: "flex", flexDirection: "row", [theme.breakpoints.down('sm')]: { flexDirection: "column" }, flexWrap: "wrap" }}>
-                                        <ListItem sx={{ width: "50%", [theme.breakpoints.down('sm')]: { width: "100%" } }}>
+                                        <ListItem sx={{ width: "33%", [theme.breakpoints.down('sm')]: { width: "100%" } }}>
                                             <TextField id="filled-basic" label="Code" variant="outlined" onChange={handleChange} value={input.code} name="code" fullWidth size='small' />
                                         </ListItem>
-                                        <ListItem sx={{ width: "50%", [theme.breakpoints.down('sm')]: { width: "100%" } }}>
+                                        <ListItem sx={{ width: "33%", [theme.breakpoints.down('sm')]: { width: "100%" } }}>
                                             <TextField id="filled-basic" label="Name" variant="outlined" onChange={handleChange} name="name" value={input.name} fullWidth size='small' />
+                                        </ListItem>
+                                        <ListItem sx={{ width: "33%", [theme.breakpoints.down('sm')]: { width: "100%" } }}>
+                                            <Autocomplete
+                                                fullWidth
+                                                value={input.category}
+                                                onChange={(event, newValue) => {
+                                                    const inputCopy = { ...input };
+                                                    inputCopy.category = newValue as string;
+                                                    setInput(inputCopy);
+                                                }}
+                                                filterOptions={(options, params) => {
+                                                    const filtered = options.filter((option) => option.toLowerCase().includes(params.inputValue.toLowerCase()));
+                                                    const isExisting = options.includes(params.inputValue);
+                                                    if (params.inputValue !== "" && !isExisting) {
+                                                        filtered.push(params.inputValue);
+                                                    }
+
+                                                    return filtered;
+                                                }}
+                                                selectOnFocus
+                                                clearOnBlur
+                                                handleHomeEndKeys
+                                                id="categories"
+                                                options={categiries?.data || []}
+                                                freeSolo
+                                                renderInput={(params) => (
+                                                    <TextField {...params} label="Category" fullWidth size='small' />
+                                                )}
+                                            />
                                         </ListItem>
                                         <ListItem sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 2, justifyContent: "start", alignItems: "start" }}>
                                             <Typography>Photos</Typography>

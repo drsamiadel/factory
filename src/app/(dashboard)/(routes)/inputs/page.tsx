@@ -109,6 +109,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 const headCells: readonly HeadCell[] = [
     { id: 'name', label: 'Name' },
+    { id: 'category', label: 'Category' },
     { id: 'code', label: 'Code' },
     { id: 'peices', label: 'Peices' },
     { id: 'createdAt', label: 'Date' },
@@ -132,6 +133,7 @@ export default function CustomizedTables() {
     const [rowsPerPage, setRowsPerPage] = React.useState<number>(10);
     const [search, setSearch] = React.useState<string>("");
     const [rows, setRows] = React.useState<InputWithUserAndImages[] | []>([]);
+    const [count, setCount] = React.useState<number>(0);
     const [open, setOpen] = React.useState(false);
     const [selectedId, setSelectedId] = React.useState<string>("");
     const [loading, setLoading] = React.useState<boolean>(true);
@@ -181,6 +183,7 @@ export default function CustomizedTables() {
             if (response.ok) {
                 const data = await response.json();
                 setRows(data.inputs);
+                setCount(data.count);
             }
 
             setLoading(false);
@@ -358,7 +361,7 @@ export default function CustomizedTables() {
                                     align={headCell.id === 'peices' || headCell.id === 'createdAt' ? 'right' : 'left'}
                                     sortDirection={orderBy === headCell.id ? order : false}
                                 >
-                                    {headCell.id === 'name' || headCell.id === 'code' || headCell.id === 'createdAt' ? (
+                                    {headCell.id === 'name' || headCell.id === 'code' || headCell.id === "category" || headCell.id === 'createdAt' ? (
                                         <StyledTableSortLabel
                                             sx={{ "&.MuiTableSortLabel-root": { color: "white" }, "&.MuiTableSortLabel-active": { color: "white" }, "&.MuiTableSortLabel-icon": { color: "white" } }}
                                             active={orderBy === headCell.id}
@@ -390,6 +393,9 @@ export default function CustomizedTables() {
                                 <StyledTableCell>
                                     <Skeleton variant="text" height={35} />
                                 </StyledTableCell>
+                                <StyledTableCell>
+                                    <Skeleton variant="text" height={35} />
+                                </StyledTableCell>
                                 <StyledTableCell sx={{ display: 'flex', gap: 2, flexDirection: "row", justifyContent: "end", alignItems: "center" }}>
                                     <Skeleton variant="circular" width={35} height={35} />
                                     <Skeleton variant="circular" width={35} height={35} />
@@ -397,11 +403,11 @@ export default function CustomizedTables() {
                             </StyledTableRow>
                         ) : rows.length === 0 ?
                             <StyledTableRow>
-                                <StyledTableCell colSpan={5} align="center">No data found</StyledTableCell>
+                                <StyledTableCell colSpan={6} align="center">No data found</StyledTableCell>
                             </StyledTableRow>
                             :
                             rows.map((row) => (
-                                <StyledTableRow key={row.name}>
+                                <StyledTableRow key={row.id}>
                                     <StyledTableCell component="th" scope="row">
                                         <Box sx={{ display: 'flex', gap: 2, flexDirection: "row", justifyContent: "start", alignItems: "center" }}>
                                             {row.images.length !== 0 && <Image src={row.images[0]!} alt={row.name as string} width={50} height={50} priority style={{ borderRadius: 6, height: "1.75rem", width: "1.75rem", overflow: "hidden" }} />}
@@ -415,6 +421,7 @@ export default function CustomizedTables() {
                                             </IconButton>
                                         </Box>
                                     </StyledTableCell>
+                                    <StyledTableCell>{row?.category || ""}</StyledTableCell>
                                     <StyledTableCell>{row.code}</StyledTableCell>
                                     <StyledTableCell align="right">{row?.structure?.peices.length}</StyledTableCell>
                                     <StyledTableCell align="right">
@@ -437,7 +444,7 @@ export default function CustomizedTables() {
             <TablePagination
                 rowsPerPageOptions={[10, 25, 50]}
                 component="div"
-                count={rows.length}
+                count={count}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

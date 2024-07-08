@@ -19,6 +19,7 @@ interface PricingWithUserAndCustomer extends Pricing {
 interface PricingWithPages {
   inputs: PricingWithUserAndCustomer[];
   totalPages: number;
+  count: number;
 }
 
 export async function GET(
@@ -100,7 +101,7 @@ export async function GET(
       },
     });
 
-    return new Response(JSON.stringify({ pricings, totalPages }), {
+    return new Response(JSON.stringify({ pricings, totalPages, count }), {
       status: 200,
     });
   } catch (error) {

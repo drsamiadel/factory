@@ -98,6 +98,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 const headCells: readonly HeadCell[] = [
     { id: 'code', label: 'Code' },
+    { id: 'description', label: 'Description' },
     { id: 'customer', label: 'Customer' },
     { id: 'input', label: 'Delegate' },
     { id: 'total', label: 'Total' },
@@ -122,6 +123,7 @@ export default function CustomizedTables() {
     const [rowsPerPage, setRowsPerPage] = React.useState<number>(10);
     const [search, setSearch] = React.useState<string>("");
     const [rows, setRows] = React.useState<PricingWithUserAndCustomer[] | []>([]);
+    const [count, setCount] = React.useState<number>(0);
     const [open, setOpen] = React.useState(false);
     const [selectedId, setSelectedId] = React.useState<string>("");
     const [loading, setLoading] = React.useState<boolean>(true);
@@ -167,6 +169,7 @@ export default function CustomizedTables() {
             if (response.ok) {
                 const data = await response.json();
                 setRows(data.pricings);
+                setCount(data.count);
             }
 
             setLoading(false);
@@ -235,11 +238,11 @@ export default function CustomizedTables() {
         });
 
         const total = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.total || 0), 0).toFixed(2);
-        const totalCost = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.totalCost || 0), 0).toFixed(2);
         const totalAmountIncludingProfit = rows.filter((row) => row.code === code).reduce((acc, row) => acc + ((row.total as number) + ((row.total as number) * (row.profit as number) || 0) / 100), 0).toFixed(2);
         const totalTaxAmount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (((row.totalCost as number) - (row.total as number)) || 0), 0).toFixed(2);
         const totalDiscount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.discount || 0), 0).toFixed(2);
         const profit = rows.filter((row) => row.code === code).reduce((acc, row) => acc + ((row.total as number) * (row.profit as number) / 100), 0).toFixed(2);
+        const totalCost = +totalAmountIncludingProfit + +totalTaxAmount - +totalDiscount;
 
         const currentRow = rows.find((row) => row.code === code);
 
@@ -786,7 +789,7 @@ export default function CustomizedTables() {
                                             <p>الإجمالي شامل الضريبة</p>
                                         </td>
                                         <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
-                                            <p>{totalCost}</p>
+                                            <p>{totalCost.toFixed(2)}</p>
                                         </td>
                                     </tr>
                                 </table>
@@ -810,11 +813,10 @@ export default function CustomizedTables() {
             return null;
         }
 
-        const totalCost = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.totalCost || 0), 0).toFixed(2);
         const totalAmountIncludingProfit = rows.filter((row) => row.code === code).reduce((acc, row) => acc + ((row.total as number) + ((row.total as number) * (row.profit as number) || 0) / 100), 0).toFixed(2);
         const totalTaxAmount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (((row.totalCost as number) - (row.total as number)) || 0), 0).toFixed(2);
         const totalDiscount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.discount || 0), 0).toFixed(2);
-
+        const totalCost = +totalAmountIncludingProfit + +totalTaxAmount - +totalDiscount;
         const currentRow = rows.find((row) => row.code === code);
 
         return (
@@ -936,7 +938,7 @@ export default function CustomizedTables() {
                                             <p>الإجمالي شامل الضريبة</p>
                                         </td>
                                         <td style={{ border: "1px solid black", textAlign: "center", fontWeight: 600 }}>
-                                            <p>{totalCost}</p>
+                                            <p>{totalCost.toFixed(2)}</p>
                                         </td>
                                     </tr>
                                 </table>
@@ -1028,6 +1030,9 @@ export default function CustomizedTables() {
                                 <StyledTableCell>
                                     <Skeleton variant="text" height={35} />
                                 </StyledTableCell>
+                                <StyledTableCell>
+                                    <Skeleton variant="text" height={35} />
+                                </StyledTableCell>
                                 <StyledTableCell sx={{ display: 'flex', gap: 2, flexDirection: "row", justifyContent: "end", alignItems: "center" }}>
                                     <Skeleton variant="circular" width={35} height={35} />
                                     <Skeleton variant="circular" width={35} height={35} />
@@ -1042,9 +1047,14 @@ export default function CustomizedTables() {
                                 <StyledTableRow key={row.id}>
                                     <StyledTableCell component="th" scope="row">
                                         <Box sx={{ display: 'flex', gap: 2, flexDirection: "row", justifyContent: "start", alignItems: "center" }}>
-                                            {row.code}
-                                            <PreviewBtn rows={rows} code={row.code as string} />
+                                            {rows.filter((r) => r.code === row.code).indexOf(row) === 0 ? row.code : "╰┈➤"}
                                         </Box>
+                                    </StyledTableCell>
+                                    <StyledTableCell>
+                                        <PreviewBtn rows={rows} code={row.code as string} />
+                                        <span style={{ marginLeft: "5px" }}>
+                                            {row.description}
+                                        </span>
                                     </StyledTableCell>
                                     <StyledTableCell>{row.customer?.companyName || ""}</StyledTableCell>
                                     <StyledTableCell>{row.delegate?.name || ""}</StyledTableCell>
@@ -1070,7 +1080,7 @@ export default function CustomizedTables() {
             <TablePagination
                 rowsPerPageOptions={[10, 25, 50]}
                 component="div"
-                count={rows.length}
+                count={count}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
