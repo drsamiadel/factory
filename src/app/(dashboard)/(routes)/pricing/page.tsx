@@ -29,6 +29,7 @@ import { PanoramaFishEyeRounded, Preview, VisibilityRounded } from '@mui/icons-m
 import convertTextToEquation from '../../../../lib/convert-text-to-equation';
 import { AppContextProps, SiteContext } from '@/hooks/site-context';
 import Image from 'next/image';
+import Head from 'next/head';
 
 
 interface PricingWithUserAndCustomer extends Partial<Pricing> {
@@ -823,6 +824,9 @@ export default function CustomizedTables() {
 
         return (
             <>
+                <Head>
+                    <title>{code}</title>
+                </Head>
                 <Button variant="contained" onClick={handlePrint}>
                     Print
                 </Button>
