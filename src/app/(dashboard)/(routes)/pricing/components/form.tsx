@@ -63,6 +63,7 @@ export default function Form({
         description: "",
         customerId: null,
         delegateId: null,
+        category: "",
         structure: {
             input: {
                 id: '',
@@ -164,8 +165,7 @@ export default function Form({
     React.useEffect(() => {
         const fetchInputs = async () => {
             setInputsLoading(true);
-
-            const response = await fetch(`/api/data/input?filterByName=${debouncedInputSearch}`);
+            const response = await fetch(`/api/data/input?filterByName=${debouncedInputSearch}&filterByCategory=${input.category}`);
 
             if (response.ok) {
                 const data = await response.json();
@@ -175,7 +175,28 @@ export default function Form({
             setInputsLoading(false);
         }
         fetchInputs();
-    }, [debouncedInputSearch]);
+    }, [debouncedInputSearch, input.category]);
+
+    const [categories, setcategories] = React.useState<string[] | null>(null);
+    const [categoriesLoading, setcategoriesLoading] = React.useState<boolean>(false);
+    const [categoriesSearch, setcategoriesSearch] = React.useState<string>("");
+    const debouncedcategoriesSearch = useDebounce(categoriesSearch, 500);
+
+    React.useEffect(() => {
+        const fetchCategories = async () => {
+            setcategoriesLoading(true);
+
+            const response = await fetch(`/api/data/input/categories`);
+
+            if (response.ok) {
+                const data = await response.json();
+                setcategories(data);
+            }
+
+            setcategoriesLoading(false);
+        }
+        fetchCategories();
+    }, [debouncedcategoriesSearch]);
 
     const additionalFields = [
         {
@@ -615,7 +636,26 @@ export default function Form({
                                                     Box Dimensions
                                                 </Typography>
                                             </Grid>
-                                            <Grid item xs={6}>
+                                            <Grid item xs={12}>
+                                                <Autocomplete
+                                                    fullWidth
+                                                    options={categories ? categories : []}
+                                                    value={categories?.find((category) => category === input.category)}
+                                                    renderInput={(params) => <TextField {...params} label="Select a category" />}
+                                                    onChange={(event, value) => {
+                                                        setInput({ ...input, category: value ? value : "" });
+                                                    }}
+                                                    onInputChange={(event, value) => {
+                                                        setcategoriesSearch(value);
+                                                    }}
+                                                    isOptionEqualToValue={(option, value) => option === value}
+                                                    selectOnFocus
+                                                    clearOnBlur
+                                                    handleHomeEndKeys
+                                                    size='small'
+                                                />
+                                            </Grid>
+                                            <Grid item xs={8}>
                                                 <Autocomplete
                                                     fullWidth
                                                     options={inputs ? inputs : []}
@@ -644,7 +684,7 @@ export default function Form({
                                                     size='small'
                                                 />
                                             </Grid>
-                                            <Grid item xs={6}>
+                                            <Grid item xs={4}>
                                                 <TextField
                                                     fullWidth
                                                     placeholder="Box Code"
@@ -940,6 +980,9 @@ export default function Form({
                             setInput({
                                 code: res.code,
                                 customerId: res.customerId,
+                                delegateId: res.delegateId,
+                                description: '',
+                                category: '',
                                 structure: {
                                     input: {
                                         id: '',
