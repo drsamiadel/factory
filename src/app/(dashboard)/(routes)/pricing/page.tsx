@@ -900,7 +900,7 @@ export default function CustomizedTables() {
                                                         <p>{+((input.total || 0) + ((input.total as number) * (input.profit as number) || 0) / 100).toFixed(2)}</p>
                                                     </td>
                                                     <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} >
-                                                        <p>{((input.totalCost || 0) - (input.total || 0)).toFixed(2)}</p>
+                                                        <p>{(((input.totalCost as number) - (+((input.total || 0) + ((input.total as number) * (input.profit as number) || 0) / 100).toFixed(2)) || 0)).toFixed(2)}</p>
                                                     </td>
                                                     <td style={{ border: "1px solid white", padding: "5px", textAlign: "right" }} >
                                                         <p>{input.totalCost}</p>
