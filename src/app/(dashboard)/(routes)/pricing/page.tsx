@@ -206,7 +206,7 @@ export default function CustomizedTables() {
         if ('error' in result) {
             throw new Error(result.error.message);
         } else {
-            setRows((prev) => [...prev, result as PricingWithUserAndCustomer]);
+            setRows((prev) => [result as PricingWithUserAndCustomer, ...prev]);
         }
         return result;
     };
