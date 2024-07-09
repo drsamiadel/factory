@@ -824,9 +824,6 @@ export default function CustomizedTables() {
 
         return (
             <>
-                <Head>
-                    <title>{code}</title>
-                </Head>
                 <Button variant="contained" onClick={handlePrint}>
                     Print
                 </Button>
