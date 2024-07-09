@@ -235,11 +235,12 @@ export default function CustomizedTables() {
         const contentToPrint = React.useRef(null);
         const handlePrint = useReactToPrint({
             content: () => contentToPrint.current,
+            documentTitle: `${code}`,
         });
 
         const total = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.total || 0), 0).toFixed(2);
         const totalAmountIncludingProfit = rows.filter((row) => row.code === code).reduce((acc, row) => acc + ((row.total as number) + ((row.total as number) * (row.profit as number) || 0) / 100), 0).toFixed(2);
-        const totalTaxAmount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (((row.totalCost as number) - (row.total as number)) || 0), 0).toFixed(2);
+        const totalTaxAmount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (((row.totalCost as number) - (+totalAmountIncludingProfit as number)) || 0), 0).toFixed(2);
         const totalDiscount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.discount || 0), 0).toFixed(2);
         const profit = rows.filter((row) => row.code === code).reduce((acc, row) => acc + ((row.total as number) * (row.profit as number) / 100), 0).toFixed(2);
         const totalCost = +totalAmountIncludingProfit + +totalTaxAmount - +totalDiscount;
@@ -805,6 +806,7 @@ export default function CustomizedTables() {
         const contentToPrint = React.useRef(null);
         const handlePrint = useReactToPrint({
             content: () => contentToPrint.current,
+            documentTitle: `${code}`,
         });
 
         const { site } = React.useContext(SiteContext) as AppContextProps;
@@ -814,7 +816,7 @@ export default function CustomizedTables() {
         }
 
         const totalAmountIncludingProfit = rows.filter((row) => row.code === code).reduce((acc, row) => acc + ((row.total as number) + ((row.total as number) * (row.profit as number) || 0) / 100), 0).toFixed(2);
-        const totalTaxAmount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (((row.totalCost as number) - (row.total as number)) || 0), 0).toFixed(2);
+        const totalTaxAmount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (((row.totalCost as number) - (+totalAmountIncludingProfit as number)) || 0), 0).toFixed(2);
         const totalDiscount = rows.filter((row) => row.code === code).reduce((acc, row) => acc + (row.discount || 0), 0).toFixed(2);
         const totalCost = +totalAmountIncludingProfit + +totalTaxAmount - +totalDiscount;
         const currentRow = rows.find((row) => row.code === code);
