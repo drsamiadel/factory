@@ -224,6 +224,7 @@ export default function CustomizedTables() {
                 return row;
             });
             setRows(updatedRows);
+            setSelectedId("");
         }
         return result;
     };

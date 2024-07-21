@@ -1000,7 +1000,7 @@ export default function Form({
                             console.log(e)
                             setLoading(false);
                             setErrors(JSON.parse(e.message));
-                        });
+                        })
                     }}
                     disabled={loading}
                     variant="contained" color="primary"

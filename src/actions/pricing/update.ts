@@ -13,7 +13,6 @@ const UPDATE = async (
   try {
     const { id } = await getUserSession();
     const inputId = (pricing.structure as any).input.id || null;
-    console.log("inputId", pricing);
     const updatedPricing = await prisma.pricing.update({
       where: {
         id: pricing.id,
