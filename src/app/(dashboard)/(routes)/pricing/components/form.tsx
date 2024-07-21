@@ -975,7 +975,6 @@ export default function Form({
                     onClick={async () => {
                         setLoading(true);
                         await onSubmit(input).then((res: any) => {
-                            console.log(res);
                             setLoading(false);
                             setInput({
                                 code: res.code,
@@ -998,6 +997,7 @@ export default function Form({
                                 totalCost: 0,
                             });
                         }).catch((e: any) => {
+                            console.log(e)
                             setLoading(false);
                             setErrors(JSON.parse(e.message));
                         });

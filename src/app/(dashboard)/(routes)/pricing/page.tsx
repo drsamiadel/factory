@@ -225,6 +225,7 @@ export default function CustomizedTables() {
             });
             setRows(updatedRows);
         }
+        return result;
     };
 
     const handleEdit = (id: string) => {
