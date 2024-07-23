@@ -328,7 +328,7 @@ export default function CustomizedTables() {
                                                         Total Size
                                                     </td>
                                                 </tr>
-                                                {(input?.structure as any)?.input?.structure?.peices.map((add: any) => {
+                                                {input && input.structure && (input?.structure as any)?.input && (input?.structure as any)?.input?.structure?.peices && (input?.structure as any)?.input?.structure?.peices.map((add: any) => {
                                                     const width = convertTextToEquation(add.equation.width, (input?.structure as any)?.input, add.id);
                                                     const height = convertTextToEquation(add.equation.height, (input?.structure as any)?.input, add.id);
                                                     return (
