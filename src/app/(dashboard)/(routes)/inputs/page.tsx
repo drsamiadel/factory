@@ -182,6 +182,7 @@ export default function CustomizedTables() {
 
             if (response.ok) {
                 const data = await response.json();
+                console.log(data)
                 setRows(data.inputs);
                 setCount(data.count);
             }

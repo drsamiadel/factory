@@ -39,7 +39,7 @@ export async function GET(
   try {
     const count = await prisma.input.count({
       where: {
-        AND: [
+        OR: [
           {
             name: {
               contains: filterByName,
@@ -66,7 +66,7 @@ export async function GET(
 
     const inputs = await prisma.input.findMany({
       where: {
-        AND: [
+        OR: [
           {
             name: {
               contains: filterByName,
