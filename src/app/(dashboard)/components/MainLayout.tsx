@@ -31,6 +31,7 @@ import InputRoundedIcon from '@mui/icons-material/InputRounded';
 import Image from 'next/image';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import { signOut } from "next-auth/react";
+import { AppContextProps, SiteContext } from '@/hooks/site-context';
 
 const drawerWidth = 240;
 
@@ -181,6 +182,8 @@ export default function MainLayout({ children, user }: {
             pathname === path;
     };
 
+    const { site } = React.useContext(SiteContext) as AppContextProps;
+
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
@@ -199,7 +202,7 @@ export default function MainLayout({ children, user }: {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap component="div">
-                        System Name
+                        {site?.companyName}
                     </Typography>
                 </Toolbar>
             </AppBar>
