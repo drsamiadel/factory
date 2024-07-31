@@ -31,7 +31,7 @@ export async function GET(
   const page = searchParams.get("page") || 1;
   const limit = searchParams.get("limit") || 10;
   const filterByName = searchParams.get("filterByName") || "";
-  const filterByCategory = searchParams.get("filterByCategory") || "";
+  const filterByCategory = searchParams.get("filterByCategory") || null;
   const sorting = searchParams.get("sorting") || "createdAt";
   const order = searchParams.get("order") || "desc";
   const expanded = !!(searchParams.get("expanded") === "true");
@@ -39,7 +39,7 @@ export async function GET(
   try {
     const count = await prisma.input.count({
       where: {
-        OR: [
+        AND: [
           {
             name: {
               contains: filterByName,
@@ -48,7 +48,7 @@ export async function GET(
           },
           {
             category: {
-              contains: filterByCategory,
+              contains: filterByCategory ?? undefined,
               mode: "insensitive",
             },
           },
@@ -66,7 +66,7 @@ export async function GET(
 
     const inputs = await prisma.input.findMany({
       where: {
-        OR: [
+        AND: [
           {
             name: {
               contains: filterByName,
@@ -75,7 +75,7 @@ export async function GET(
           },
           {
             category: {
-              contains: filterByCategory,
+              contains: filterByCategory ?? undefined,
               mode: "insensitive",
             },
           },
