@@ -528,7 +528,7 @@ export default function Form({
                                                 renderOption={(props, option) => (
                                                     customerLoading ? <ListItem key={uuidv4()}>Loading...</ListItem> : <ListItem {...props} key={option.id}> <ListItemText primary={option.companyName} /> </ListItem>
                                                 )}
-                                                defaultValue={initialValues ? customers?.find((customer) => customer.id === initialValues.customerId) : null}
+                                                defaultValue={initialValues ? customers?.find((customer) => customer.id === initialValues.customerId) : customers?.find((customer) => customer.id === input.customerId)}
                                                 renderInput={(params) => <TextField {...params} label="Customer" />}
                                                 onChange={(event, value) => {
                                                     setInput({ ...input, customerId: value ? value.id : null });
@@ -538,7 +538,6 @@ export default function Form({
                                                 }}
                                                 isOptionEqualToValue={(option, value) => option.id === value.id}
                                                 selectOnFocus
-                                                clearOnBlur
                                                 handleHomeEndKeys
                                                 size='small'
                                             />
@@ -571,7 +570,7 @@ export default function Form({
                                                 renderOption={(props, option) => (
                                                     delegateLoading ? <ListItem key={uuidv4()}>Loading...</ListItem> : <ListItem {...props} key={option.id}> <ListItemText primary={option.name} /> </ListItem>
                                                 )}
-                                                defaultValue={initialValues ? delegates?.find((delegate) => delegate.id === initialValues.delegateId) : null}
+                                                defaultValue={initialValues ? delegates?.find((delegate) => delegate.id === initialValues.delegateId) : delegates?.find((delegate) => delegate.id === input.delegateId)}
                                                 renderInput={(params) => <TextField {...params} label="Delegate" />}
                                                 onChange={(event, value) => {
                                                     setInput({ ...input, delegateId: value ? value.id : null });
@@ -581,7 +580,6 @@ export default function Form({
                                                 }}
                                                 isOptionEqualToValue={(option, value) => option.id === value.id}
                                                 selectOnFocus
-                                                clearOnBlur
                                                 handleHomeEndKeys
                                                 size='small'
                                             />
