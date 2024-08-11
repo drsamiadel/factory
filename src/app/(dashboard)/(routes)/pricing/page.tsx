@@ -835,7 +835,7 @@ export default function CustomizedTables() {
                             <div style={{ padding: "15px", display: "flex", flexDirection: "column", gap: "10px", fontSize: "11px" }}>
                                 <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                                     <div style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
-                                        {site.logo && (<Image src={site.logo} alt="logo" width={50} height={50} style={{ objectFit: "contain" }} />)}
+                                        {site.logo && (<Image src={site.logo} alt="logo" width={200} height={200} style={{ objectFit: "contain" }} />)}
                                         <h1 style={{ fontWeight: 600, fontSize: "14px" }}>{site.companyName}</h1>
                                         <p>{site.address}</p>
                                         <p>{site.phone1} {site.phone2 && ` - ${site.phone2}`}</p>
